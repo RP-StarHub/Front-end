@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "SCDream4";
+  src: url("./assets/Font/SCDream4.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SCDream6";
+  src: url("./assets/Font/SCDream6.woff") format("woff");
+}
+
+@font-face {
+  font-family: "GmarketSans";
+  src: url("./assets/Font/GmarketSansBold.woff") format("woff");
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    'SCDream4', 'SCDream6', 'GmarketSans',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
