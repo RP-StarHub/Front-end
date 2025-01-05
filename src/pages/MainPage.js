@@ -1,5 +1,3 @@
-// MainPage.js
-
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, useMap } from "react-kakao-maps-sdk";
 import styled from "styled-components";
@@ -7,8 +5,6 @@ import InformCard from "../components/InformCard";
 import OverCard from "../components/OverCard";
 import axios from "axios";
 // import { Link } from "react-router-dom";
-
-const { kakao } = window;
 
 const PageContainer = styled.div`
   height: 710px;
@@ -59,7 +55,7 @@ const PaginationButton = styled.button`
 
 const StudyList = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [studies, setStudies] = useState([]); // 변경
+  const [studies, setStudies] = useState([]);
 
   const studiesPerPage = 4;
 
@@ -195,9 +191,9 @@ const EventMarkerContainer = ({
 };
 
 const MainPage = () => {
-  const [location, setLocation] = useState(null); // 사용자의 현재 위치 설정
+  const [location, setLocation] = useState(null);
   const [loaded, setLoaded] = useState(false);
-  const [studies, setStudies] = useState([]); // 데이터베이스에서 받아온 스터디 목록
+  const [studies, setStudies] = useState([]);
 
   useEffect(() => {
     axios
@@ -211,7 +207,7 @@ const MainPage = () => {
   }, []);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(successHandler, errorHandler); // 사용자의 현재 위치를 받아옴
+    navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
   }, []);
 
   const successHandler = (response) => {
