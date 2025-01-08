@@ -7,7 +7,7 @@ import axios from "axios";
 // import { Link } from "react-router-dom";
 
 const PageContainer = styled.div`
-  height: 710px;
+  height: 90vh;
   display: flex;
   flex-direction: row;
 `;
