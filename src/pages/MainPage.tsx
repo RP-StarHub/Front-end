@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Map, MapMarker, useMap } from "react-kakao-maps-sdk";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
 import styled from "styled-components";
 import InformCard from "../components/InformCard";
 import OverCard from "../components/OverCard";
 import axios from "axios";
-import { Post, MapPosition, KakaoLatLng } from "../types";
+import { Post, MapPosition, KakaoLatLng, MarkerState, StudyCardInfo } from "../types";
 
 const PageContainer = styled.div`
   height: 90vh;
@@ -23,7 +23,7 @@ const ListContainer = styled.div`
 `;
 
 interface StyledButtonProps {
-  $active?: boolean;
+  $active: boolean;
 }
 
 const PaginationNumberButton = styled.button<StyledButtonProps>`
@@ -57,47 +57,40 @@ const PaginationContainer = styled.div`
   margin-bottom: 15px;
 `;
 
-interface EventMarkerContainerProps {
+interface EventMarkerContainerProps extends StudyCardInfo {
   position: MapPosition;
-  title: string;
-  skill: string;
-  deadline: string;
-  progress: string;
-  peopleNum: number;
-  place: string;
-  type: string;
-  postId: number;
 }
 
 const EventMarkerContainer: React.FC<EventMarkerContainerProps> = ({
   position,
-  title,
-  skill,
-  deadline,
-  progress,
-  peopleNum,
-  place,
-  type,
-  postId,
+  ...cardProps
 }) => {
-  const map = useMap();
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [markerState, setMarkerState] = useState<MarkerState>({
+    isVisible: false,
+    isClicked: false
+  });
 
   const handleMarkerClick = () => {
-    setIsClicked(!isClicked);
+    setMarkerState(prev => ({
+      ...prev,
+      isClicked: !prev.isClicked
+    }));
   };
 
   const handleMarkerMouseOver = () => {
-    if (!isClicked) {
-      setIsVisible(true);
+    if (!markerState.isClicked) {
+      setMarkerState(prev => ({ ...prev, isVisible: true }));
     }
   };
 
   const handleMarkerMouseOut = () => {
-    if (!isClicked) {
-      setIsVisible(false);
+    if (!markerState.isClicked) {
+      setMarkerState(prev => ({ ...prev, isVisible: false }));
     }
+  };
+
+  const handleClose = () => {
+    setMarkerState({ isVisible: false, isClicked: false });
   };
 
   const kakaoPosition: KakaoLatLng = {
@@ -112,79 +105,71 @@ const EventMarkerContainer: React.FC<EventMarkerContainerProps> = ({
       onMouseOver={handleMarkerMouseOver}
       onMouseOut={handleMarkerMouseOut}
     >
-      {isVisible && (
+      {markerState.isVisible && (
         <OverCard
-          skill={skill}
-          place={place}
-          progress={progress}
-          peopleNum={peopleNum}
-          deadline={deadline}
-          type={type}
-          title={title}
-          postId={postId}
-          onClose={() => {
-            setIsClicked(false);
-            setIsVisible(false);
-          }}
+          {...cardProps}
+          onClose={handleClose}
         />
       )}
     </MapMarker>
   );
 };
 
-const StudyList: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+interface StudyListProps {
+  studiesPerPage?: number;
+}
+
+const StudyList: React.FC<StudyListProps> = ({ studiesPerPage = 4 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [studies, setStudies] = useState<Post[]>([]);
 
-  const studiesPerPage = 4;
-
   useEffect(() => {
-    axios
-      .get<Post[]>("http://localhost:8080/api/post/list")
-      .then((response) => {
+    const fetchStudies = async () => {
+      try {
+        const response = await axios.get<Post[]>("http://localhost:8080/api/post/list");
         setStudies(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching data: ", error);
-      });
+      }
+    };
+
+    fetchStudies();
   }, []);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
 
-  const startplace = (currentPage - 1) * studiesPerPage;
-  const endplace = startplace + studiesPerPage;
-  const studiesToDisplay = studies.slice(startplace, endplace);
+  const startIndex = (currentPage - 1) * studiesPerPage;
+  const endIndex = startIndex + studiesPerPage;
+  const studiesToDisplay = studies.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(studies.length / studiesPerPage);
+  const showPagination = studies.length > studiesPerPage;
 
   return (
     <ListContainer>
-      {studiesToDisplay.map((value) => (
+      {studiesToDisplay.map((study) => (
         <InformCard
-          key={value.postId}
-          postId={value.postId}
-          skill={value.skill}
-          place={value.place}
-          progress={value.progress}
-          peopleNum={value.peopleNum}
-          deadline={value.deadline}
-          type={value.type}
-          title={value.title}
+          key={study.postId}
+          postId={study.postId}
+          skill={study.skill}
+          place={study.place}
+          progress={study.progress}
+          peopleNum={study.peopleNum}
+          deadline={study.deadline}
+          type={study.type}
+          title={study.title}
         />
       ))}
-      <PaginationContainer>
-        {studies.length > studiesPerPage && (
+      {showPagination && (
+        <PaginationContainer>
           <PaginationButton
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
             이전
           </PaginationButton>
-        )}
-        {studies.length > studiesPerPage &&
-          Array.from({
-            length: Math.ceil(studies.length / studiesPerPage),
-          }).map((_, index) => (
+          {Array.from({ length: totalPages }).map((_, index) => (
             <PaginationNumberButton
               key={index}
               $active={currentPage === index + 1}
@@ -193,15 +178,14 @@ const StudyList: React.FC = () => {
               {index + 1}
             </PaginationNumberButton>
           ))}
-        {studies.length > studiesPerPage && (
           <PaginationButton
             onClick={() => handlePageChange(currentPage + 1)}
-            disabled={endplace >= studies.length}
+            disabled={currentPage === totalPages}
           >
             다음
           </PaginationButton>
-        )}
-      </PaginationContainer>
+        </PaginationContainer>
+      )}
     </ListContainer>
   );
 };
@@ -212,51 +196,54 @@ const MainPage: React.FC = () => {
   const [studies, setStudies] = useState<Post[]>([]);
 
   useEffect(() => {
-    axios
-      .get<Post[]>("http://localhost:8080/api/post/list")
-      .then((response) => {
+    const fetchStudies = async () => {
+      try {
+        const response = await axios.get<Post[]>("http://localhost:8080/api/post/list");
         setStudies(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching data: ", error);
-      });
+      }
+    };
+
+    fetchStudies();
   }, []);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
+    navigator.geolocation.getCurrentPosition(
+      (response: GeolocationPosition) => {
+        const { latitude, longitude } = response.coords;
+        setLocation({ latitude, longitude });
+        setLoaded(true);
+      },
+      (error: GeolocationPositionError) => {
+        console.error("Geolocation error:", error);
+      }
+    );
   }, []);
 
-  const successHandler = (response: GeolocationPosition) => {
-    const { latitude, longitude } = response.coords;
-    setLocation({ latitude, longitude });
-    setLoaded(true);
-  };
-
-  const errorHandler = (error: GeolocationPositionError) => {
-    console.log(error);
-  };
+  const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
 
   return (
     <PageContainer>
       <StudyList />
-      {loaded && location && location.latitude !== null && location.longitude !== null && (
+      {canShowMap && (
         <Map
           center={{ lat: location.latitude, lng: location.longitude }}
           style={{ width: "73%", height: "100%" }}
           level={3}
         >
-          {studies.map((value) => (
+          {studies.map((study) => (
             <EventMarkerContainer
-              key={`EventMarkerContainer-${value.latitude}-${value.longitude}`}
-              position={{ latitude: value.latitude, longitude: value.longitude }}
-              skill={value.skill}
-              place={value.place}
-              progress={value.progress}
-              peopleNum={value.peopleNum}
-              deadline={value.deadline}
-              type={value.type}
-              title={value.title}
-              postId={value.postId}
+              key={`EventMarkerContainer-${study.latitude}-${study.longitude}`}
+              position={{ latitude: study.latitude, longitude: study.longitude }}
+              postId={study.postId}
+              skill={study.skill}
+              place={study.place}
+              progress={study.progress}
+              peopleNum={study.peopleNum}
+              deadline={study.deadline}
+              type={study.type}
+              title={study.title}
             />
           ))}
         </Map>
