@@ -3,6 +3,7 @@ import styled from "styled-components";
 import StarIcon from "../assets/icons/StarIcon.png";
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
+import { LatLng } from "../types";
 
 const PageContainer = styled.div`
   padding: 50px 100px 50px 100px;
@@ -132,11 +133,6 @@ const FindAddressButton = styled.button`
 interface AddressObj {
   areaAddress: string;
   townAddress: string;
-}
-
-interface LatLng {
-  latitude: number | null;
-  longitude: number | null;
 }
 
 interface FindAddressProps {

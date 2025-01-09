@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { Post } from '../types';
+import { StudyDetailPost } from '../types';
 
 import StudyDetailPageFounder from '../components/StudyDetailPageFounder';
 import StudyDetailPageApplicant from '../components/StudyDetailPageApplicant';
 import StudyDetailPageFounderDone from '../components/StudyDetailPageFounderDone';
-
-interface StudyDetailPost extends Post {
-  userName: string;
-}
 
 const StudyDetailPage = () => {
   const { postId } = useParams();

@@ -25,6 +25,10 @@ export interface Post {
   longitude: number;
 }
 
+export interface StudyDetailPost extends Post {
+  userName: string;
+}
+
 export interface Comment {
   commentId: number;
   postId: number;
@@ -38,4 +42,9 @@ export interface Comment {
 export interface StudyDetail {
   studyDetail: any;
   postId?: number;
+}
+
+export interface LatLng {
+  latitude: number | null;
+  longitude: number | null;
 }
