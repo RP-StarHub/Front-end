@@ -28,7 +28,7 @@ const NavItem = styled.div`
   color: #fff;
 `;
 
-const Navber = () => {
+const Navbar = () => {
   const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('userInfo')));
   // console.log(userInfo.name)
 
@@ -69,4 +69,4 @@ const Navber = () => {
   );
 };
 
-export default Navber;
+export default Navbar;
