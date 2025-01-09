@@ -94,7 +94,13 @@ interface ProfileCardProps {
   age: number;
 }
 
-function ProfileCard({ name, introduction, email, phoneNum, age }: ProfileCardProps) {
+const ProfileCard: React.FC<ProfileCardProps> = ({ 
+  name, 
+  introduction, 
+  email, 
+  phoneNum, 
+  age 
+}) => {
   return (
     <PageContainer>
       {/* <ProfileImageContainer>

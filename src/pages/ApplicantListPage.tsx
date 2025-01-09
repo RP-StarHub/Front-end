@@ -4,9 +4,8 @@ import ProfileCard from '../components/ProfileCard';
 import PickIcon from "../assets/icons/PickIcon.png";
 // import { applicantData } from "../assets/data/applicantdata";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
-import { User } from '../types';
+import { Applicant } from '../types';
 
 const PageContainer = styled.div`
   height: 500px;
@@ -38,32 +37,29 @@ const ListContainer = styled.div`
 
 `;
 
-const PickTitle = () => {
+const PickTitle: React.FC = () => {
   return (
     <PickContainer>
-      <img src={PickIcon} style={{width: "45px", height: "45px"}} />
+      <img 
+        src={PickIcon} 
+        style={{ width: "45px", height: "45px" }} 
+        alt="Pick Icon" 
+      />
       <PickText>Pick!</PickText>
     </PickContainer>
   );
 };
 
-interface Applicant {
-  user: User;
-  commentId: number;
-  postId: number;
-}
-
-const ApplicantListPage = () => {
-
+const ApplicantListPage: React.FC = () => {
   const [applicantData, setApplicantData] = useState<Applicant[]>([]);
-
-  const { postId } = useParams();
+  const { postId } = useParams<{ postId: string }>();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const response = await axios.get(`http://localhost:8080/api/comment/pick/list?post_id=1`);
-        const response = await axios.get(`http://localhost:8080/api/comment/pick/list?postId=${postId}`);
+        const response = await axios.get<Applicant[]>(
+          `http://localhost:8080/api/comment/pick/list?postId=${postId}`
+        );
         setApplicantData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -71,15 +67,15 @@ const ApplicantListPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [postId]);
 
   return (
     <PageContainer>
       <PickTitle />
       <ListContainer>
-      {applicantData.map((applicant, index) => (
+      {applicantData.map((applicant) => (
         <ProfileCard
-          key={index}
+          key={applicant.commentId}
           name={applicant.user.name}
           introduction={applicant.user.introduction}
           email={applicant.user.email}

@@ -90,3 +90,9 @@ export interface MarkerState {
   isVisible: boolean;
   isClicked: boolean;
 }
+
+export interface Applicant {
+  user: User;
+  commentId: number;
+  postId: number;
+}
