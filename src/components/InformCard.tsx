@@ -92,7 +92,18 @@ const DuringIconCSS = {
   margin: "4px",
 };
 
-function shotInform(image, title, content, unit) {
+interface InformCardProps {
+  type: string;
+  postId: number;
+  title: string;
+  skill: string;
+  deadline: string;
+  progress: string;
+  peopleNum: number;
+  place: string;
+}
+
+function shotInform(image: string, title: string, content: string, unit: string) {
   const isPlace = title === "장소";
   let displayContent = content;
 
@@ -117,7 +128,7 @@ function shotInform(image, title, content, unit) {
             ? PeopleIconCSS
             : title === "기간"
             ? DuringIconCSS
-            : null
+            : {}
         }
       />
       <ShortTitleContainer>{title}</ShortTitleContainer>
@@ -137,7 +148,7 @@ function InformCard({
   progress,
   peopleNum,
   place,
-}) {
+}: InformCardProps) {
   const navigate = useNavigate();
 
   function moveDetail() {
@@ -154,7 +165,7 @@ function InformCard({
         {shotInform(StackIcon, "스택", skill, "")}
         {shotInform(FinishIcon, "마감", deadline, "")}
         {shotInform(DuringIcon, "기간", progress, "개월")}
-        {shotInform(PeopleIcon, "인원", peopleNum, "명")}
+        {shotInform(PeopleIcon, "인원", peopleNum.toString(), "명")}
       </GridContainer>
       {shotInform(PlaceIcon, "장소", place, "")}
     </PageContainer>
