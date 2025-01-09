@@ -58,42 +58,40 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const CommentList = ({ comments, isSelectable, postId }: CommentListProps) => {
+const CommentList: React.FC<CommentListProps> = ({ 
+  comments, 
+  isSelectable, 
+  postId,
+  onCommentSelect 
+}) => {
   const [selectedComments, setSelectedComments] = useState<number[]>([]);
   
   const navigate = useNavigate();
 
   const handleCommentClick = (commentId: number) => {
-    if (isSelectable) {
-      // 선택 가능한 경우에만 선택 상태를 업데이트
-      if (selectedComments.includes(commentId)) {
-        // 이미 선택된 경우, 선택 해제
-        setSelectedComments(selectedComments.filter((selected) => selected !== commentId));
-      } else {
-        // 선택되지 않은 경우, 선택 추가
-        setSelectedComments([...selectedComments, commentId]);
-      }
-    }
+    if (!isSelectable) return;
+
+    setSelectedComments(prev => 
+      prev.includes(commentId)
+        ? prev.filter(id => id !== commentId)
+        : [...prev, commentId]
+    );
   };
 
-  const handleConfirm = () => {
-    axios
-      .put(`http://localhost:8080/api/comment/pick?commentIdList=${selectedComments}`)
-      .then((response) => {
-        console.log(response.data);
-        // 페이지 이동 후에 새로고침 실행
-        navigate(`/applicantlist/${postId}`);
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error('Error fetching comment create:', error.message);
-      });
+  const handleConfirm = async () => {
+    try {
+      await axios.put(`http://localhost:8080/api/comment/pick?commentIdList=${selectedComments}`);
+      navigate(`/applicantlist/${postId}`);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating picks:', error);
+    }
   };
 
   if (isSelectable) {
     return (
       <CommentListContainer>
-        {comments.map((comment, index) => (
+        {comments.map((comment) => (
           <CommentItem
             key={comment.commentId}
             $isSelected={selectedComments.includes(comment.commentId)}

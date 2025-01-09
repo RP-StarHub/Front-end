@@ -7,8 +7,8 @@ import StudyDetailPageFounder from '../components/StudyDetailPageFounder';
 import StudyDetailPageApplicant from '../components/StudyDetailPageApplicant';
 import StudyDetailPageFounderDone from '../components/StudyDetailPageFounderDone';
 
-const StudyDetailPage = () => {
-  const { postId } = useParams();
+const StudyDetailPage: React.FC = () => {
+  const { postId } = useParams<{ postId: string }>();
   const [studyDetail, setStudyDetail] = useState<StudyDetailPost>({
     postId: 0,
     userId: 0,
@@ -26,51 +26,49 @@ const StudyDetailPage = () => {
     longitude: 0,
     userName: ""
   });
-  const [comments, setComments] = useState([]);
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
-  
+  const [comments, setComments] = useState<Comment[]>([]);
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null') as { name: string } | null;
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/post/detail?post_id=${postId}`)
-      .then((response) => {
-        // console.log(response.data.done)
-        setStudyDetail(response.data)
-      })
-      .catch((error) => {
-        console.error('Error fetching study detail:', error.message);
-      });
-      axios
-      .get(`http://localhost:8080/api/comment/list?post_id=${postId}`)
-      .then((response) => {
-        // console.log(response.data)
-        setComments(response.data)
-      })
-      .catch((error) => {
-        console.error('Error fetching study detail:', error.message);
-      });
+    const fetchData = async () => {
+      try {
+        const [detailResponse, commentsResponse] = await Promise.all([
+          axios.get<StudyDetailPost>(`http://localhost:8080/api/post/detail?post_id=${postId}`),
+          axios.get<Comment[]>(`http://localhost:8080/api/comment/list?post_id=${postId}`)
+        ]);
+
+        setStudyDetail(detailResponse.data);
+        setComments(commentsResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    if (postId) {
+      fetchData();
+    }
   }, [postId]);
 
   // userInfo와 studyDetail의 userName이 같은지 확인
   const isCurrentUser = userInfo && userInfo.name === studyDetail.userName;
-
-  const detailArray = [studyDetail, postId, comments];
+  
+  const detailArray: [StudyDetailPost, number, Comment[]] = [studyDetail, Number(postId), comments];
 
   if (isCurrentUser) {
     if (studyDetail.done) {
       return (
-        <StudyDetailPageFounderDone 
-          studyDetail={detailArray} 
-          postId={postId ? parseInt(postId) : undefined}
+        <StudyDetailPageFounderDone
+          studyDetail={detailArray}
+          postId={Number(postId)}
         />
       );
     } else {
       return (
-        <StudyDetailPageFounder 
-          studyDetail={detailArray} 
-          postId={postId ? parseInt(postId) : undefined}
+        <StudyDetailPageFounder
+          studyDetail={detailArray}
+          postId={Number(postId)} 
         />
-        );
+      );
     }
   } else {
     return (
