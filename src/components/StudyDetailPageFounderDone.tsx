@@ -113,7 +113,7 @@ const RowWrapper = styled.div`
 const StudyDetailPageFounderDone = (data: StudyDetail) => {
   const navigate = useNavigate();
 
-  function moveDmoveListetail() {
+  function moveToApplicantList() {
     navigate(`/applicantlist/${data.postId}`);
   }
 
@@ -154,7 +154,7 @@ const StudyDetailPageFounderDone = (data: StudyDetail) => {
         <TextContent2>{data.studyDetail[0].content}</TextContent2>
       </Box>
       <ButtonContainer>
-        <Button onClick={moveDmoveListetail}>스터디원 보기</Button>
+        <Button onClick={moveToApplicantList}>스터디원 보기</Button>
       </ButtonContainer>
     </PageContainer>
   );
