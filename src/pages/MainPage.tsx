@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map as KakaoMap, MapMarker } from "react-kakao-maps-sdk";
 import styled from "styled-components";
 import InformCard from "../components/InformCard";
 import OverCard from "../components/OverCard";
@@ -227,7 +227,7 @@ const MainPage: React.FC = () => {
     <PageContainer>
       <StudyList />
       {canShowMap && (
-        <Map
+        <KakaoMap
           center={{ lat: location.latitude, lng: location.longitude }}
           style={{ width: "73%", height: "100%" }}
           level={3}
@@ -246,7 +246,7 @@ const MainPage: React.FC = () => {
               title={study.title}
             />
           ))}
-        </Map>
+        </KakaoMap>
       )}
     </PageContainer>
   );
