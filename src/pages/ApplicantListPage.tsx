@@ -6,6 +6,7 @@ import PickIcon from "../assets/icons/PickIcon.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
+import { User } from '../types';
 
 const PageContainer = styled.div`
   height: 500px;
@@ -46,9 +47,15 @@ const PickTitle = () => {
   );
 };
 
+interface Applicant {
+  user: User;
+  commentId: number;
+  postId: number;
+}
+
 const ApplicantListPage = () => {
 
-  const [applicantData, setApplicantData] = useState([]);
+  const [applicantData, setApplicantData] = useState<Applicant[]>([]);
 
   const { postId } = useParams();
 
@@ -76,7 +83,7 @@ const ApplicantListPage = () => {
           name={applicant.user.name}
           introduction={applicant.user.introduction}
           email={applicant.user.email}
-          phone_num={applicant.user.phoneNum}
+          phoneNum={applicant.user.phoneNum}
           age={applicant.user.age}
           // image={applicant.image}
         />

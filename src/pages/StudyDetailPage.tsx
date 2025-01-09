@@ -1,16 +1,38 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { Post } from '../types';
 
 import StudyDetailPageFounder from '../components/StudyDetailPageFounder';
 import StudyDetailPageApplicant from '../components/StudyDetailPageApplicant';
 import StudyDetailPageFounderDone from '../components/StudyDetailPageFounderDone';
 
+interface StudyDetailPost extends Post {
+  userName: string;
+}
+
 const StudyDetailPage = () => {
   const { postId } = useParams();
-  const [studyDetail, setStudyDetail] = useState([]);
+  const [studyDetail, setStudyDetail] = useState<StudyDetailPost>({
+    postId: 0,
+    userId: 0,
+    skill: "",
+    progress: "",
+    peopleNum: 0,
+    deadline: "",
+    content: "",
+    createdAt: "",
+    type: "",
+    done: false,
+    title: "",
+    place: "",
+    latitude: 0,
+    longitude: 0,
+    userName: ""
+  });
   const [comments, setComments] = useState([]);
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+  
 
   useEffect(() => {
     axios

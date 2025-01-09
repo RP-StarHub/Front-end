@@ -5,6 +5,7 @@ export interface User {
   email: string;
   phoneNum: string;
   introduction: string;
+  age: number;
 }
 
 export interface Post {

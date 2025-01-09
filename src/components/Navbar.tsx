@@ -42,7 +42,10 @@ const Navbar = () => {
       localStorage.removeItem('userInfo');
       setUserInfo(null);
     } catch (error) {
-      console.error('Logout failed:', error);
+      if (error instanceof Error) {
+        console.log(error.message);
+        alert('로그아웃에 실패했습니다.');
+      }
     }
   };
 

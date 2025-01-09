@@ -122,9 +122,19 @@ const RowWrapper = styled.div`
   align-items: center;
 `;
 
+interface FormData {
+  loginId: string;
+  password: string;
+  name: string;
+  age: string;
+  email: string;
+  phoneNum: string;
+  introduction: string;
+}
+
 const Signup = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     loginId: "",
     password: "",
     name: "",
@@ -134,7 +144,9 @@ const Signup = () => {
     introduction: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -142,7 +154,9 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
     const url = 'http://localhost:8080/api/user/register';
@@ -241,7 +255,6 @@ const Signup = () => {
           <InputWrapper>
             <TextInput>한 줄 소개</TextInput>
             <Textarea
-              type="text"
               name="introduction"
               value={formData.introduction}
               onChange={handleChange}
