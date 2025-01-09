@@ -104,7 +104,10 @@ const Login = () => {
       navigate('/');
       window.location.reload();
     } catch (error) {
-      console.error('Login failed:', error.message);
+      if (error instanceof Error) {
+        console.log(error.message);
+        alert('로그인에 실패했습니다.');
+      }
     }
   };
 

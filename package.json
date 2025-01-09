@@ -16,6 +16,7 @@
     "react-router-dom": "^6.20.0",
     "react-scripts": "^5.0.1",
     "styled-components": "^6.0.8",
+    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -41,5 +42,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.3",
+    "@types/react-dom": "^19.0.2"
   }
 }

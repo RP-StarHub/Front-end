@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import StarIcon from "../assets/icons/StarIcon.png";
-import { Commentdata } from "../assets/data/Commentdata";
 import CommentList from "./CommentList";
+import { StudyDetail } from "../types";
 
 const PageContainer = styled.div`
   display: flex;
@@ -98,10 +98,10 @@ const RowWrapper = styled.div`
   margin: 0px 0px 20px 0px;
 `;
 
-const StudyDetailPageFounder = (data) => {
+const StudyDetailPageFounder = (data: StudyDetail) => {
   const [selectedComment, setSelectedComment] = useState('');
 
-  const handleCommentSelect = (selectedComments) => {
+  const handleCommentSelect = (selectedComments: string) => {
     setSelectedComment(selectedComments);
   };
 
@@ -151,7 +151,12 @@ const StudyDetailPageFounder = (data) => {
       </Box>
       <CommentArea>
         <SubtitleText>댓글</SubtitleText>
-        <CommentList comments={data.studyDetail[2]} isSelectable onCommentSelect={handleCommentSelect} postId={data.postId}/>
+        <CommentList
+          comments={data.studyDetail[2]}
+          isSelectable
+          onCommentSelect={handleCommentSelect}
+          postId={data.postId}
+        />
       </CommentArea>
     </PageContainer>
   );

@@ -2,9 +2,9 @@ import React, {useState} from "react";
 import styled from "styled-components";
 
 import StarIcon from "../assets/icons/StarIcon.png";
-import { Commentdata } from "../assets/data/Commentdata";
 import CommentList from "./CommentList";
 import axios from 'axios';
+import { StudyDetail } from "../types";
 
 const PageContainer = styled.div`
   display: flex;
@@ -128,11 +128,11 @@ const CommentButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const StudyDetailPageApplicant = (data) => {
+const StudyDetailPageApplicant = (data: StudyDetail) => {
   const [comment, setComment] = useState("");
   // console.log(data);
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "null");
   const userId = userInfo.userId;
 
   const handleSubmit = () => {
@@ -202,14 +202,17 @@ const StudyDetailPageApplicant = (data) => {
       <SubtitleText>댓글</SubtitleText>
       <CommentArea>
         <Textarea
-          type="text"
           placeholder="댓글을 입력해주세요."
           onChange={(e) => setComment(e.target.value)}
         />
         <CommentButtonContainer>
           <CommentButton onClick={handleSubmit}>등록</CommentButton>
         </CommentButtonContainer>
-        <CommentList comments={data.studyDetail[2]} />
+        <CommentList 
+          comments={data.studyDetail[2]} 
+          isSelectable={false}
+          postId={data.studyDetail[1]}
+        />
       </CommentArea>
     </PageContainer>
   );

@@ -86,7 +86,21 @@ const EmailText = styled.div`
   color: #313866;
 `
 
-function ProfileCard({ name, introduction, email, phone_num, age }) {
+interface ProfileCardProps {
+  name: string;
+  introduction: string;
+  email: string;
+  phoneNum: string;
+  age: number;
+}
+
+const ProfileCard: React.FC<ProfileCardProps> = ({ 
+  name, 
+  introduction, 
+  email, 
+  phoneNum, 
+  age 
+}) => {
   return (
     <PageContainer>
       {/* <ProfileImageContainer>
@@ -99,7 +113,7 @@ function ProfileCard({ name, introduction, email, phone_num, age }) {
       <IntroText>{introduction}</IntroText>
       <RowLeftDiv>
         <img src={PhoneIcon} style={{ width: "15px", height: "15px", marginRight: "10px" }} />
-        <PhoneText>{phone_num}</PhoneText>
+        <PhoneText>{phoneNum}</PhoneText>
       </RowLeftDiv>
       <RowLeftDiv>
         <img src={MessageIcon} style={{ width: "17px", height: "17px", marginRight: "10px" }} />

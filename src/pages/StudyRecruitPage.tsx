@@ -3,6 +3,7 @@ import styled from "styled-components";
 import StarIcon from "../assets/icons/StarIcon.png";
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
+import { LatLng } from "../types";
 
 const PageContainer = styled.div`
   padding: 50px 100px 50px 100px;
@@ -129,8 +130,26 @@ const FindAddressButton = styled.button`
   cursor: pointer;
 `;
 
-function FindAddress({ setAddressObj, setLatLng, setLocation }) {
-  const handleComplete = useCallback((data) => {
+interface AddressObj {
+  areaAddress: string;
+  townAddress: string;
+}
+
+interface FindAddressProps {
+  setAddressObj: React.Dispatch<React.SetStateAction<AddressObj>>;
+  setLatLng: React.Dispatch<React.SetStateAction<LatLng>>;
+  setLocation: React.Dispatch<React.SetStateAction<string>>;
+}
+
+interface DaumPostcodeData {
+  address: string;
+  addressType: string;
+  bname: string;
+  buildingName: string;
+}
+
+function FindAddress({ setAddressObj, setLatLng, setLocation }: FindAddressProps) {
+  const handleComplete = useCallback((data: DaumPostcodeData) => {
     // 도로명 주소의 노출 규칙에 따라 주소를 표시
     let fullAddress = data.address;
     let extraAddress = "";
@@ -153,7 +172,7 @@ function FindAddress({ setAddressObj, setLatLng, setLocation }) {
       setLocation(fullAddress);
 
       // 사용자가 입력한 주소 정보를 입력 필드에 넣음
-      const addressInput = document.getElementById("addressInput");
+      const addressInput = document.getElementById("addressInput") as HTMLInputElement;
       if (addressInput) {
         addressInput.value = fullAddress;
       }
@@ -161,10 +180,10 @@ function FindAddress({ setAddressObj, setLatLng, setLocation }) {
       // 주소로 좌표를 검색 (Kakao Map API 사용)
       window.kakao.maps.load(() => {
         const geocoder = new window.kakao.maps.services.Geocoder();
-        geocoder.addressSearch(fullAddress, (result, status) => {
+        geocoder.addressSearch(fullAddress, (result: any, status: any) => {
           if (status === window.kakao.maps.services.Status.OK) {
-            const latitude = result[0].y;
-            const longitude = result[0].x;
+            const latitude = parseFloat(result[0].y);
+            const longitude = parseFloat(result[0].x);
 
             setAddressObj({
               areaAddress: "",
@@ -175,9 +194,9 @@ function FindAddress({ setAddressObj, setLatLng, setLocation }) {
             setLatLng({
               latitude,
               longitude,
-            });
+            })
 
-            const addressInput = document.getElementById("addressInput");
+            const addressInput = document.getElementById("addressInput") as HTMLInputElement;
             if (addressInput) {
               addressInput.value = fullAddress;
             }
@@ -196,11 +215,12 @@ function FindAddress({ setAddressObj, setLatLng, setLocation }) {
 
     // Kakao Maps API가 로드되면 실행
     script.onload = () => {
-      if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
+      if (window.kakao?.maps?.services && window?.daum) {
         const geocoder = new window.kakao.maps.services.Geocoder();
         const address = new window.daum.Postcode({
           oncomplete: handleComplete,
         });
+        // @ts-ignore
         window.address = address;
       } else {
         console.error("Failed to load Kakao Maps API");
@@ -217,6 +237,7 @@ function FindAddress({ setAddressObj, setLatLng, setLocation }) {
   }, [handleComplete]);
 
   return (
+    // @ts-ignore
     <FindAddressButton type="button" onClick={() => window.address.open()}>
       주소 찾기
     </FindAddressButton>
@@ -229,12 +250,12 @@ const StudyRecruitPage = () => {
     townAddress: "",
   });
 
-  const [latLng, setLatLng] = useState({
+  const [latLng, setLatLng] = useState<LatLng>({
     latitude: null,
     longitude: null,
   });
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
   const userId = userInfo.userId;
 
   const [recruitmentType, setRecruitmentType] = useState("");
@@ -387,7 +408,6 @@ const StudyRecruitPage = () => {
         />
         <TextInput>내용</TextInput>
         <Textarea
-          type="text"
           placeholder="내용을 입력해주세요."
           value={projectContent}
           onChange={(e) => setProjectContent(e.target.value)}
