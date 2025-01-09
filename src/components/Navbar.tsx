@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import StarHubIconNavbar from "../assets/icons/StarHubIconNavbar.png";
 import axios from 'axios';
+import { User } from '../types';
 
 const NavContainer = styled.nav`
   display: flex;
@@ -29,17 +30,19 @@ const NavItem = styled.div`
 `;
 
 const Navbar = () => {
-  const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('userInfo')));
+  const [userInfo, setUserInfo] = useState<User | null>(
+    JSON.parse(localStorage.getItem('userInfo') || 'null')
+  );
   // console.log(userInfo.name)
 
   const handleLogout = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/user/logout?loginId=${userInfo.userId}`);
+      const response = await axios.get(`http://localhost:8080/api/user/logout?loginId=${userInfo?.userId}`);
       // 로그인 정보를 localStorage에서 삭제
       localStorage.removeItem('userInfo');
       setUserInfo(null);
     } catch (error) {
-      console.error('Login failed:', error.message);
+      console.error('Logout failed:', error);
     }
   };
 
