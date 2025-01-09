@@ -58,7 +58,7 @@ const ApplicantListPage: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get<Applicant[]>(
-          `http://localhost:8080/api/comment/pick/list?postId=${postId}`
+          `${process.env.REACT_APP_API_URL}/api/comment/pick/list?postId=${postId}`
         );
         setApplicantData(response.data);
       } catch (error) {

@@ -285,7 +285,7 @@ const StudyRecruitPage = () => {
       userId: userId,
     };
 
-    fetch("http://localhost:8080/api/post/create", {
+    fetch(`${process.env.REACT_APP_API_URL}/api/post/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

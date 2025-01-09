@@ -37,7 +37,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/user/logout?loginId=${userInfo?.userId}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/logout?loginId=${userInfo?.userId}`);
       // 로그인 정보를 localStorage에서 삭제
       localStorage.removeItem('userInfo');
       setUserInfo(null);

@@ -33,8 +33,8 @@ const StudyDetailPage: React.FC = () => {
     const fetchData = async () => {
       try {
         const [detailResponse, commentsResponse] = await Promise.all([
-          axios.get<StudyDetailPost>(`http://localhost:8080/api/post/detail?post_id=${postId}`),
-          axios.get<Comment[]>(`http://localhost:8080/api/comment/list?post_id=${postId}`)
+          axios.get<StudyDetailPost>(`${process.env.REACT_APP_API_URL}/api/post/detail?post_id=${postId}`),
+          axios.get<Comment[]>(`${process.env.REACT_APP_API_URL}/api/comment/list?post_id=${postId}`)
         ]);
 
         setStudyDetail(detailResponse.data);

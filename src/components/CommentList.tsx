@@ -80,7 +80,7 @@ const CommentList: React.FC<CommentListProps> = ({
 
   const handleConfirm = async () => {
     try {
-      await axios.put(`http://localhost:8080/api/comment/pick?commentIdList=${selectedComments}`);
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/comment/pick?commentIdList=${selectedComments}`);
       navigate(`/applicantlist/${postId}`);
       window.location.reload();
     } catch (error) {

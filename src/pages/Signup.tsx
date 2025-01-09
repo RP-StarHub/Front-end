@@ -159,7 +159,7 @@ const Signup = () => {
   ) => {
     e.preventDefault();
 
-    const url = 'http://localhost:8080/api/user/register';
+    const url = `${process.env.REACT_APP_API_URL}/api/user/register`;
 
     const form = new FormData();
     form.append('info', JSON.stringify(formData));

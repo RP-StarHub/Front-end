@@ -126,7 +126,7 @@ const StudyList: React.FC<StudyListProps> = ({ studiesPerPage = 4 }) => {
   useEffect(() => {
     const fetchStudies = async () => {
       try {
-        const response = await axios.get<Post[]>("http://localhost:8080/api/post/list");
+        const response = await axios.get<Post[]>(`${process.env.REACT_APP_API_URL}/api/post/list`);
         setStudies(response.data);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -198,7 +198,7 @@ const MainPage: React.FC = () => {
   useEffect(() => {
     const fetchStudies = async () => {
       try {
-        const response = await axios.get<Post[]>("http://localhost:8080/api/post/list");
+        const response = await axios.get<Post[]>(`${process.env.REACT_APP_API_URL}/api/post/list`);
         setStudies(response.data);
       } catch (error) {
         console.error("Error fetching data: ", error);

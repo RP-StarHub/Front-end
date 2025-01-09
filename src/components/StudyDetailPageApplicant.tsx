@@ -137,7 +137,7 @@ const StudyDetailPageApplicant = (data: StudyDetail) => {
 
   const handleSubmit = () => {
     axios
-      .post(`http://localhost:8080/api/comment/create`, {
+      .post(`${process.env.REACT_APP_API_URL}/api/comment/create`, {
         postId:data.studyDetail[1],
         userId:userId,
         content:comment,
