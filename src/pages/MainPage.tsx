@@ -4,7 +4,7 @@ import styled from "styled-components";
 import InformCard from "../components/InformCard";
 import OverCard from "../components/OverCard";
 import axios from "axios";
-import { Post, LatLng } from "../types";
+import { Post, MapPosition, KakaoLatLng } from "../types";
 
 const PageContainer = styled.div`
   height: 90vh;
@@ -58,10 +58,7 @@ const PaginationContainer = styled.div`
 `;
 
 interface EventMarkerContainerProps {
-  position: {
-    latitude: number;
-    longitude: number;
-  };
+  position: MapPosition;
   title: string;
   skill: string;
   deadline: string;
@@ -103,8 +100,7 @@ const EventMarkerContainer: React.FC<EventMarkerContainerProps> = ({
     }
   };
 
-  // Convert LatLng to Kakao Maps format
-  const kakaoPosition = {
+  const kakaoPosition: KakaoLatLng = {
     lat: position.latitude,
     lng: position.longitude
   };
@@ -211,7 +207,7 @@ const StudyList: React.FC = () => {
 };
 
 const MainPage: React.FC = () => {
-  const [location, setLocation] = useState<LatLng | null>(null);
+  const [location, setLocation] = useState<MapPosition | null>(null);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [studies, setStudies] = useState<Post[]>([]);
 

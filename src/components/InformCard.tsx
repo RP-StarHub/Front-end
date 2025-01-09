@@ -6,6 +6,7 @@ import PlaceIcon from "../assets/icons/PlaceIcon.png";
 import PeopleIcon from "../assets/icons/PeopleIcon.png";
 import DuringIcon from "../assets/icons/DuringIcon.png";
 import { useNavigate } from "react-router-dom";
+import { InformCardProps, IconType, IconStyle } from "../types";
 
 const PageContainer = styled.div`
   width: 335px;
@@ -62,48 +63,42 @@ const ShortDetailContainer = styled.div`
   font-family: "SCDream4";
 `;
 
-const StackIconCSS = {
-  width: "14px",
-  height: "14px",
-  margin: "4px",
+const iconStyles: Record<IconType, IconStyle> = {
+  '스택': {
+    width: "14px",
+    height: "14px",
+    margin: "4px"
+  },
+  '마감': {
+    width: "14px",
+    height: "16px",
+    margin: "3px 4px"
+  },
+  '장소': {
+    width: "10px",
+    height: "16px",
+    margin: "3px 6px"
+  },
+  '인원': {
+    width: "16px",
+    height: "14px",
+    margin: "4px 3px"
+  },
+  '기간': {
+    width: "14px",
+    height: "14px",
+    margin: "4px"
+  }
 };
 
-const FinishIconCSS = {
-  width: "14px",
-  height: "16px",
-  margin: "3px 4px",
-};
-
-const PlaceIconCSS = {
-  width: "10px",
-  height: "16px",
-  margin: "3px 6px",
-};
-
-const PeopleIconCSS = {
-  width: "16px",
-  height: "14px",
-  margin: "4px 3px",
-};
-
-const DuringIconCSS = {
-  width: "14px",
-  height: "14px",
-  margin: "4px",
-};
-
-interface InformCardProps {
-  type: string;
-  postId: number;
-  title: string;
-  skill: string;
-  deadline: string;
-  progress: string;
-  peopleNum: number;
-  place: string;
+interface ShotInformProps {
+  image: string;
+  title: IconType;
+  content: string;
+  unit: string;
 }
 
-function shotInform(image: string, title: string, content: string, unit: string) {
+const shotInform = ({ image, title, content, unit }: ShotInformProps) => {
   const isPlace = title === "장소";
   let displayContent = content;
 
@@ -117,19 +112,7 @@ function shotInform(image: string, title: string, content: string, unit: string)
       <img
         src={image}
         alt={title}
-        style={
-          title === "스택"
-            ? StackIconCSS
-            : title === "마감"
-            ? FinishIconCSS
-            : title === "장소"
-            ? PlaceIconCSS
-            : title === "인원"
-            ? PeopleIconCSS
-            : title === "기간"
-            ? DuringIconCSS
-            : {}
-        }
+        style={iconStyles[title]}
       />
       <ShortTitleContainer>{title}</ShortTitleContainer>
       <ShortDetailContainer style={{ width: isPlace ? "80%" : "auto" }}>
@@ -152,22 +135,19 @@ function InformCard({
   const navigate = useNavigate();
 
   function moveDetail() {
-    navigate(`/studydetail/${postId}`);
+    navigate(`/studydetail/${postId}`); 
   }
 
   return (
     <PageContainer onClick={moveDetail}>
       <GridContainer>
-        <TitleContainer>
-          [{type}] {title}
-        </TitleContainer>
-        {/* <TitleContainer>{title}</TitleContainer> */}
-        {shotInform(StackIcon, "스택", skill, "")}
-        {shotInform(FinishIcon, "마감", deadline, "")}
-        {shotInform(DuringIcon, "기간", progress, "개월")}
-        {shotInform(PeopleIcon, "인원", peopleNum.toString(), "명")}
+        <TitleContainer>[{type}] {title}</TitleContainer>
+        {shotInform({ image: StackIcon, title: '스택', content: skill, unit: "" })}
+        {shotInform({ image: FinishIcon, title: '마감', content: deadline, unit: "" })}
+        {shotInform({ image: DuringIcon, title: '기간', content: progress, unit: "개월" })}
+        {shotInform({ image: PeopleIcon, title: '인원', content: peopleNum.toString(), unit: "명" })}
       </GridContainer>
-      {shotInform(PlaceIcon, "장소", place, "")}
+      {shotInform({ image: PlaceIcon, title: '장소', content: place, unit: "" })}
     </PageContainer>
   );
 }
