@@ -4,7 +4,7 @@ import styled from "styled-components";
 import InformCard from "../components/InformCard";
 import OverCard from "../components/OverCard";
 import axios from "axios";
-// import { Link } from "react-router-dom";
+import { Post, LatLng } from "../types";
 
 const PageContainer = styled.div`
   height: 90vh;
@@ -22,22 +22,18 @@ const ListContainer = styled.div`
   justify-content: space-between;
 `;
 
-const PaginationContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 5px;
-  margin-bottom: 15px;
-`;
+interface StyledButtonProps {
+  $active?: boolean;
+}
 
-const PaginationNumberButton = styled.button`
+const PaginationNumberButton = styled.button<StyledButtonProps>`
   margin: 5px;
   font-size: 16px;
   font-family: "SCDream4";
   color: #7c8bbe;
   background-color: transparent;
   border: none;
-  font-weight: ${(props) => (props.active ? "bold" : "normal")};
+  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
 `;
 
 const PaginationButton = styled.button`
@@ -53,86 +49,30 @@ const PaginationButton = styled.button`
   border: none;
 `;
 
-const StudyList = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [studies, setStudies] = useState([]);
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 15px;
+`;
 
-  const studiesPerPage = 4;
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/post/list")
-      .then((response) => {
-        setStudies(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-      });
-  }, []);
-
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+interface EventMarkerContainerProps {
+  position: {
+    latitude: number;
+    longitude: number;
   };
+  title: string;
+  skill: string;
+  deadline: string;
+  progress: string;
+  peopleNum: number;
+  place: string;
+  type: string;
+  postId: number;
+}
 
-  const startplace = (currentPage - 1) * studiesPerPage;
-  const endplace = startplace + studiesPerPage;
-  const studiesToDisplay = studies.slice(startplace, endplace);
-
-  // localStorage에서 정보 가져오기 및 확인하기
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  // console.log(userInfo.name)
-
-  return (
-    <ListContainer>
-      {studiesToDisplay.map((value, place) => (
-        <InformCard
-          postId={value.postId}
-          skill={value.skill}
-          place={value.place}
-          latitude={value.latitude}
-          longitude={value.longitude}
-          progress={value.progress}
-          peopleNum={value.peopleNum}
-          deadline={value.deadline}
-          type={value.type}
-          title={value.title}
-        />
-      ))}
-      <PaginationContainer>
-        {studies.length > studiesPerPage && (
-          <PaginationButton
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            이전
-          </PaginationButton>
-        )}
-        {studies.length > studiesPerPage &&
-          Array.from({
-            length: Math.ceil(studies.length / studiesPerPage),
-          }).map((value, place) => (
-            <PaginationNumberButton
-              key={place}
-              active={currentPage === place + 1}
-              onClick={() => handlePageChange(place + 1)}
-            >
-              {place + 1}
-            </PaginationNumberButton>
-          ))}
-        {studies.length > studiesPerPage && (
-          <PaginationButton
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={endplace >= studies.length}
-          >
-            다음
-          </PaginationButton>
-        )}
-      </PaginationContainer>
-    </ListContainer>
-  );
-};
-
-const EventMarkerContainer = ({
+const EventMarkerContainer: React.FC<EventMarkerContainerProps> = ({
   position,
   title,
   skill,
@@ -144,8 +84,8 @@ const EventMarkerContainer = ({
   postId,
 }) => {
   const map = useMap();
-  const [isVisible, setIsVisible] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isClicked, setIsClicked] = useState<boolean>(false);
 
   const handleMarkerClick = () => {
     setIsClicked(!isClicked);
@@ -163,9 +103,15 @@ const EventMarkerContainer = ({
     }
   };
 
+  // Convert LatLng to Kakao Maps format
+  const kakaoPosition = {
+    lat: position.latitude,
+    lng: position.longitude
+  };
+
   return (
     <MapMarker
-      position={position}
+      position={kakaoPosition}
       onClick={handleMarkerClick}
       onMouseOver={handleMarkerMouseOver}
       onMouseOut={handleMarkerMouseOut}
@@ -190,14 +136,88 @@ const EventMarkerContainer = ({
   );
 };
 
-const MainPage = () => {
-  const [location, setLocation] = useState(null);
-  const [loaded, setLoaded] = useState(false);
-  const [studies, setStudies] = useState([]);
+const StudyList: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [studies, setStudies] = useState<Post[]>([]);
+
+  const studiesPerPage = 4;
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/post/list")
+      .get<Post[]>("http://localhost:8080/api/post/list")
+      .then((response) => {
+        setStudies(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }, []);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const startplace = (currentPage - 1) * studiesPerPage;
+  const endplace = startplace + studiesPerPage;
+  const studiesToDisplay = studies.slice(startplace, endplace);
+
+  return (
+    <ListContainer>
+      {studiesToDisplay.map((value) => (
+        <InformCard
+          key={value.postId}
+          postId={value.postId}
+          skill={value.skill}
+          place={value.place}
+          progress={value.progress}
+          peopleNum={value.peopleNum}
+          deadline={value.deadline}
+          type={value.type}
+          title={value.title}
+        />
+      ))}
+      <PaginationContainer>
+        {studies.length > studiesPerPage && (
+          <PaginationButton
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            이전
+          </PaginationButton>
+        )}
+        {studies.length > studiesPerPage &&
+          Array.from({
+            length: Math.ceil(studies.length / studiesPerPage),
+          }).map((_, index) => (
+            <PaginationNumberButton
+              key={index}
+              $active={currentPage === index + 1}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </PaginationNumberButton>
+          ))}
+        {studies.length > studiesPerPage && (
+          <PaginationButton
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={endplace >= studies.length}
+          >
+            다음
+          </PaginationButton>
+        )}
+      </PaginationContainer>
+    </ListContainer>
+  );
+};
+
+const MainPage: React.FC = () => {
+  const [location, setLocation] = useState<LatLng | null>(null);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [studies, setStudies] = useState<Post[]>([]);
+
+  useEffect(() => {
+    axios
+      .get<Post[]>("http://localhost:8080/api/post/list")
       .then((response) => {
         setStudies(response.data);
       })
@@ -210,33 +230,31 @@ const MainPage = () => {
     navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
   }, []);
 
-  const successHandler = (response) => {
+  const successHandler = (response: GeolocationPosition) => {
     const { latitude, longitude } = response.coords;
     setLocation({ latitude, longitude });
     setLoaded(true);
   };
 
-  const errorHandler = (error) => {
+  const errorHandler = (error: GeolocationPositionError) => {
     console.log(error);
   };
 
   return (
     <PageContainer>
       <StudyList />
-      {loaded && (
+      {loaded && location && location.latitude !== null && location.longitude !== null && (
         <Map
           center={{ lat: location.latitude, lng: location.longitude }}
           style={{ width: "73%", height: "100%" }}
           level={3}
         >
-          {studies.map((value, place) => (
+          {studies.map((value) => (
             <EventMarkerContainer
               key={`EventMarkerContainer-${value.latitude}-${value.longitude}`}
-              position={{ lat: value.latitude, lng: value.longitude }}
+              position={{ latitude: value.latitude, longitude: value.longitude }}
               skill={value.skill}
               place={value.place}
-              latitude={value.latitude}
-              longitude={value.longitude}
               progress={value.progress}
               peopleNum={value.peopleNum}
               deadline={value.deadline}
