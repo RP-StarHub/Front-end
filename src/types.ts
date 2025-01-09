@@ -29,7 +29,13 @@ export interface Comment {
   commentId: number;
   postId: number;
   userId: number;
+  userName: string;
   content: string;
   createdAt: string;
   pick: boolean;
+}
+
+export interface StudyDetail {
+  studyDetail: any;
+  postId?: number;
 }

@@ -63,11 +63,17 @@ const StudyDetailPage = () => {
   if (isCurrentUser) {
     if (studyDetail.done) {
       return (
-        <StudyDetailPageFounderDone studyDetail={detailArray} postId={postId}/>
+        <StudyDetailPageFounderDone 
+          studyDetail={detailArray} 
+          postId={postId ? parseInt(postId) : undefined}
+        />
       );
     } else {
       return (
-        <StudyDetailPageFounder studyDetail={detailArray} postId={postId}/>
+        <StudyDetailPageFounder 
+          studyDetail={detailArray} 
+          postId={postId ? parseInt(postId) : undefined}
+        />
         );
     }
   } else {

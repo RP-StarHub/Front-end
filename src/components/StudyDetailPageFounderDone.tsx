@@ -2,8 +2,8 @@ import React from 'react';
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-
 import StarIcon from "../assets/icons/StarIcon.png";
+import { StudyDetail } from '../types';
 
 const PageContainer = styled.div`
   display: flex;
@@ -103,11 +103,6 @@ const HorizontalLine = styled.div`
   margin: 30px 0px 40px 0px;
 `;
 
-const CommentArea = styled.div`
-  display: flex;
-  margin: 50px 0px 0px 0px;
-`;
-
 const RowWrapper = styled.div`
   flex-direction: row;
   display: flex;
@@ -115,7 +110,7 @@ const RowWrapper = styled.div`
   margin: 0px 0px 20px 0px;
 `;
 
-const StudyDetailPageFounderDone = (data) => {
+const StudyDetailPageFounderDone = (data: StudyDetail) => {
   const navigate = useNavigate();
 
   function moveDmoveListetail() {
