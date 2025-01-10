@@ -1,5 +1,6 @@
 import { ApiResponse } from "./response";
 
+// Request
 export interface PostRequest {
   userId: number;
   skill: string;
@@ -15,7 +16,8 @@ export interface PostRequest {
   content: string;
 }
 
-export interface PostResponse {
+// Response
+export interface PostInfo {
   skill: string;
   place: string;
   latitude: number;
@@ -31,7 +33,7 @@ export interface PostResponse {
   username: string;
 }
 
-export interface PostListResponse {
+export interface PostListInfo {
   postId: number;
   skill: string;
   place: string;
@@ -46,6 +48,6 @@ export interface PostListResponse {
   username: string;
 }
 
-export type PostCreate = ApiResponse<PostResponse>;
-export type GetPostList = ApiResponse<PostListResponse[]>;
-export type GetPostDetail = ApiResponse<PostResponse>;
+export type PostCreateResponse = ApiResponse<PostInfo>;
+export type GetPostListResponse = ApiResponse<PostListInfo[]>;
+export type GetPostDetailResponse = ApiResponse<PostInfo>;

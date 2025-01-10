@@ -1,13 +1,19 @@
 import { ApiResponse } from "./response";
 
-export interface CommentRequest {
+// Request
+export interface CommentCreateRequest {
   postId: number;
   userId: number;
   content: string;
   pick: boolean;
 }
 
-export interface CommentResponse {
+export interface CommentPickRequest {
+  commentIdList: number[];
+}
+
+// Response
+export interface CommentInfo {
   postId: number;
   commentId: number;
   content: string;
@@ -28,7 +34,7 @@ export interface PickedUserInfo {
   user: PickedCommentUser;
 }
 
-export type PostCommentCreate = ApiResponse<CommentResponse>;
-export type GetCommentList = ApiResponse<CommentResponse[]>;
-export type PutCommentPick = ApiResponse<PickedUserInfo[]>;
-export type GetPickedUserInfo = ApiResponse<PickedUserInfo[]>;
+export type PostCommentCreateResponse = ApiResponse<CommentInfo>;
+export type GetCommentListResponse = ApiResponse<CommentInfo[]>;
+export type GetPickedUserInfoResponse = ApiResponse<PickedUserInfo>;
+export type PostCommentPickResponse = ApiResponse<CommentInfo[]>;

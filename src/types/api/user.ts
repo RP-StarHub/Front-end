@@ -1,10 +1,6 @@
 import { ApiResponse } from "./response";
 
-export type LoginUserRequest = {
-  loginId: string;
-  password: string;
-}
-
+// Request
 export type RegisterUserRequest = {
   loginId: string;
   password: string;
@@ -15,7 +11,13 @@ export type RegisterUserRequest = {
   introduction: string;
 }
 
-export type UserResponse = {
+export type LoginUserRequest = {
+  loginId: string;
+  password: string;
+}
+
+// Response
+export type UserInfo = {
   loginId: string;
   email: string;
   introduction: string;
@@ -24,6 +26,5 @@ export type UserResponse = {
   name: string;
 }
 
-export type PostUserLogin = ApiResponse<UserResponse>;
-export type PostUserRegister = ApiResponse<UserResponse>;
-export type GetUserMe = ApiResponse<UserResponse>;
+export type PostUserLogin = ApiResponse<UserInfo>;
+export type PostUserRegister = ApiResponse<UserInfo>;
