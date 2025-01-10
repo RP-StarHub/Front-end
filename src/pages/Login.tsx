@@ -136,6 +136,7 @@ const Login = () => {
         <InputWrapper>
           <Input
             type="text"
+            name="loginId"
             placeholder="아이디"
             value={loginData.loginId}
             onChange={handleChange}
@@ -144,6 +145,7 @@ const Login = () => {
         <InputWrapper>
           <Input
             type="password"
+            name="password"
             placeholder="비밀번호"
             value={loginData.password}
             onChange={handleChange}
