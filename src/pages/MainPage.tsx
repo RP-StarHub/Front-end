@@ -4,7 +4,8 @@ import styled from "styled-components";
 import InformCard from "../components/InformCard";
 import OverCard from "../components/OverCard";
 import axios from "axios";
-import { Post, MapPosition, KakaoLatLng, MarkerState, StudyCardInfo } from "../types";
+import { MapPosition, KakaoLatLng, MarkerState, StudyCardInfo } from "../types";
+import { GetPostListResponse, PostListInfo } from "../types/api/post";
 
 const PageContainer = styled.div`
   height: 90vh;
@@ -121,13 +122,15 @@ interface StudyListProps {
 
 const StudyList: React.FC<StudyListProps> = ({ studiesPerPage = 4 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [studies, setStudies] = useState<Post[]>([]);
+  const [studies, setStudies] = useState<PostListInfo[]>([]);
 
   useEffect(() => {
     const fetchStudies = async () => {
       try {
-        const response = await axios.get<Post[]>(`${process.env.REACT_APP_API_URL}/api/post/list`);
-        setStudies(response.data);
+        const response = await axios.get<GetPostListResponse>(
+          `${process.env.REACT_APP_API_URL}/api/post/list`
+        );
+        setStudies(response.data.data);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -193,13 +196,15 @@ const StudyList: React.FC<StudyListProps> = ({ studiesPerPage = 4 }) => {
 const MainPage: React.FC = () => {
   const [location, setLocation] = useState<MapPosition | null>(null);
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [studies, setStudies] = useState<Post[]>([]);
+  const [studies, setStudies] = useState<PostListInfo[]>([]);
 
   useEffect(() => {
     const fetchStudies = async () => {
       try {
-        const response = await axios.get<Post[]>(`${process.env.REACT_APP_API_URL}/api/post/list`);
-        setStudies(response.data);
+        const response = await axios.get<GetPostListResponse>(
+          `${process.env.REACT_APP_API_URL}/api/post/list`
+        );
+        setStudies(response.data.data);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
