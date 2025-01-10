@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 import StarIcon from "../assets/icons/StarIcon.png";
+import { PostUserRegister, RegisterUserRequest } from '../types/api/user';
 
 const PageContainer = styled.div`
   padding: 50px;
@@ -122,23 +123,13 @@ const RowWrapper = styled.div`
   align-items: center;
 `;
 
-interface FormData {
-  loginId: string;
-  password: string;
-  name: string;
-  age: string;
-  email: string;
-  phoneNum: string;
-  introduction: string;
-}
-
 const Signup = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<RegisterUserRequest>({
     loginId: "",
     password: "",
     name: "",
-    age: "",
+    age: 0,
     email: "",
     phoneNum: "",
     introduction: "",
@@ -150,7 +141,7 @@ const Signup = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: name === 'age' ? parseInt(value) : value,
     });
   };
 
@@ -165,20 +156,15 @@ const Signup = () => {
     form.append('info', JSON.stringify(formData));
 
     try {
-      const response = await axios.post(url, form, {
+      const response = await axios.post<PostUserRegister>(url, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      if (response.status === 200) {
-        
-        // 서버에서 받은 로그인 정보를 localStorage에 저장
-        localStorage.setItem('userInfo', JSON.stringify(response.data.data));
-        navigate('/');
-      } else {
-        console.error('Signup failed');
-      }
+      // 서버에서 받은 로그인 정보를 localStorage에 저장
+      localStorage.setItem('userInfo', JSON.stringify(response.data.data));
+      navigate('/');
     } catch (error) {
       console.error('Error during signup:', error);
     }
