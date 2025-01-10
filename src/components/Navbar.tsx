@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import StarHubIconNavbar from "../assets/icons/StarHubIconNavbar.png";
@@ -37,7 +37,12 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/logout?loginId=${userInfo?.userId}`);
+      await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/user/logout`,
+        {
+          params: { loginId: userInfo?.userId }
+        }
+      );
       // 로그인 정보를 localStorage에서 삭제
       localStorage.removeItem('userInfo');
       setUserInfo(null);
