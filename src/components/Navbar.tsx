@@ -33,7 +33,7 @@ const Navbar = () => {
   const [userInfo, setUserInfo] = useState<User | null>(
     JSON.parse(localStorage.getItem('userInfo') || 'null')
   );
-  // console.log(userInfo.name)
+  console.log(userInfo?.name)
 
   const handleLogout = async () => {
     try {

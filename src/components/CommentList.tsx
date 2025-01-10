@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Comment } from '../types';
+import { 
+  CommentInfo, 
+  CommentPickRequest,
+  PutCommentPickResponse 
+} from '../types/api/comment';
+
 
 interface CommentListProps {
-  comments: Comment[];
+  comments: CommentInfo[];
   isSelectable: boolean;
   postId?: number;
-  onCommentSelect?: (selectedComments: string) => void;
 }
 
 interface CommentItemStyledProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -62,7 +66,6 @@ const CommentList: React.FC<CommentListProps> = ({
   comments, 
   isSelectable, 
   postId,
-  onCommentSelect 
 }) => {
   const [selectedComments, setSelectedComments] = useState<number[]>([]);
   
@@ -80,7 +83,16 @@ const CommentList: React.FC<CommentListProps> = ({
 
   const handleConfirm = async () => {
     try {
-      await axios.put(`${process.env.REACT_APP_API_URL}/api/comment/pick?commentIdList=${selectedComments}`);
+      const request: CommentPickRequest = {
+        commentIdList: selectedComments,
+      };
+
+      await axios.put<PutCommentPickResponse>(
+        `${process.env.REACT_APP_API_URL}/api/comment/pick`,
+        null,
+        { params: request }
+      );
+      
       navigate(`/applicantlist/${postId}`);
       window.location.reload();
     } catch (error) {
@@ -98,7 +110,7 @@ const CommentList: React.FC<CommentListProps> = ({
             $isSelectable={isSelectable}
             onClick={() => handleCommentClick(comment.commentId)}
           >
-            <div>{comment.userName}</div>
+            <div>{comment.username}</div>
             <div>{comment.createdAt}</div>
             <Content>{comment.content}</Content>
           </CommentItem>
@@ -118,7 +130,7 @@ const CommentList: React.FC<CommentListProps> = ({
             $isSelectable={isSelectable}
             onClick={() => handleCommentClick(comment.commentId)}
           >
-            <div>{comment.userName}</div>
+            <div>{comment.username}</div>
             <div>{comment.createdAt}</div>
             <Content>{comment.content}</Content>
           </CommentItem>

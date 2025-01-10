@@ -1,3 +1,6 @@
+import { CommentInfo } from "./types/api/comment";
+import { PostInfo } from "./types/api/post";
+
 export interface User {
   userId: number;
   loginId: string;
@@ -39,8 +42,8 @@ export interface Comment {
   pick: boolean;
 }
 
-export interface StudyDetail {
-  studyDetail: any;
+export interface DetailPageProps {
+  studyDetail: [PostInfo, number, CommentInfo[]];
   postId?: number;
 }
 

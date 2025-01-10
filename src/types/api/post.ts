@@ -30,7 +30,7 @@ export interface PostInfo {
   title: string;
   content: string;
   createdAt: string;
-  username: string;
+  userName: string;
 }
 
 export interface PostListInfo {

@@ -37,4 +37,4 @@ export interface PickedUserInfo {
 export type PostCommentCreateResponse = ApiResponse<CommentInfo>;
 export type GetCommentListResponse = ApiResponse<CommentInfo[]>;
 export type GetPickedUserInfoResponse = ApiResponse<PickedUserInfo>;
-export type PostCommentPickResponse = ApiResponse<CommentInfo[]>;
+export type PutCommentPickResponse = ApiResponse<CommentInfo[]>;
