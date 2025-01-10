@@ -33,10 +33,16 @@ const StudyDetailPage: React.FC = () => {
       try {
         const [detailResponse, commentsResponse] = await Promise.all([
           axios.get<GetPostDetailResponse>(
-            `${process.env.REACT_APP_API_URL}/api/post/detail?post_id=${postId}`
+            `${process.env.REACT_APP_API_URL}/api/post/detail`,
+            {
+              params: { post_id : postId }
+            }
           ),
           axios.get<GetCommentListResponse>(
-            `${process.env.REACT_APP_API_URL}/api/comment/list?post_id=${postId}`
+            `${process.env.REACT_APP_API_URL}/api/comment/list`,
+            {
+              params: { post_id : postId }
+            }
           )
         ]);
 
