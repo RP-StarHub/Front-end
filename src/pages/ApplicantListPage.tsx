@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import ProfileCard from '../components/ProfileCard';
 import PickIcon from "../assets/icons/PickIcon.png";
-// import { applicantData } from "../assets/data/applicantdata";
 import axios from "axios";
 import { useParams } from 'react-router-dom';
-import { Applicant } from '../types';
+import { GetPickedUserInfoResponse, PickedUserInfo } from '../types/api/comment';
 
 const PageContainer = styled.div`
   height: 500px;
@@ -51,16 +50,19 @@ const PickTitle: React.FC = () => {
 };
 
 const ApplicantListPage: React.FC = () => {
-  const [applicantData, setApplicantData] = useState<Applicant[]>([]);
+  const [applicantData, setApplicantData] = useState<PickedUserInfo[]>([]);
   const { postId } = useParams<{ postId: string }>();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<Applicant[]>(
-          `${process.env.REACT_APP_API_URL}/api/comment/pick/list?postId=${postId}`
+        const response = await axios.get<GetPickedUserInfoResponse>(
+          `${process.env.REACT_APP_API_URL}/api/comment/pick/list`,
+          {
+            params: { postId }
+          }
         );
-        setApplicantData(response.data);
+        setApplicantData(response.data.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -75,7 +77,7 @@ const ApplicantListPage: React.FC = () => {
       <ListContainer>
       {applicantData.map((applicant) => (
         <ProfileCard
-          key={applicant.commentId}
+          key={applicant.user.email}
           name={applicant.user.name}
           introduction={applicant.user.introduction}
           email={applicant.user.email}
