@@ -4,6 +4,8 @@ import StarIcon from "../assets/icons/StarIcon.png";
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 import { LatLng } from "../types";
+import { PostCreateResponse, PostRequest } from "../types/api/post";
+import axios from "axios";
 
 const PageContainer = styled.div`
   padding: 50px 100px 50px 100px;
@@ -138,7 +140,7 @@ interface AddressObj {
 interface FindAddressProps {
   setAddressObj: React.Dispatch<React.SetStateAction<AddressObj>>;
   setLatLng: React.Dispatch<React.SetStateAction<LatLng>>;
-  setLocation: React.Dispatch<React.SetStateAction<string>>;
+  setFormData: React.Dispatch<React.SetStateAction<PostRequest>>;
 }
 
 interface DaumPostcodeData {
@@ -148,7 +150,7 @@ interface DaumPostcodeData {
   buildingName: string;
 }
 
-function FindAddress({ setAddressObj, setLatLng, setLocation }: FindAddressProps) {
+function FindAddress({ setAddressObj, setLatLng, setFormData }: FindAddressProps) {
   const handleComplete = useCallback((data: DaumPostcodeData) => {
     // 도로명 주소의 노출 규칙에 따라 주소를 표시
     let fullAddress = data.address;
@@ -169,7 +171,10 @@ function FindAddress({ setAddressObj, setLatLng, setLocation }: FindAddressProps
         townAddress: fullAddress,
       });
 
-      setLocation(fullAddress);
+      setFormData(prev => ({
+        ...prev,
+        place: fullAddress
+      }));
 
       // 사용자가 입력한 주소 정보를 입력 필드에 넣음
       const addressInput = document.getElementById("addressInput") as HTMLInputElement;
@@ -245,7 +250,7 @@ function FindAddress({ setAddressObj, setLatLng, setLocation }: FindAddressProps
 }
 
 const StudyRecruitPage = () => {
-  const [addressObj, setAddressObj] = useState({
+  const [addressObj, setAddressObj] = useState<AddressObj>({
     areaAddress: "",
     townAddress: "",
   });
@@ -256,52 +261,49 @@ const StudyRecruitPage = () => {
   });
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
-  const userId = userInfo.userId;
 
-  const [recruitmentType, setRecruitmentType] = useState("");
-  const [techStack, setTechStack] = useState("");
-  const [recruitmentNum, setRecruitmentNum] = useState("");
-  const [duration, setDuration] = useState("");
-  const [location, setLocation] = useState("");
-  const [deadline, setDeadline] = useState("");
-  const [projectTitle, setProjectTitle] = useState("");
-  const [projectContent, setProjectContent] = useState("");
+  const [formData, setFormData] = useState<PostRequest>({
+    userId: userInfo?.userId || 0,
+    skill: "",
+    place: "",
+    latitude: 0,
+    longitude: 0,
+    progress: "",
+    peopleNum: 0,
+    deadline: "",
+    type: "",
+    done: false,
+    title: "",
+    content: ""
+  });
 
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    const postData = {
-      skill: techStack,
-      place: location,
-      latitude: latLng.latitude,
-      longitude: latLng.longitude,
-      progress: duration,
-      peopleNum: recruitmentNum,
-      deadline,
-      type: recruitmentType,
-      done: false,
-      title: projectTitle,
-      content: projectContent,
-      userId: userId,
-    };
+  const handleSubmit = async () => {
+    try {
+      if (!latLng.latitude || !latLng.longitude) {
+        alert("주소를 선택해주세요.");
+        return;
+      }
+      
+      const postData: PostRequest = {
+        ...formData,
+        latitude: latLng.latitude,
+        longitude: latLng.longitude,
+        place: addressObj.townAddress,
+      }
 
-    fetch(`${process.env.REACT_APP_API_URL}/api/post/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      await axios.post<PostCreateResponse>(
+        `${process.env.REACT_APP_API_URL}/api/post/create`,
+        postData
+      );
 
-      navigate('/');
-      window.location.reload();
+      alert("글이 등록되었습니다.");
+      navigate("/");
+    } catch (error) {
+      alert("글 등록에 실패했습니다.");
+      console.error("Error:", error);
+    }
   };
 
   useEffect(() => {
@@ -309,6 +311,16 @@ const StudyRecruitPage = () => {
     console.log("Longitude:", latLng.longitude);
     // window.location.reload();
   }, [latLng]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'peopleNum' ? Number(value) : value
+    }));
+  };
 
   return (
     <PageContainer>
@@ -327,18 +339,20 @@ const StudyRecruitPage = () => {
             <TextInput>모집 구분</TextInput>
             <Input
               type="text"
+              name="type"
               placeholder="스터디와 프로젝트 중 선택해주세요."
-              value={recruitmentType}
-              onChange={(e) => setRecruitmentType(e.target.value)}
+              value={formData.type}
+              onChange={handleInputChange}
             />
           </InputWrapper>
           <InputWrapper>
             <TextInput>기술 스택</TextInput>
             <Input
               type="text"
+              name="skill"
               placeholder="사용되는 기술 스택을 입력해주세요. ex) 리액트, 스프링..."
-              value={techStack}
-              onChange={(e) => setTechStack(e.target.value)}
+              value={formData.skill}
+              onChange={handleInputChange}
             />
           </InputWrapper>
         </Inputbox>
@@ -347,18 +361,20 @@ const StudyRecruitPage = () => {
             <TextInput>모집 인원</TextInput>
             <Input
               type="text"
+              name="peopleNum"
               placeholder="모집 인원 수를 입력해주세요. ex) 3~5"
-              value={recruitmentNum}
-              onChange={(e) => setRecruitmentNum(e.target.value)}
+              value={formData.peopleNum}
+              onChange={handleInputChange}
             />
           </InputWrapper>
           <InputWrapper>
             <TextInput>진행 기간</TextInput>
             <Input
               type="text"
+              name="progress"
               placeholder="진행 기간을 입력해주세요."
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
+              value={formData.progress}
+              onChange={handleInputChange}
             />
           </InputWrapper>
         </Inputbox>
@@ -368,23 +384,25 @@ const StudyRecruitPage = () => {
             <AddressInput
               type="text"
               id="addressInput"
+              name="place"
               placeholder="주소를 입력해주세요."
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              value={formData.place}
+              onChange={handleInputChange}
             />
             <FindAddress
               setAddressObj={setAddressObj}
               setLatLng={setLatLng}
-              setLocation={setLocation}
+              setFormData={setFormData}
             />
           </InputWrapper>
           <InputWrapper>
             <TextInput>모집 마감일</TextInput>
             <Input
               type="text"
+              name="deadline"
               placeholder="**** - ** - **"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
+              value={formData.deadline}
+              onChange={handleInputChange}
             />
           </InputWrapper>
         </Inputbox>
@@ -402,15 +420,17 @@ const StudyRecruitPage = () => {
         <TextInput>제목</TextInput>
         <Input
           type="text"
+          name="title"
           placeholder="제목을 입력해주세요."
-          value={projectTitle}
-          onChange={(e) => setProjectTitle(e.target.value)}
+          value={formData.title}
+          onChange={handleInputChange}
         />
         <TextInput>내용</TextInput>
         <Textarea
+          name="content"
           placeholder="내용을 입력해주세요."
-          value={projectContent}
-          onChange={(e) => setProjectContent(e.target.value)}
+          value={formData.content}
+          onChange={handleInputChange}
         />
       </Intro>
       <ButtonContainer>
