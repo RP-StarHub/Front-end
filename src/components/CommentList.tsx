@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { 
   CommentInfo, 
-  CommentPickRequest,
   PutCommentPickResponse 
 } from '../types/api/comment';
 
@@ -83,14 +82,14 @@ const CommentList: React.FC<CommentListProps> = ({
 
   const handleConfirm = async () => {
     try {
-      const request: CommentPickRequest = {
-        commentIdList: selectedComments,
-      };
+      const queryParams = selectedComments.join(','); 
 
       await axios.put<PutCommentPickResponse>(
         `${process.env.REACT_APP_API_URL}/api/comment/pick`,
         null,
-        { params: request }
+        { 
+          params: { commentIdList: queryParams }
+        }
       );
       
       navigate(`/applicantlist/${postId}`);

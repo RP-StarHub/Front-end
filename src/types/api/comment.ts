@@ -8,10 +8,6 @@ export interface CommentCreateRequest {
   pick: boolean;
 }
 
-export interface CommentPickRequest {
-  commentIdList: number[];
-}
-
 // Response
 export interface CommentInfo {
   postId: number;
