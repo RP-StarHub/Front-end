@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import axios from 'axios';
-import { LoginUserRequest, PostUserLogin } from '../types/api/user';
+import { LoginUserRequest } from '../types/api/user';
+import { useLogin } from '../hooks/api/useUser';
 
 const PageContainer = styled.div`
   display: flex;
@@ -94,12 +94,11 @@ const Login = () => {
     password: '',
   });
 
+  const login = useLogin();;
+
   const handleLogin = async () => {
     try {
-      const response = await axios.post<PostUserLogin>(
-        `${process.env.REACT_APP_API_URL}/api/user/login`,
-        loginData
-      );
+      const response = await login.mutateAsync(loginData);
 
       // 서버에서 받은 로그인 정보를 localStorage에 저장
       localStorage.setItem('userInfo', JSON.stringify(response.data.data));

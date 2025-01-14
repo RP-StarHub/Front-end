@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 import StarIcon from "../assets/icons/StarIcon.png";
-import { PostUserRegister, RegisterUserRequest } from '../types/api/user';
+import { RegisterUserRequest } from '../types/api/user';
+import { useRegister } from '../hooks/api/useUser';
 
 const PageContainer = styled.div`
   padding: 50px;
@@ -125,6 +125,7 @@ const RowWrapper = styled.div`
 
 const Signup = () => {
   const navigate = useNavigate();
+  const register = useRegister();
   const [formData, setFormData] = useState<RegisterUserRequest>({
     loginId: "",
     password: "",
@@ -150,18 +151,11 @@ const Signup = () => {
   ) => {
     e.preventDefault();
 
-    const url = `${process.env.REACT_APP_API_URL}/api/user/register`;
-
     const form = new FormData();
     form.append('info', JSON.stringify(formData));
 
     try {
-      const response = await axios.post<PostUserRegister>(url, form, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
+      const response = await register.mutateAsync(form);
       // 서버에서 받은 로그인 정보를 localStorage에 저장
       localStorage.setItem('userInfo', JSON.stringify(response.data.data));
       navigate('/');

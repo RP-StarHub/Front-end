@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import StarHubIconNavbar from "../assets/icons/StarHubIconNavbar.png";
 import axios from 'axios';
 import { User } from '../types';
+import { useLogout } from '../hooks/api/useUser';
+import { useQueryClient } from '@tanstack/react-query';
 
 const NavContainer = styled.nav`
   display: flex;
@@ -33,19 +35,18 @@ const Navbar = () => {
   const [userInfo, setUserInfo] = useState<User | null>(
     JSON.parse(localStorage.getItem('userInfo') || 'null')
   );
-  console.log(userInfo?.name)
+  const logout = useLogout();
+  const queryClient = useQueryClient();
 
   const handleLogout = async () => {
     try {
-      await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/user/logout`,
-        {
-          params: { loginId: userInfo?.userId }
-        }
-      );
-      // 로그인 정보를 localStorage에서 삭제
-      localStorage.removeItem('userInfo');
-      setUserInfo(null);
+      if (userInfo?.userId) {
+        await logout.mutateAsync(userInfo.userId);
+        localStorage.removeItem('userInfo');
+        setUserInfo(null);
+
+        queryClient.clear();
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
