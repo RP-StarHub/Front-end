@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import StarIcon from "../assets/icons/StarIcon.png";
 import CommentList from "./CommentList";
-import { StudyDetail } from "../types";
+import { DetailPageProps } from "../types";
 
 const PageContainer = styled.div`
   display: flex;
@@ -98,13 +98,7 @@ const RowWrapper = styled.div`
   margin: 0px 0px 20px 0px;
 `;
 
-const StudyDetailPageFounder = (data: StudyDetail) => {
-  const [selectedComment, setSelectedComment] = useState('');
-
-  const handleCommentSelect = (selectedComments: string) => {
-    setSelectedComment(selectedComments);
-  };
-
+const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
   return (
     <PageContainer>
       <Box>
@@ -115,47 +109,46 @@ const StudyDetailPageFounder = (data: StudyDetail) => {
             style={{ width: "auto", height: "50px" }}
           />
           <TitleText>
-            [{data.studyDetail[0].type}] {data.studyDetail[0].title}
+            [{studyDetail[0].type}] {studyDetail[0].title}
           </TitleText>
         </RowWrapper>
         <AuthText>
-          {data.studyDetail[0].userName} | {data.studyDetail[0].createdAt}
+          {studyDetail[0].userName} | {studyDetail[0].createdAt}
         </AuthText>
         <SubWrapper>
           <SubtitleText>진행 장소</SubtitleText>
-          <AddressContent>{data.studyDetail[0].place}</AddressContent>
+          <AddressContent>{studyDetail[0].place}</AddressContent>
         </SubWrapper>
         <Subbox>
           <SubWrapper>
             <SubtitleText>기술 스택</SubtitleText>
-            <TextContent>{data.studyDetail[0].skill}</TextContent>
+            <TextContent>{studyDetail[0].skill}</TextContent>
           </SubWrapper>
           <SubWrapper>
             <SubtitleText>진행 기간</SubtitleText>
-            <TextContent>{data.studyDetail[0].progress}개월</TextContent>
+            <TextContent>{studyDetail[0].progress}개월</TextContent>
           </SubWrapper>
         </Subbox>
         <Subbox>
           <SubWrapper>
             <SubtitleText>모집 인원</SubtitleText>
-            <TextContent>{data.studyDetail[0].peopleNum}명</TextContent>
+            <TextContent>{studyDetail[0].peopleNum}명</TextContent>
           </SubWrapper>
           <SubWrapper>
             <SubtitleText>모집 마감일</SubtitleText>
-            <TextContent>{data.studyDetail[0].deadline}</TextContent>
+            <TextContent>{studyDetail[0].deadline}</TextContent>
           </SubWrapper>
         </Subbox>
         <HorizontalLine />
         <SubtitleText>스터디 소개</SubtitleText>
-        <TextContent2>{data.studyDetail[0].content}</TextContent2>
+        <TextContent2>{studyDetail[0].content}</TextContent2>
       </Box>
       <CommentArea>
         <SubtitleText>댓글</SubtitleText>
         <CommentList
-          comments={data.studyDetail[2]}
+          comments={studyDetail[2]}
           isSelectable
-          onCommentSelect={handleCommentSelect}
-          postId={data.postId}
+          postId={studyDetail[1]}
         />
       </CommentArea>
     </PageContainer>

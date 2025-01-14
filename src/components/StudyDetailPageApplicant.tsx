@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import StarIcon from "../assets/icons/StarIcon.png";
 import CommentList from "./CommentList";
-import axios from 'axios';
-import { StudyDetail } from "../types";
+import { DetailPageProps } from "../types";
+import { CommentCreateRequest } from "../types/api/comment";
+import { useCommentCreate } from "../hooks/api/useComment";
 
 const PageContainer = styled.div`
   display: flex;
@@ -128,28 +129,27 @@ const CommentButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const StudyDetailPageApplicant = (data: StudyDetail) => {
+const StudyDetailPageApplicant: React.FC<DetailPageProps> = ({ studyDetail }) => {
   const [comment, setComment] = useState("");
-  // console.log(data);
-
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "null");
   const userId = userInfo.userId;
 
-  const handleSubmit = () => {
-    axios
-      .post(`http://localhost:8080/api/comment/create`, {
-        postId:data.studyDetail[1],
-        userId:userId,
-        content:comment,
-        pick:false,
-      })
-      .then((response) => {
-        // console.log(response.data)
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error('Error fetching comment create:', error.message);
-      });
+  const createComment = useCommentCreate();
+
+  const handleSubmit = async () => {
+    const commentData: CommentCreateRequest = {
+      postId: studyDetail[1],
+      userId: userId,
+      content: comment,
+      pick: false,
+    }
+
+    try {
+      await createComment.mutateAsync(commentData);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error creating comment:', error);
+    }
   };
 
   return (
@@ -162,41 +162,41 @@ const StudyDetailPageApplicant = (data: StudyDetail) => {
             style={{ width: "auto", height: "50px" }}
           />
           <TitleText>
-            [{data.studyDetail[0].type}] {data.studyDetail[0].title}
+            [{studyDetail[0].type}] {studyDetail[0].title}
           </TitleText>
         </RowWrapper>
         <AuthText>
-          {data.studyDetail[0].userName} | {data.studyDetail[0].createdAt}.
+          {studyDetail[0].userName} | {studyDetail[0].createdAt}.
         </AuthText>
         <SubWrapper>
           <SubWrapper>
             <SubtitleText>진행 장소</SubtitleText>
-            <AddressContent>{data.studyDetail[0].place}</AddressContent>
+            <AddressContent>{studyDetail[0].place}</AddressContent>
           </SubWrapper>
         </SubWrapper>
         <Subbox>
           <SubWrapper>
             <SubtitleText>기술 스택</SubtitleText>
-            <TextContent>{data.studyDetail[0].skill}</TextContent>
+            <TextContent>{studyDetail[0].skill}</TextContent>
           </SubWrapper>
           <SubWrapper>
             <SubtitleText>진행 기간</SubtitleText>
-            <TextContent>{data.studyDetail[0].progress}개월</TextContent>
+            <TextContent>{studyDetail[0].progress}개월</TextContent>
           </SubWrapper>
         </Subbox>
         <Subbox>
           <SubWrapper>
             <SubtitleText>모집 인원</SubtitleText>
-            <TextContent>{data.studyDetail[0].peopleNum}명</TextContent>
+            <TextContent>{studyDetail[0].peopleNum}명</TextContent>
           </SubWrapper>
           <SubWrapper>
             <SubtitleText>모집 마감일</SubtitleText>
-            <TextContent>{data.studyDetail[0].deadline}</TextContent>
+            <TextContent>{studyDetail[0].deadline}</TextContent>
           </SubWrapper>
         </Subbox>
         <HorizontalLine />
         <SubtitleText>스터디 소개</SubtitleText>
-        <TextContent2>{data.studyDetail[0].content}</TextContent2>
+        <TextContent2>{studyDetail[0].content}</TextContent2>
         <HorizontalLine />
       </Box>
       <SubtitleText>댓글</SubtitleText>
@@ -208,10 +208,10 @@ const StudyDetailPageApplicant = (data: StudyDetail) => {
         <CommentButtonContainer>
           <CommentButton onClick={handleSubmit}>등록</CommentButton>
         </CommentButtonContainer>
-        <CommentList 
-          comments={data.studyDetail[2]} 
+        <CommentList
+          comments={studyDetail[2]}
           isSelectable={false}
-          postId={data.studyDetail[1]}
+          postId={studyDetail[1]}
         />
       </CommentArea>
     </PageContainer>

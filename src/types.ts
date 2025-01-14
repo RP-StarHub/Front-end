@@ -1,3 +1,6 @@
+import { CommentInfo } from "./types/api/comment";
+import { PostInfo } from "./types/api/post";
+
 export interface User {
   userId: number;
   loginId: string;
@@ -8,39 +11,8 @@ export interface User {
   age: number;
 }
 
-export interface Post {
-  postId: number;
-  userId: number;
-  skill: string;
-  progress: string;
-  peopleNum: number;
-  deadline: string;
-  content: string;
-  createdAt: string;
-  type: string;
-  done: boolean;
-  title: string;
-  place: string;
-  latitude: number;
-  longitude: number;
-}
-
-export interface StudyDetailPost extends Post {
-  userName: string;
-}
-
-export interface Comment {
-  commentId: number;
-  postId: number;
-  userId: number;
-  userName: string;
-  content: string;
-  createdAt: string;
-  pick: boolean;
-}
-
-export interface StudyDetail {
-  studyDetail: any;
+export interface DetailPageProps {
+  studyDetail: [PostInfo, number, CommentInfo[]];
   postId?: number;
 }
 
@@ -89,10 +61,4 @@ export interface OverCardProps extends BaseCardProps {
 export interface MarkerState {
   isVisible: boolean;
   isClicked: boolean;
-}
-
-export interface Applicant {
-  user: User;
-  commentId: number;
-  postId: number;
 }

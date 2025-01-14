@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import { LoginUserRequest } from '../types/api/user';
+import { useLogin } from '../hooks/api/useUser';
 
 const PageContainer = styled.div`
   display: flex;
@@ -88,15 +89,16 @@ const Text = styled.div`
 
 const Login = () => {
   const navigate = useNavigate();
-  const [loginId, setLoginId] = useState('');
-  const [password, setPassword] = useState('');
+  const [loginData, setLoginData] = useState<LoginUserRequest>({
+    loginId: '',
+    password: '',
+  });
+
+  const login = useLogin();;
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/user/login', {
-        loginId,
-        password,
-      });
+      const response = await login.mutateAsync(loginData);
 
       // 서버에서 받은 로그인 정보를 localStorage에 저장
       localStorage.setItem('userInfo', JSON.stringify(response.data.data));
@@ -118,6 +120,13 @@ const Login = () => {
   // const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   // console.log(userInfo)
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginData({
+      ...loginData,
+      [name]: value,
+    });
+  }
 
   return (
     <PageContainer>
@@ -126,17 +135,19 @@ const Login = () => {
         <InputWrapper>
           <Input
             type="text"
+            name="loginId"
             placeholder="아이디"
-            value={loginId}
-            onChange={(e) => setLoginId(e.target.value)}
+            value={loginData.loginId}
+            onChange={handleChange}
           />
         </InputWrapper>
         <InputWrapper>
           <Input
             type="password"
+            name="password"
             placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={loginData.password}
+            onChange={handleChange}
           />
         </InputWrapper>
       </Box>
