@@ -1,81 +1,48 @@
-import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import React from "react";
 import { useParams } from 'react-router-dom';
-
 import StudyDetailPageFounder from '../components/StudyDetailPageFounder';
 import StudyDetailPageApplicant from '../components/StudyDetailPageApplicant';
 import StudyDetailPageFounderDone from '../components/StudyDetailPageFounderDone';
-import { GetPostDetailResponse, PostInfo } from "../types/api/post";
-import { CommentInfo, GetCommentListResponse } from "../types/api/comment";
+import { usePostDetail } from "../hooks/api/usePost";
+import { useCommentList } from "../hooks/api/useComment";
+import { PostInfo } from "../types/api/post";
+import { CommentInfo } from "../types/api/comment";
 
 const StudyDetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
-  const [studyDetail, setStudyDetail] = useState<PostInfo>({
-    skill: "",
-    place: "",
-    latitude: 0,
-    longitude: 0,
-    progress: "",
-    peopleNum: 0,
-    deadline: "",
-    type: "",
-    done: false,
-    title: "",
-    content: "",
-    createdAt: "",
-    userName: ""
-  });
-  const [comments, setComments] = useState<CommentInfo[]>([]);
+  const numericPostId = Number(postId);
+  
+  const { data: postResponse, isLoading: isLoadingPost } = usePostDetail(numericPostId);
+  const { data: commentsResponse, isLoading: isLoadingComments } = useCommentList(numericPostId);
+  
+  const studyDetail: PostInfo | undefined = postResponse?.data.data;
+  const comments: CommentInfo[] = commentsResponse?.data.data || [];
+  
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [detailResponse, commentsResponse] = await Promise.all([
-          axios.get<GetPostDetailResponse>(
-            `${process.env.REACT_APP_API_URL}/api/post/detail`,
-            {
-              params: { post_id : postId }
-            }
-          ),
-          axios.get<GetCommentListResponse>(
-            `${process.env.REACT_APP_API_URL}/api/comment/list`,
-            {
-              params: { post_id : postId }
-            }
-          )
-        ]);
-
-        setStudyDetail(detailResponse.data.data);
-        setComments(commentsResponse.data.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    if (postId) {
-      fetchData();
-    }
-  }, [postId]);
+  // 데이터 로딩 중이면 로딩 상태 표시
+  if (isLoadingPost || isLoadingComments || !studyDetail) {
+    return <div>Loading...</div>;
+  }
 
   // userInfo와 studyDetail의 userName이 같은지 확인
   const isCurrentUser = userInfo && userInfo.name === studyDetail.userName;
   
-  const detailArray: [PostInfo, number, CommentInfo[]] = [studyDetail, Number(postId), comments];
+  const detailArray: [PostInfo, number, CommentInfo[]] = [studyDetail, numericPostId, comments];
 
   if (isCurrentUser) {
     if (studyDetail.done) {
       return (
         <StudyDetailPageFounderDone
           studyDetail={detailArray}
-          postId={Number(postId)}
+          postId={numericPostId}
         />
       );
     } else {
       return (
         <StudyDetailPageFounder
           studyDetail={detailArray}
-          postId={Number(postId)} 
+          postId={numericPostId} 
         />
       );
     }
