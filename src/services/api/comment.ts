@@ -31,7 +31,7 @@ export const commentServices = {
 
   getPickedUserInfo: (postId: number) => {
     return axiosInstance.get<GetPickedUserInfoResponse>(
-      `/api/comment/pick/user`,
+      `/api/comment/pick/list`,
       {
         params: { postId }
       }

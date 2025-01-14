@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { 
-  CommentInfo, 
-  PutCommentPickResponse 
-} from '../types/api/comment';
+import { CommentInfo } from '../types/api/comment';
+import { useCommentPick } from '../hooks/api/useComment';
 
 
 interface CommentListProps {
@@ -67,8 +64,8 @@ const CommentList: React.FC<CommentListProps> = ({
   postId,
 }) => {
   const [selectedComments, setSelectedComments] = useState<number[]>([]);
-  
   const navigate = useNavigate();
+  const updatePicks = useCommentPick();
 
   const handleCommentClick = (commentId: number) => {
     if (!isSelectable) return;
@@ -82,16 +79,7 @@ const CommentList: React.FC<CommentListProps> = ({
 
   const handleConfirm = async () => {
     try {
-      const queryParams = selectedComments.join(','); 
-
-      await axios.put<PutCommentPickResponse>(
-        `${process.env.REACT_APP_API_URL}/api/comment/pick`,
-        null,
-        { 
-          params: { commentIdList: queryParams }
-        }
-      );
-      
+      await updatePicks.mutateAsync(selectedComments);      
       navigate(`/applicantlist/${postId}`);
       window.location.reload();
     } catch (error) {

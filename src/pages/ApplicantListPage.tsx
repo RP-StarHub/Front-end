@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from "styled-components";
 import ProfileCard from '../components/ProfileCard';
 import PickIcon from "../assets/icons/PickIcon.png";
-import axios from "axios";
 import { useParams } from 'react-router-dom';
-import { GetPickedUserInfoResponse, PickedUserInfo } from '../types/api/comment';
+import { useUserPicked } from '../hooks/api/useComment';
 
 const PageContainer = styled.div`
   height: 500px;
@@ -33,7 +32,6 @@ const ListContainer = styled.div`
   gap: 70px;
   padding: 40px;
   justify-items: center;
-
 `;
 
 const PickTitle: React.FC = () => {
@@ -50,42 +48,29 @@ const PickTitle: React.FC = () => {
 };
 
 const ApplicantListPage: React.FC = () => {
-  const [applicantData, setApplicantData] = useState<PickedUserInfo[]>([]);
   const { postId } = useParams<{ postId: string }>();
+  const { data: response, isLoading } = useUserPicked(Number(postId));
+  
+  const pickedUsers = response?.data.data || [];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get<GetPickedUserInfoResponse>(
-          `${process.env.REACT_APP_API_URL}/api/comment/pick/list`,
-          {
-            params: { postId }
-          }
-        );
-        setApplicantData(response.data.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, [postId]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <PageContainer>
       <PickTitle />
       <ListContainer>
-      {applicantData.map((applicant) => (
-        <ProfileCard
-          key={applicant.user.email}
-          name={applicant.user.name}
-          introduction={applicant.user.introduction}
-          email={applicant.user.email}
-          phoneNum={applicant.user.phoneNum}
-          age={applicant.user.age}
-          // image={applicant.image}
-        />
-      ))} 
+        {pickedUsers.map((pickedUser) => (
+          <ProfileCard
+            key={pickedUser.user.email}
+            name={pickedUser.user.name}
+            introduction={pickedUser.user.introduction}
+            email={pickedUser.user.email}
+            phoneNum={pickedUser.user.phoneNum}
+            age={pickedUser.user.age}
+          />
+        ))} 
       </ListContainer>
     </PageContainer>
   );

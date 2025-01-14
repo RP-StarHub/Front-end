@@ -3,9 +3,9 @@ import styled from "styled-components";
 
 import StarIcon from "../assets/icons/StarIcon.png";
 import CommentList from "./CommentList";
-import axios from 'axios';
 import { DetailPageProps } from "../types";
-import { CommentCreateRequest, PostCommentCreateResponse } from "../types/api/comment";
+import { CommentCreateRequest } from "../types/api/comment";
+import { useCommentCreate } from "../hooks/api/useComment";
 
 const PageContainer = styled.div`
   display: flex;
@@ -134,7 +134,9 @@ const StudyDetailPageApplicant: React.FC<DetailPageProps> = ({ studyDetail }) =>
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "null");
   const userId = userInfo.userId;
 
-  const handleSubmit = () => {
+  const createComment = useCommentCreate();
+
+  const handleSubmit = async () => {
     const commentData: CommentCreateRequest = {
       postId: studyDetail[1],
       userId: userId,
@@ -142,16 +144,12 @@ const StudyDetailPageApplicant: React.FC<DetailPageProps> = ({ studyDetail }) =>
       pick: false,
     }
 
-    axios.post<PostCommentCreateResponse>(
-      `${process.env.REACT_APP_API_URL}/api/comment/create`,
-      commentData
-    )
-    .then(() => {
+    try {
+      await createComment.mutateAsync(commentData);
       window.location.reload();
-    })
-    .catch((error) => {
-      console.error('Error fetching comment create:', error.message);
-    });
+    } catch (error) {
+      console.error('Error creating comment:', error);
+    }
   };
 
   return (
