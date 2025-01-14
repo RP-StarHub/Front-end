@@ -8,6 +8,7 @@ export const commentServices = {
       data
     );
   },
+  
   getCommentList: (postId: number) => {
     return axiosInstance.get<GetCommentListResponse>(
       `/api/comment/list`,
@@ -16,9 +17,9 @@ export const commentServices = {
       }
     );
   },
+
   putCommentPick: (selectedComments: number[]) => {
     const queryParams = selectedComments.join(','); 
-
     return axiosInstance.put<PutCommentPickResponse>(
       `/api/comment/pick`,
       null,
@@ -27,6 +28,7 @@ export const commentServices = {
       }
     );
   },
+
   getPickedUserInfo: (postId: number) => {
     return axiosInstance.get<GetPickedUserInfoResponse>(
       `/api/comment/pick/user`,
