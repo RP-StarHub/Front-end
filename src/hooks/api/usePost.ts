@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { PostRequest } from "../../types/api/post"
+import { GetPostListResponse, PostRequest } from "../../types/api/post"
 import { postServices } from "../../services/api/post"
 
 export const usePostCreate = () => {
@@ -10,11 +10,14 @@ export const usePostCreate = () => {
 }
 
 export const usePostList = () => {
-  return useQuery({
+  return useQuery<GetPostListResponse>({
     queryKey: ['posts'],
-    queryFn: () => postServices.getPostList()
-  })
-}
+    queryFn: async () => {
+      const response = await postServices.getPostList();
+      return response.data;
+    }
+  });
+};
 
 export const usePostDetail = (postId: number) => {
   return useQuery({

@@ -3,9 +3,8 @@ import { Map as KakaoMap, MapMarker } from "react-kakao-maps-sdk";
 import styled from "styled-components";
 import InformCard from "../components/InformCard";
 import OverCard from "../components/OverCard";
-import axios from "axios";
 import { MapPosition, KakaoLatLng, MarkerState, StudyCardInfo } from "../types";
-import { GetPostListResponse, PostListInfo } from "../types/api/post";
+import { usePostList } from "../hooks/api/usePost";
 
 const PageContainer = styled.div`
   height: 90vh;
@@ -122,22 +121,8 @@ interface StudyListProps {
 
 const StudyList: React.FC<StudyListProps> = ({ studiesPerPage = 4 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [studies, setStudies] = useState<PostListInfo[]>([]);
-
-  useEffect(() => {
-    const fetchStudies = async () => {
-      try {
-        const response = await axios.get<GetPostListResponse>(
-          `${process.env.REACT_APP_API_URL}/api/post/list`
-        );
-        setStudies(response.data.data);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
-
-    fetchStudies();
-  }, []);
+  const { data } = usePostList();
+  const studies = data?.data || [];
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -145,9 +130,9 @@ const StudyList: React.FC<StudyListProps> = ({ studiesPerPage = 4 }) => {
 
   const startIndex = (currentPage - 1) * studiesPerPage;
   const endIndex = startIndex + studiesPerPage;
-  const studiesToDisplay = studies.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(studies.length / studiesPerPage);
-  const showPagination = studies.length > studiesPerPage;
+  const studiesToDisplay = studies ? studies.slice(startIndex, endIndex) : [];
+  const totalPages = studies ? Math.ceil(studies.length / studiesPerPage) : 0;
+  const showPagination = studies && studies.length > studiesPerPage;
 
   return (
     <ListContainer>
@@ -196,22 +181,8 @@ const StudyList: React.FC<StudyListProps> = ({ studiesPerPage = 4 }) => {
 const MainPage: React.FC = () => {
   const [location, setLocation] = useState<MapPosition | null>(null);
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [studies, setStudies] = useState<PostListInfo[]>([]);
-
-  useEffect(() => {
-    const fetchStudies = async () => {
-      try {
-        const response = await axios.get<GetPostListResponse>(
-          `${process.env.REACT_APP_API_URL}/api/post/list`
-        );
-        setStudies(response.data.data);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
-
-    fetchStudies();
-  }, []);
+  const { data, isLoading } = usePostList();
+  const studies = data?.data || [];
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -227,6 +198,8 @@ const MainPage: React.FC = () => {
   }, []);
 
   const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <PageContainer>
