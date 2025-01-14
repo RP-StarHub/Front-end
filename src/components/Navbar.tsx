@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import StarHubIconNavbar from "../assets/icons/StarHubIconNavbar.png";
-import axios from 'axios';
 import { User } from '../types';
 import { useLogout } from '../hooks/api/useUser';
 import { useQueryClient } from '@tanstack/react-query';
