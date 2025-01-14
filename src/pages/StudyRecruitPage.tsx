@@ -4,8 +4,8 @@ import StarIcon from "../assets/icons/StarIcon.png";
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 import { LatLng } from "../types";
-import { PostCreateResponse, PostRequest } from "../types/api/post";
-import axios from "axios";
+import { PostRequest } from "../types/api/post";
+import { usePostCreate } from "../hooks/api/usePost";
 
 const PageContainer = styled.div`
   padding: 50px 100px 50px 100px;
@@ -278,6 +278,7 @@ const StudyRecruitPage = () => {
   });
 
   const navigate = useNavigate();
+  const postCreate = usePostCreate();
 
   const handleSubmit = async () => {
     try {
@@ -293,10 +294,7 @@ const StudyRecruitPage = () => {
         place: addressObj.townAddress,
       }
 
-      await axios.post<PostCreateResponse>(
-        `${process.env.REACT_APP_API_URL}/api/post/create`,
-        postData
-      );
+      await postCreate.mutateAsync(postData);
 
       alert("글이 등록되었습니다.");
       navigate("/");
