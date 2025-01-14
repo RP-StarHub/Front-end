@@ -5,6 +5,7 @@ import InformCard from "../components/InformCard";
 import OverCard from "../components/OverCard";
 import { MapPosition, KakaoLatLng, MarkerState, StudyCardInfo } from "../types";
 import { usePostList } from "../hooks/api/usePost";
+import { PostListInfo } from "../types/api/post";
 
 const PageContainer = styled.div`
   height: 90vh;
@@ -61,7 +62,7 @@ interface EventMarkerContainerProps extends StudyCardInfo {
   position: MapPosition;
 }
 
-const EventMarkerContainer: React.FC<EventMarkerContainerProps> = ({
+const EventMarkerContainer = React.memo<EventMarkerContainerProps>(({
   position,
   ...cardProps
 }) => {
@@ -113,16 +114,15 @@ const EventMarkerContainer: React.FC<EventMarkerContainerProps> = ({
       )}
     </MapMarker>
   );
-};
+});
 
 interface StudyListProps {
+  studies: PostListInfo[];
   studiesPerPage?: number;
 }
 
-const StudyList: React.FC<StudyListProps> = ({ studiesPerPage = 4 }) => {
+const StudyList: React.FC<StudyListProps> = React.memo(({ studies, studiesPerPage = 4 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data } = usePostList();
-  const studies = data?.data || [];
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -176,7 +176,7 @@ const StudyList: React.FC<StudyListProps> = ({ studiesPerPage = 4 }) => {
       )}
     </ListContainer>
   );
-};
+});
 
 const MainPage: React.FC = () => {
   const [location, setLocation] = useState<MapPosition | null>(null);
@@ -203,7 +203,7 @@ const MainPage: React.FC = () => {
 
   return (
     <PageContainer>
-      <StudyList />
+      <StudyList studies={studies} />
       {canShowMap && (
         <KakaoMap
           center={{ lat: location.latitude, lng: location.longitude }}
