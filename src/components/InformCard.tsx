@@ -135,7 +135,7 @@ function InformCard({
   const navigate = useNavigate();
 
   function moveDetail() {
-    navigate(`/studydetail/${postId}`); 
+    navigate(`/study/detail/${postId}`); 
   }
 
   return (

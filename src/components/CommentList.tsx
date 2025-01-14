@@ -80,7 +80,7 @@ const CommentList: React.FC<CommentListProps> = ({
   const handleConfirm = async () => {
     try {
       await updatePicks.mutateAsync(selectedComments);
-      navigate(`/applicantlist/${postId}`);
+      navigate(`/applicant/list/${postId}`);
       window.location.reload();
     } catch (error) {
       console.error('Error updating picks:', error);

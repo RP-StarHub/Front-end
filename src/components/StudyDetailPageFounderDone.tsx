@@ -114,7 +114,7 @@ const StudyDetailPageFounderDone: React.FC<DetailPageProps> = ({ studyDetail }) 
   const navigate = useNavigate();
 
   function moveToApplicantList() {
-    navigate(`/applicantlist/${studyDetail[1]}`);
+    navigate(`/applicant/list/${studyDetail[1]}`);
   }
 
   return (

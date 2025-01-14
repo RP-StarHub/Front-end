@@ -169,7 +169,7 @@ function OverCard({ type, title, skill, deadline, progress, peopleNum, place, on
   };
 
   function moveDetail() {
-    navigate(`/studydetail/${postId}`);
+    navigate(`/study/detail/${postId}`);
   }
 
   return (
