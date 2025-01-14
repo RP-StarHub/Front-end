@@ -58,9 +58,9 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const CommentList: React.FC<CommentListProps> = ({ 
-  comments, 
-  isSelectable, 
+const CommentList: React.FC<CommentListProps> = ({
+  comments,
+  isSelectable,
   postId,
 }) => {
   const [selectedComments, setSelectedComments] = useState<number[]>([]);
@@ -70,7 +70,7 @@ const CommentList: React.FC<CommentListProps> = ({
   const handleCommentClick = (commentId: number) => {
     if (!isSelectable) return;
 
-    setSelectedComments(prev => 
+    setSelectedComments(prev =>
       prev.includes(commentId)
         ? prev.filter(id => id !== commentId)
         : [...prev, commentId]
@@ -79,7 +79,7 @@ const CommentList: React.FC<CommentListProps> = ({
 
   const handleConfirm = async () => {
     try {
-      await updatePicks.mutateAsync(selectedComments);      
+      await updatePicks.mutateAsync(selectedComments);
       navigate(`/applicantlist/${postId}`);
       window.location.reload();
     } catch (error) {
@@ -87,45 +87,25 @@ const CommentList: React.FC<CommentListProps> = ({
     }
   };
 
-  if (isSelectable) {
-    return (
-      <CommentListContainer>
-        {comments.map((comment) => (
-          <CommentItem
-            key={comment.commentId}
-            $isSelected={selectedComments.includes(comment.commentId)}
-            $isSelectable={isSelectable}
-            onClick={() => handleCommentClick(comment.commentId)}
-          >
-            <div>{comment.username}</div>
-            <div>{comment.createdAt}</div>
-            <Content>{comment.content}</Content>
-          </CommentItem>
-        ))}
-        <ButtonContainer>
-          <Button onClick={handleConfirm}>스터디원 확정</Button>
-        </ButtonContainer>
-      </CommentListContainer>
-    );
-  } else{
-    return (
-      <CommentListContainer>
-        {comments.map((comment, index) => (
-          <CommentItem
-            key={comment.commentId}
-            $isSelected={selectedComments.includes(comment.commentId)}
-            $isSelectable={isSelectable}
-            onClick={() => handleCommentClick(comment.commentId)}
-          >
-            <div>{comment.username}</div>
-            <div>{comment.createdAt}</div>
-            <Content>{comment.content}</Content>
-          </CommentItem>
-        ))}
-      </CommentListContainer>
-    );
-  }
-
+  return (
+    <CommentListContainer>
+      {comments.map((comment) => (
+        <CommentItem
+          key={comment.commentId}
+          $isSelected={selectedComments.includes(comment.commentId)}
+          $isSelectable={isSelectable}
+          onClick={() => handleCommentClick(comment.commentId)}
+        >
+          <div>{comment.username}</div>
+          <div>{comment.createdAt}</div>
+          <Content>{comment.content}</Content>
+        </CommentItem>
+      ))}
+      <ButtonContainer>
+        <Button onClick={handleConfirm}>스터디원 확정</Button>
+      </ButtonContainer>
+    </CommentListContainer>
+  );
 };
 
 export default CommentList;
