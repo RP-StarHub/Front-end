@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-
+import Navbar from "./components/common/layout/Navbar";
+import Footer from "./components/common/layout/Footer";
 import MainPage from "./pages/MainPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -9,14 +10,20 @@ import StudyRecruitPage from "./pages/StudyRecruitPage";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/applicant/list/:postId" element={<ApplicantListPage />} />
-      <Route path="/study/detail/:postId" element={<StudyDetailPage />} />
-      <Route path="/study/recruit" element={<StudyRecruitPage />} />
-    </Routes>
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/applicant/list/:postId" element={<ApplicantListPage />} />
+          <Route path="/study/detail/:postId" element={<StudyDetailPage />} />
+          <Route path="/study/recruit" element={<StudyRecruitPage />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
   );
 }
 
