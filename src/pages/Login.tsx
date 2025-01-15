@@ -70,10 +70,38 @@ const Login = () => {
     loginId: '',
     password: '',
   });
+  
+  // 에러 상태 추가
+  const [errors, setErrors] = useState({
+    loginId: '',
+    password: ''
+  });
 
   const login = useLogin();
 
+  const validateForm = () => {
+    const newErrors = {
+      loginId: '',
+      password: ''
+    };
+
+    // 아이디 검증
+    if (!loginData.loginId) {
+      newErrors.loginId = '아이디를 입력해주세요';
+    }
+
+    // 비밀번호 검증
+    if (!loginData.password) {
+      newErrors.password = '비밀번호를 입력해주세요';
+    }
+
+    setErrors(newErrors);
+    return !newErrors.loginId && !newErrors.password;
+  };
+
   const handleLogin = async () => {
+    if (!validateForm()) return;
+
     try {
       const response = await login.mutateAsync(loginData);
       localStorage.setItem('userInfo', JSON.stringify(response.data.data));
@@ -93,7 +121,14 @@ const Login = () => {
       ...loginData,
       [name]: value,
     });
-  }
+    // 입력 시 해당 필드의 에러 메시지 제거
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
+  };
 
   return (
     <PageContainer>
@@ -109,7 +144,8 @@ const Login = () => {
             onChange={handleChange}
             fullWidth
             bordered
-            className="mb-4" 
+            error={errors.loginId}
+            className="mb-4"
           />
         </InputWrapper>
         <InputWrapper>
@@ -122,15 +158,16 @@ const Login = () => {
             onChange={handleChange}
             fullWidth
             bordered
-            className="mb-4" 
+            error={errors.password}
+            className="mb-4"
           />
         </InputWrapper>
       </Box>
       <Button 
         variant="primary"
-        size="large"
+        size="medium"
         onClick={handleLogin}
-        className="mt-10 w-64"  // 250px ≈ 64 (16 * 4)
+        className="mt-10 w-60"
       >
         로그인
       </Button>
