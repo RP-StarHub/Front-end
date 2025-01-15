@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
-import StarIcon from "../assets/icons/StarIcon.png";
+import StarIcon from "../../../assets/icons/StarIcon.png";
 import CommentList from "./CommentList";
-import { DetailPageProps } from "../types";
-import { CommentCreateRequest } from "../types/api/comment";
-import { useCommentCreate } from "../hooks/api/useComment";
+import { DetailPageProps } from "../../../types";
+import { CommentCreateRequest } from "../../../types/api/comment";
+import { useCommentCreate } from "../../../hooks/api/useComment";
 
 const PageContainer = styled.div`
   display: flex;

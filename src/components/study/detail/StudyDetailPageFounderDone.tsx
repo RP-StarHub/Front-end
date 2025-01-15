@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-
-import StarIcon from "../assets/icons/StarIcon.png";
-import { DetailPageProps } from '../types';
+import StarIcon from "../../../assets/icons/StarIcon.png";
+import { DetailPageProps } from '../../../types';
 
 const PageContainer = styled.div`
   display: flex;
@@ -114,7 +113,7 @@ const StudyDetailPageFounderDone: React.FC<DetailPageProps> = ({ studyDetail }) 
   const navigate = useNavigate();
 
   function moveToApplicantList() {
-    navigate(`/applicantlist/${studyDetail[1]}`);
+    navigate(`/applicant/list/${studyDetail[1]}`);
   }
 
   return (

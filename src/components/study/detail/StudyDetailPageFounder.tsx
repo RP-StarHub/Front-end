@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-
-import StarIcon from "../assets/icons/StarIcon.png";
+import StarIcon from "../../../assets/icons/StarIcon.png";
 import CommentList from "./CommentList";
-import { DetailPageProps } from "../types";
+import { DetailPageProps } from "../../../types";
 
 const PageContainer = styled.div`
   display: flex;

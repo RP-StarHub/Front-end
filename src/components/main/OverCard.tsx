@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import StackIcon from "../assets/icons/StackIcon.png";
-import FinishIcon from "../assets/icons/FinishIcon.png";
-import PlaceIcon from "../assets/icons/PlaceIcon.png";
-import PeopleIcon from "../assets/icons/PeopleIcon.png";
-import DuringIcon from "../assets/icons/DuringIcon.png";
+import StackIcon from "../../assets/icons/StackIcon.png";
+import FinishIcon from "../../assets/icons/FinishIcon.png";
+import PlaceIcon from "../../assets/icons/PlaceIcon.png";
+import PeopleIcon from "../../assets/icons/PeopleIcon.png";
+import DuringIcon from "../../assets/icons/DuringIcon.png";
 // import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -169,7 +169,7 @@ function OverCard({ type, title, skill, deadline, progress, peopleNum, place, on
   };
 
   function moveDetail() {
-    navigate(`/studydetail/${postId}`);
+    navigate(`/study/detail/${postId}`);
   }
 
   return (

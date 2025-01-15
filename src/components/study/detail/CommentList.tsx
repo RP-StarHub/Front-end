@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { CommentInfo } from '../types/api/comment';
-import { useCommentPick } from '../hooks/api/useComment';
-
+import { CommentInfo } from '../../../types/api/comment';
+import { useCommentPick } from '../../../hooks/api/useComment';
 
 interface CommentListProps {
   comments: CommentInfo[];
@@ -80,7 +79,7 @@ const CommentList: React.FC<CommentListProps> = ({
   const handleConfirm = async () => {
     try {
       await updatePicks.mutateAsync(selectedComments);
-      navigate(`/applicantlist/${postId}`);
+      navigate(`/applicant/list/${postId}`);
       window.location.reload();
     } catch (error) {
       console.error('Error updating picks:', error);

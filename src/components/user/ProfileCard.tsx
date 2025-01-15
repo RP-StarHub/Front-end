@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from "styled-components";
-import HumanIcon from "../assets/icons/HumanIcon.png";
-import PhoneIcon from "../assets/icons/PhoneIcon.png";
-import MessageIcon from "../assets/icons/MessageIcon.png";
+// import HumanIcon from "../assets/icons/HumanIcon.png";
+import PhoneIcon from "../../assets/icons/PhoneIcon.png";
+import MessageIcon from "../../assets/icons/MessageIcon.png";
 
 const PageContainer = styled.div`
   height: 230px;
@@ -16,23 +16,23 @@ const PageContainer = styled.div`
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
 `
 
-const ProfileImageContainer = styled.div`
-  width: 150px;
-  height: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #B3B4DC;
-  border-radius: 50%;
-  margin-bottom: 20px;
-`
+// const ProfileImageContainer = styled.div`
+//   width: 150px;
+//   height: 150px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   background-color: #B3B4DC;
+//   border-radius: 50%;
+//   margin-bottom: 20px;
+// `
 
-const ProfileImage = styled.img`
-  width: 120px;
-  height: 120px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-`
+// const ProfileImage = styled.img`
+//   width: 120px;
+//   height: 120px;
+//   margin-top: 20px;
+//   margin-bottom: 20px;
+// `
 
 const RowDiv = styled.div`
   display: flex;
@@ -68,7 +68,6 @@ const RowLeftDiv = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  // to all the item start from left
   justify-content: flex-start;
   margin-top: 10px;
 `
@@ -94,12 +93,12 @@ interface ProfileCardProps {
   age: number;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ 
-  name, 
-  introduction, 
-  email, 
-  phoneNum, 
-  age 
+const ProfileCard: React.FC<ProfileCardProps> = ({
+  name,
+  introduction,
+  email,
+  phoneNum,
+  age
 }) => {
   return (
     <PageContainer>
@@ -112,11 +111,19 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       </RowDiv>
       <IntroText>{introduction}</IntroText>
       <RowLeftDiv>
-        <img src={PhoneIcon} style={{ width: "15px", height: "15px", marginRight: "10px" }} />
+        <img
+          src={PhoneIcon}
+          style={{ width: "15px", height: "15px", marginRight: "10px" }}
+          alt="phoneIcon"
+        />
         <PhoneText>{phoneNum}</PhoneText>
       </RowLeftDiv>
       <RowLeftDiv>
-        <img src={MessageIcon} style={{ width: "17px", height: "17px", marginRight: "10px" }} />
+        <img
+          src={MessageIcon}
+          style={{ width: "17px", height: "17px", marginRight: "10px" }}
+          alt="messageIcon"
+        />
         <EmailText>{email}</EmailText>
       </RowLeftDiv>
     </PageContainer>
