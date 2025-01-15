@@ -6,8 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Navbar from "./components/common/Navbar";
-import Footer from "./components/common/Footer";
+import Navbar from "./components/common/layout/Navbar";
+import Footer from "./components/common/layout/Footer";
 
 const queryClient = new QueryClient({
   defaultOptions: {

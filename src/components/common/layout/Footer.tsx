@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import StarHubIconFooterbar from "../../assets/icons/StarHubIconFooterbar.png";
+import StarHubIconFooterbar from "../../../assets/icons/StarHubIconFooterbar.png";
 
 const FooterContainer = styled.div`
   width: 100%;
