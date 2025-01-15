@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-
 import StarIcon from "../assets/icons/StarIcon.png";
 import CommentList from "./CommentList";
 import { DetailPageProps } from "../types";

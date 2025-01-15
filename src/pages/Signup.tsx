@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
 import StarIcon from "../assets/icons/StarIcon.png";
 import { RegisterUserRequest } from '../types/api/user';
 import { useRegister } from '../hooks/api/useUser';

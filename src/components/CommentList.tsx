@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { CommentInfo } from '../types/api/comment';
 import { useCommentPick } from '../hooks/api/useComment';
 
-
 interface CommentListProps {
   comments: CommentInfo[];
   isSelectable: boolean;
