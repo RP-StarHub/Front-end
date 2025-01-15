@@ -70,7 +70,7 @@ const TextInput = ({
         {...props}
       />
       {error && (
-        <p className="mt-1 text-sm text-red-500 font-scdream4">
+        <p className="text-sm text-red-500 font-scdream4">
           {error}
         </p>
       )}
