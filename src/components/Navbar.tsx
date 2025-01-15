@@ -60,7 +60,7 @@ const Navbar = () => {
         <TextLink to="/">
           <img src={StarHubIconNavbar} alt={'Logo'} style={{ width: 'auto', height: '50px', marginRight: '10px', marginTop: '5px'}} />
         </TextLink>
-        <TextLink to="/studyrecruit">
+        <TextLink to="/study/recruit">
           <NavItem>모집하기</NavItem>
         </TextLink>
       </NavItems>
