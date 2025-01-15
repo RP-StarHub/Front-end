@@ -32,7 +32,7 @@ const MainPage: React.FC = () => {
         >
           {studies.map((study) => (
             <EventMarker
-              key={`EventMarker-${study.latitude}-${study.longitude}`}
+              key={`EventMarker-${study.postId}`}
               position={{ latitude: study.latitude, longitude: study.longitude }}
               postId={study.postId}
               skill={study.skill}
