@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { CommentInfo } from '../types/api/comment';
-import { useCommentPick } from '../hooks/api/useComment';
+import { CommentInfo } from '../../../types/api/comment';
+import { useCommentPick } from '../../../hooks/api/useComment';
 
 interface CommentListProps {
   comments: CommentInfo[];

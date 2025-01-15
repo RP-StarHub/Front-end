@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from "styled-components";
 // import HumanIcon from "../assets/icons/HumanIcon.png";
-import PhoneIcon from "../assets/icons/PhoneIcon.png";
-import MessageIcon from "../assets/icons/MessageIcon.png";
+import PhoneIcon from "../../assets/icons/PhoneIcon.png";
+import MessageIcon from "../../assets/icons/MessageIcon.png";
 
 const PageContainer = styled.div`
   height: 230px;

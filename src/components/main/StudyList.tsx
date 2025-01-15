@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
-import { PostListInfo } from "../types/api/post";
+import { PostListInfo } from "../../types/api/post";
 import InformCard from "./InformCard";
 
 const ListContainer = styled.div`

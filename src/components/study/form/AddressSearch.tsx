@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import styled from "styled-components";
-import { LatLng } from "../types";
+import { LatLng } from "../../../types";
 import DaumPostcode from "react-daum-postcode";
-import { PostRequest } from "../types/api/post";
+import { PostRequest } from "../../../types/api/post";
 
 const AddressInput = styled.input`
   margin-top: 5px;

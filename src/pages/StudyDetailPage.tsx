@@ -1,8 +1,8 @@
 import React from "react";
 import { useParams } from 'react-router-dom';
-import StudyDetailPageFounder from '../components/StudyDetailPageFounder';
-import StudyDetailPageApplicant from '../components/StudyDetailPageApplicant';
-import StudyDetailPageFounderDone from '../components/StudyDetailPageFounderDone';
+import StudyDetailPageFounder from '../components/study/detail/StudyDetailPageFounder';
+import StudyDetailPageApplicant from '../components/study/detail/StudyDetailPageApplicant';
+import StudyDetailPageFounderDone from '../components/study/detail/StudyDetailPageFounderDone';
 import { usePostDetail } from "../hooks/api/usePost";
 import { useCommentList } from "../hooks/api/useComment";
 import { PostInfo } from "../types/api/post";

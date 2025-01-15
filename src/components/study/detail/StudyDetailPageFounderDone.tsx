@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 import styled from "styled-components";
-import StarIcon from "../assets/icons/StarIcon.png";
-import CommentList from "./CommentList";
-import { DetailPageProps } from "../types";
+import { useNavigate } from "react-router-dom";
+import StarIcon from "../../../assets/icons/StarIcon.png";
+import { DetailPageProps } from '../../../types';
 
 const PageContainer = styled.div`
   display: flex;
   padding: 50px 200px 50px 200px;
-  background-color: #f6f1fb;
+  background-color: #F6F1FB;
   flex-direction: column;
 `;
 
@@ -22,33 +22,6 @@ const Box = styled.div`
   flex-direction: column;
 `;
 
-const TitleText = styled.p`
-  margin: 0px 0px 0px 10px;
-  font-size: 50px;
-  font-family: "GmarketSans";
-  color: #313866;
-`;
-
-const AuthText = styled.p`
-  margin: 0px 0px 20px 20px;
-  font-size: 25px;
-  font-family: "SCDream4";
-  color: #7c8bbe;
-`;
-
-const SubtitleText = styled.p`
-  margin: 0px 0px 20px 20px;
-  font-size: 24px;
-  font-family: "SCDream6";
-  color: #b3b4dc;
-`;
-
-const SubWrapper = styled.div`
-  flex-direction: row;
-  display: flex;
-  align-items: center;
-`;
-
 const AddressContent = styled.p`
   margin: 0px 0px 20px 20px;
   width: 700px;
@@ -57,11 +30,38 @@ const AddressContent = styled.p`
   color: #313866;
 `;
 
+const TitleText = styled.p`
+  margin: 0px 0px 0px 10px;
+  font-size: 50px;
+  font-family: 'GmarketSans';
+  color: #313866;
+`;
+
+const AuthText = styled.p`
+  margin: 0px 0px 20px 20px;
+  font-size: 25px;
+  font-family: 'SCDream4';
+  color: #7C8BBE;
+`;
+
+const SubtitleText = styled.p`
+  margin: 0px 0px 20px 20px;
+  font-size: 24px;
+  font-family: 'SCDream6';
+  color: #B3B4DC;
+`;
+
+const SubWrapper = styled.div`
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+`;
+
 const TextContent = styled.p`
   margin: 0px 0px 20px 20px;
   width: 300px;
   font-size: 18px;
-  font-family: "SCDream4";
+  font-family: 'SCDream4';
   color: #313866;
 `;
 
@@ -73,21 +73,33 @@ const Subbox = styled.div`
 const TextContent2 = styled.p`
   margin: 0px 0px 20px 20px;
   font-size: 18px;
-  font-family: "SCDream4";
+  font-family: 'SCDream4';
   color: #313866;
+`;
+
+const Button = styled.button`
+  margin-top: 40px;
+  width: 150px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  background-color: #B3B4DC;
+  font-family: 'SCDream4';
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const HorizontalLine = styled.div`
   width: 100%;
   height: 2px;
-  background-color: #7c8bbe;
+  background-color: #7C8BBE;
   margin: 30px 0px 40px 0px;
-`;
-
-const CommentArea = styled.div`
-  display: flex;
-  margin: 50px 0px 0px 0px;
-  flex-direction: column;
 `;
 
 const RowWrapper = styled.div`
@@ -97,31 +109,29 @@ const RowWrapper = styled.div`
   margin: 0px 0px 20px 0px;
 `;
 
-const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
+const StudyDetailPageFounderDone: React.FC<DetailPageProps> = ({ studyDetail }) => {
+  const navigate = useNavigate();
+
+  function moveToApplicantList() {
+    navigate(`/applicant/list/${studyDetail[1]}`);
+  }
+
   return (
     <PageContainer>
       <Box>
         <RowWrapper>
-          <img
-            src={StarIcon}
-            alt={"Star Icon"}
-            style={{ width: "auto", height: "50px" }}
-          />
-          <TitleText>
-            [{studyDetail[0].type}] {studyDetail[0].title}
-          </TitleText>
+          <img src={StarIcon} alt={'Star Icon'} style={{ width: 'auto', height: '50px'}} />
+          <TitleText>[{studyDetail[0].type}] {studyDetail[0].title}</TitleText>
         </RowWrapper>
-        <AuthText>
-          {studyDetail[0].userName} | {studyDetail[0].createdAt}
-        </AuthText>
+        <AuthText>{studyDetail[0].userName} | {studyDetail[0].createdAt}</AuthText>
         <SubWrapper>
-          <SubtitleText>진행 장소</SubtitleText>
-          <AddressContent>{studyDetail[0].place}</AddressContent>
+            <SubtitleText>진행 장소</SubtitleText>
+            <AddressContent>{studyDetail[0].place}</AddressContent>
         </SubWrapper>
         <Subbox>
           <SubWrapper>
-            <SubtitleText>기술 스택</SubtitleText>
-            <TextContent>{studyDetail[0].skill}</TextContent>
+          <SubtitleText>기술 스택</SubtitleText>
+          <TextContent>{studyDetail[0].skill}</TextContent>
           </SubWrapper>
           <SubWrapper>
             <SubtitleText>진행 기간</SubtitleText>
@@ -138,20 +148,15 @@ const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
             <TextContent>{studyDetail[0].deadline}</TextContent>
           </SubWrapper>
         </Subbox>
-        <HorizontalLine />
+        <HorizontalLine/>
         <SubtitleText>스터디 소개</SubtitleText>
         <TextContent2>{studyDetail[0].content}</TextContent2>
       </Box>
-      <CommentArea>
-        <SubtitleText>댓글</SubtitleText>
-        <CommentList
-          comments={studyDetail[2]}
-          isSelectable
-          postId={studyDetail[1]}
-        />
-      </CommentArea>
+      <ButtonContainer>
+        <Button onClick={moveToApplicantList}>스터디원 보기</Button>
+      </ButtonContainer>
     </PageContainer>
   );
 };
 
-export default StudyDetailPageFounder;
+export default StudyDetailPageFounderDone;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import ProfileCard from '../components/ProfileCard';
+import ProfileCard from '../components/user/ProfileCard';
 import PickIcon from "../assets/icons/PickIcon.png";
 import { useParams } from 'react-router-dom';
 import { useUserPicked } from '../hooks/api/useComment';

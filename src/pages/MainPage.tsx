@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { Map as KakaoMap } from "react-kakao-maps-sdk";
 import { usePostList } from "../hooks/api/usePost";
-import EventMarker from "../components/EventMarker";
-import StudyList from "../components/StudyList";
+import EventMarker from "../components/main/EventMarker";
+import StudyList from "../components/main/StudyList";
 import { useGeolocation } from '../hooks/common/useGeolocation';
 
 const PageContainer = styled.div`

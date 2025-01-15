@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import StarIcon from "../assets/icons/StarIcon.png";
-import { AddressSearch } from "../components/AddressSearch";
+import { AddressSearch } from "../components/study/form/AddressSearch";
 import { useRecruitForm } from "../hooks/study/useRecruitForm";
 
 const PageContainer = styled.div`
