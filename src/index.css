@@ -1,16 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: "SCDream4";
   src: url("./assets/Font/SCDream4.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
   font-family: "SCDream6";
   src: url("./assets/Font/SCDream6.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
 }
 
 @font-face {
   font-family: "GmarketSans";
   src: url("./assets/Font/GmarketSansBold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
 }
 
 body {
