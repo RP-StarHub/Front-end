@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { LoginUserRequest } from '../types/api/user';
 import { useLogin } from '../hooks/api/useUser';
+import Button from '../components/common/ui/Button';
+import TextInput from '../components/common/ui/TextInput';
 
 const PageContainer = styled.div`
   display: flex;
@@ -35,31 +37,6 @@ const Box = styled.div`
 
 const InputWrapper = styled.div`
   margin-bottom: 10px;
-`;
-
-const Input = styled.input`
-  margin-bottom: 15px;
-  padding: 15px;
-  border: 3px solid #B3B4DC;
-  border-radius: 10px;
-  width: 300px;
-  font-size: 18px;
-  font-family: 'SCDream4';
-`;
-
-const Button = styled.button`
-  padding: 10px 20px;
-  margin-top: 40px;
-  width: 250px;
-  height: 50px;
-  border: none;
-  border-radius: 10px;
-  background-color: #B3B4DC;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  font-family: 'SCDream6';
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
 `;
 
 const HorizontalLine = styled.div`
@@ -94,15 +71,12 @@ const Login = () => {
     password: '',
   });
 
-  const login = useLogin();;
+  const login = useLogin();
 
   const handleLogin = async () => {
     try {
       const response = await login.mutateAsync(loginData);
-
-      // 서버에서 받은 로그인 정보를 localStorage에 저장
       localStorage.setItem('userInfo', JSON.stringify(response.data.data));
-    
       navigate('/');
       window.location.reload();
     } catch (error) {
@@ -112,13 +86,6 @@ const Login = () => {
       }
     }
   };
-
-  // localStorage에서 정보 삭제하기
-  // localStorage.removeItem('userInfo');
-
-  // localStorage에서 정보 가져오기 및 확인하기
-  // const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  // console.log(userInfo)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -133,25 +100,40 @@ const Login = () => {
       <TitleText>Sign In</TitleText>
       <Box>
         <InputWrapper>
-          <Input
+          <TextInput
+            inputSize="medium"
             type="text"
             name="loginId"
             placeholder="아이디"
             value={loginData.loginId}
             onChange={handleChange}
+            fullWidth
+            bordered
+            className="mb-4" 
           />
         </InputWrapper>
         <InputWrapper>
-          <Input
+          <TextInput
+            inputSize="medium"
             type="password"
             name="password"
             placeholder="비밀번호"
             value={loginData.password}
             onChange={handleChange}
+            fullWidth
+            bordered
+            className="mb-4" 
           />
         </InputWrapper>
       </Box>
-      <Button onClick={handleLogin}>Login</Button>
+      <Button 
+        variant="primary"
+        size="large"
+        onClick={handleLogin}
+        className="mt-10 w-64"  // 250px ≈ 64 (16 * 4)
+      >
+        로그인
+      </Button>
       <HorizontalLine />
       <Text>
         <TextContent>아직 회원이 아니신가요?</TextContent>
