@@ -1,16 +1,9 @@
 import React from "react";
-import styled from "styled-components";
 import { Map as KakaoMap } from "react-kakao-maps-sdk";
 import { usePostList } from "../hooks/api/usePost";
 import EventMarker from "../components/main/EventMarker";
 import StudyList from "../components/main/StudyList";
 import { useGeolocation } from '../hooks/common/useGeolocation';
-
-const PageContainer = styled.div`
-  height: 90vh;
-  display: flex;
-  flex-direction: row;
-`;
 
 const MainPage: React.FC = () => {
   const { location, loaded } = useGeolocation();
@@ -22,12 +15,12 @@ const MainPage: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <PageContainer>
+    <div className="w-full flex h-[90vh]">
       <StudyList studies={studies} />
       {canShowMap && (
         <KakaoMap
           center={{ lat: location.latitude, lng: location.longitude }}
-          style={{ width: "73%", height: "100%" }}
+          style={{ width: "66%", height: "100%" }}
           level={3}
         >
           {studies.map((study) => (
@@ -46,7 +39,7 @@ const MainPage: React.FC = () => {
           ))}
         </KakaoMap>
       )}
-    </PageContainer>
+    </div>
   );
 };
 
