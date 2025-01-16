@@ -19,26 +19,11 @@ module.exports = {
         "scdream6": ["SCDream6", "sans-serif"]
       },
       fontSize: {
-        "page-title": ["30px", {
-          lineHeight: "1.5",
-          fontFamily: "GmarketSans"
-        }],
-        "button": ["24px", {
-          lineHeight: "1.5",
-          fontFamily: "SCDream6"
-        }],
-        "label": ["24px", {
-          lineHeight: "1.5",
-          fontFamily: "SCDream6"
-        }],
-        "placeholder": ["24px", {
-          lineHeight: "1.5",
-          fontFamily: "SCDream4"
-        }],
-        "regular": ["20px", {
-          lineHeight: "1.5",
-          fontFamily: "SCDream4"
-        }],
+        "page-title": ["30px", { lineHeight: "1.5" }],
+        "button": ["24px", { lineHeight: "1.5" }],
+        "label": ["24px", { lineHeight: "1.5" }],
+        "placeholder": ["24px", { lineHeight: "1.5" }],
+        "regular": ["20px", { lineHeight: "1.5" }],
       }
     },
   },
