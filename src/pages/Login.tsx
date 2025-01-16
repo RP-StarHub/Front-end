@@ -13,7 +13,6 @@ const Login = () => {
     password: '',
   });
 
-  // 에러 상태 추가
   const [errors, setErrors] = useState({
     loginId: '',
     password: ''
@@ -27,12 +26,10 @@ const Login = () => {
       password: ''
     };
 
-    // 아이디 검증
     if (!loginData.loginId) {
       newErrors.loginId = '아이디를 입력해주세요';
     }
 
-    // 비밀번호 검증
     if (!loginData.password) {
       newErrors.password = '비밀번호를 입력해주세요';
     }
@@ -77,7 +74,7 @@ const Login = () => {
       <div className='mb-16 text-6xl font-gmarket-bold text-sub'>
         Sign In
       </div>
-      <div className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl shadow-gray-300 px-20 py-12 mb-12 '>
+      <div className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl shadow-gray-300 px-20 py-14 mb-12 w-1/5 '>
         <TextInput
           inputSize="medium"
           type="text"
@@ -88,8 +85,8 @@ const Login = () => {
           fullWidth
           bordered
           error={errors.loginId}
-          className="mb-6"
         />
+        <div className='mb-8'/>
         <TextInput
           inputSize="medium"
           type="password"

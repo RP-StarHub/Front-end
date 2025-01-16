@@ -19,6 +19,15 @@ const Signup = () => {
     phoneNum: "",
     introduction: "",
   });
+  const [errors, setErrors] = useState({
+    loginId: '',
+    password: '',
+    name: '',
+    age: '',
+    email: '',
+    phoneNum: '',
+    introduction: '',
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -28,13 +37,64 @@ const Signup = () => {
       ...formData,
       [name]: name === 'age' ? parseInt(value) : value,
     });
+    // 입력 시 해당 필드의 에러 메시지 제거
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
   };
+
+  const validateForm = () => {
+    const newErrors = {
+      loginId: '',
+      password: '',
+      name: '',
+      age: '',
+      email: '',
+      phoneNum: '',
+      introduction: '',
+    };
+
+    if (!formData.loginId) {
+      newErrors.loginId = '아이디는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.password) {
+      newErrors.password = '비밀번호는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.name) {
+      newErrors.name = '이름는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.age) {
+      newErrors.age = '나이는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.email) {
+      newErrors.email = '이메일는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.phoneNum) {
+      newErrors.phoneNum = '전화번호는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.introduction) {
+      newErrors.introduction = '한 줄 소개는 필수 입력 사항입니다.';
+    }
+
+    setErrors(newErrors);
+    return !newErrors.loginId && !newErrors.password && !newErrors.name && !newErrors.age && !newErrors.email && !newErrors.phoneNum && !newErrors.introduction;
+  }
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-
+    if (!validateForm()) return;
+    
     const form = new FormData();
     form.append('info', JSON.stringify(formData));
 
@@ -76,6 +136,7 @@ const Signup = () => {
               onChange={handleChange}
               fullWidth
               bordered
+              error={errors.loginId}
             />
           </div>
           <div className='mb-8'>
@@ -90,6 +151,7 @@ const Signup = () => {
               onChange={handleChange}
               fullWidth
               bordered
+              error={errors.password}
             />
           </div>
           <div className='w-[30vw] h-px bg-sub mt-5 mb-5' />
@@ -115,6 +177,7 @@ const Signup = () => {
               onChange={handleChange}
               fullWidth
               bordered
+              error={errors.name}
             />
           </div>
           <div className='mb-8'>
@@ -129,6 +192,7 @@ const Signup = () => {
               onChange={handleChange}
               fullWidth
               bordered
+              error={errors.age}
             />
           </div>
           <div className='mb-8'>
@@ -143,6 +207,7 @@ const Signup = () => {
               onChange={handleChange}
               fullWidth
               bordered
+              error={errors.email}
             />
           </div>
           <div className='mb-8'>
@@ -157,6 +222,7 @@ const Signup = () => {
               onChange={handleChange}
               fullWidth
               bordered
+              error={errors.phoneNum}
             />
           </div>
           <div className='mb-8'>
@@ -170,6 +236,7 @@ const Signup = () => {
               onChange={handleChange}
               fullWidth
               bordered
+              error={errors.introduction}
             />
           </div>
           <Button
