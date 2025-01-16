@@ -47,7 +47,7 @@ const Navbar = () => {
             />
           </Link>
           <Link to="/study/recruit">
-            <span className='text-white font-scdream6 cursor-pointer mx-4 text-label'>
+            <span className='text-white font-scdream4 cursor-pointer mx-4 text-label'>
               모집하기
             </span>
           </Link>
@@ -55,11 +55,11 @@ const Navbar = () => {
         <div className='flex items-center'>
           {userInfo !== null ? (
             <>
-              <span className='text-white font-scdream6 cursor-pointer mx-4 text-label'>
+              <span className='text-white font-scdream4 cursor-pointer mx-4 text-label'>
                 {userInfo.name} 님
               </span>
               <span 
-                className='text-white font-scdream6 cursor-pointer mx-4 text-label'
+                className='text-white font-scdream4 cursor-pointer mx-4 text-label'
                 onClick={handleLogout}
               >
                 로그아웃
@@ -68,7 +68,7 @@ const Navbar = () => {
           ) : (
             <Link to="/login">
               <span
-                className='text-white font-scdream6 cursor-pointer mx-4 text-label'
+                className='text-white font-scdream4 cursor-pointer mx-4 text-label'
               >
                 로그인
               </span>
