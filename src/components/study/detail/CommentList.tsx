@@ -100,9 +100,11 @@ const CommentList: React.FC<CommentListProps> = ({
           <Content>{comment.content}</Content>
         </CommentItem>
       ))}
-      <ButtonContainer>
-        <Button onClick={handleConfirm}>스터디원 확정</Button>
-      </ButtonContainer>
+      {isSelectable && (
+        <ButtonContainer>
+          <Button onClick={handleConfirm}>스터디원 확정</Button>
+        </ButtonContainer>
+      )}
     </CommentListContainer>
   );
 };
