@@ -42,7 +42,7 @@ const Button = ({
   
   // 버튼 크기별 패딩
   const sizeStyles = {
-    small: "px-4 py-2 text-base",
+    small: "px-6 py-3 text-base",
     medium: "px-6 py-3 text-button",
     large: "px-8 py-4 text-button"
   };
