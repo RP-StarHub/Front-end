@@ -1,91 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { LoginUserRequest } from '../types/api/user';
 import { useLogin } from '../hooks/api/useUser';
-
-const PageContainer = styled.div`
-  display: flex;
-  padding: 50px;
-  justify-content: center;
-  align-items: center;
-  background-color: #F6F1FB;
-  flex-direction: column;
-`;
-
-const TitleText = styled.p`
-  margin: 0px 0px 50px 0px;
-  font-size: 50px;
-  font-family: 'GmarketSans';
-  color: #7C8BBE;
-`;
-
-const Box = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 450px;
-  height: 250px;
-  border-radius: 20px;
-  background-color: #fff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  flex-direction: column;
-`;
-
-const InputWrapper = styled.div`
-  margin-bottom: 10px;
-`;
-
-const Input = styled.input`
-  margin-bottom: 15px;
-  padding: 15px;
-  border: 3px solid #B3B4DC;
-  border-radius: 10px;
-  width: 300px;
-  font-size: 18px;
-  font-family: 'SCDream4';
-`;
-
-const Button = styled.button`
-  padding: 10px 20px;
-  margin-top: 40px;
-  width: 250px;
-  height: 50px;
-  border: none;
-  border-radius: 10px;
-  background-color: #B3B4DC;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  font-family: 'SCDream6';
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-`;
-
-const HorizontalLine = styled.div`
-  width: 50%;
-  height: 2px;
-  background-color: #7C8BBE;
-  margin: 60px 0px 10px 0px;
-`;
-
-const TextContent = styled.p`
-  margin: 0px 10px 0px 0px;
-  font-size: 18px;
-  font-family: 'SCDream4';
-  color: #313866;
-`;
-
-const TextLink = styled(Link)`
-  text-decoration: none;
-  font-size: 18px;
-  font-family: 'SCDream6';
-  color: #313866;
-`;
-
-const Text = styled.div`
-  display: flex;
-`;
+import Button from '../components/common/ui/Button';
+import TextInput from '../components/common/ui/TextInput';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -94,15 +13,37 @@ const Login = () => {
     password: '',
   });
 
-  const login = useLogin();;
+  const [errors, setErrors] = useState({
+    loginId: '',
+    password: ''
+  });
+
+  const login = useLogin();
+
+  const validateForm = () => {
+    const newErrors = {
+      loginId: '',
+      password: ''
+    };
+
+    if (!loginData.loginId) {
+      newErrors.loginId = '아이디를 입력해주세요';
+    }
+
+    if (!loginData.password) {
+      newErrors.password = '비밀번호를 입력해주세요';
+    }
+
+    setErrors(newErrors);
+    return !newErrors.loginId && !newErrors.password;
+  };
 
   const handleLogin = async () => {
+    if (!validateForm()) return;
+
     try {
       const response = await login.mutateAsync(loginData);
-
-      // 서버에서 받은 로그인 정보를 localStorage에 저장
       localStorage.setItem('userInfo', JSON.stringify(response.data.data));
-    
       navigate('/');
       window.location.reload();
     } catch (error) {
@@ -113,51 +54,69 @@ const Login = () => {
     }
   };
 
-  // localStorage에서 정보 삭제하기
-  // localStorage.removeItem('userInfo');
-
-  // localStorage에서 정보 가져오기 및 확인하기
-  // const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  // console.log(userInfo)
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginData({
       ...loginData,
       [name]: value,
     });
-  }
+    // 입력 시 해당 필드의 에러 메시지 제거
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
+  };
 
   return (
-    <PageContainer>
-      <TitleText>Sign In</TitleText>
-      <Box>
-        <InputWrapper>
-          <Input
-            type="text"
-            name="loginId"
-            placeholder="아이디"
-            value={loginData.loginId}
-            onChange={handleChange}
-          />
-        </InputWrapper>
-        <InputWrapper>
-          <Input
-            type="password"
-            name="password"
-            placeholder="비밀번호"
-            value={loginData.password}
-            onChange={handleChange}
-          />
-        </InputWrapper>
-      </Box>
-      <Button onClick={handleLogin}>Login</Button>
-      <HorizontalLine />
-      <Text>
-        <TextContent>아직 회원이 아니신가요?</TextContent>
-        <TextLink to="/signup">회원가입</TextLink>
-      </Text>
-    </PageContainer>
+    <div className='flex p-12 justify-center items-center bg-background flex-col w-full'>
+      <div className='mb-16 text-6xl font-gmarket-bold text-sub'>
+        Sign In
+      </div>
+      <div className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl shadow-gray-300 px-20 py-14 mb-12 w-1/5 '>
+        <TextInput
+          inputSize="medium"
+          type="text"
+          name="loginId"
+          placeholder="아이디"
+          value={loginData.loginId}
+          onChange={handleChange}
+          fullWidth
+          bordered
+          error={errors.loginId}
+        />
+        <div className='mb-8'/>
+        <TextInput
+          inputSize="medium"
+          type="password"
+          name="password"
+          placeholder="비밀번호"
+          value={loginData.password}
+          onChange={handleChange}
+          fullWidth
+          bordered
+          error={errors.password}
+        />
+      </div>
+      <Button
+        variant="primary"
+        size="medium"
+        onClick={handleLogin}
+        className="mt-10 w-96"
+      >
+        로그인
+      </Button>
+      <div className='w-1/2 h-px bg-sub mt-16 mb-5' />
+      <div className='flex'>
+        <p className='text-regular text-bold mr-4'>
+          아직 회원이 아니신가요?
+        </p>
+        <Link className='text-regular font-scdream6 text-bold' to="/signup">
+          회원가입
+        </Link>
+      </div>
+    </div>
   );
 };
 

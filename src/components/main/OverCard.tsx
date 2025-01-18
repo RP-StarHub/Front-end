@@ -1,115 +1,11 @@
 import React from "react";
-import styled from "styled-components";
 import StackIcon from "../../assets/icons/StackIcon.png";
 import FinishIcon from "../../assets/icons/FinishIcon.png";
 import PlaceIcon from "../../assets/icons/PlaceIcon.png";
 import PeopleIcon from "../../assets/icons/PeopleIcon.png";
 import DuringIcon from "../../assets/icons/DuringIcon.png";
-// import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
-const AllContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  vertical-align: top;
-  padding: 10px 0px 0px 20px;
-`;
-
-const PageContainer = styled.div`
-  width: 325px;
-  height: 110px;
-  border-radius: 5px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: auto auto auto;
-  /* padding: 10px 0px 0px 20px; */
-  margin: 13px 0px -12px 0px;
-  background-color: #ffffff;
-  border-radius: 15px;
-`;
-
-const LinkContainer = styled.div`
-  text-decoration: none;
-`;
-
-const TitleContainer = styled.div`
-  grid-column: span 2;
-  color: #313866;
-  font-size: 20px;
-  font-family: "GmarketSans";
-  width: 80%;
-  /* margin-top: 15px; */
-  margin-bottom: 10px;
-  /* margin-left: 20px; */
-`;
-
-const ShortContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  font-size: 16px;
-  align-items: center;
-  margin-bottom: 10px;
-`;
-
-const ShortTitleContainer = styled.div`
-  text-decoration: none;
-  text-align: center;
-  color: #7c8bbe;
-  font-size: 16px;
-  font-family: "SCDream4";
-  margin: 0px 5px;
-`;
-
-const ShortDetailContainer = styled.div`
-  text-decoration: none;
-  /* text-align: center; */
-  color: #313866;
-  font-size: 16px;
-  font-family: "SCDream4";
-`;
-
-const ClosedButton = styled.button`
-  width: 40px;
-  height: 20px;
-  color: #7c8bbe;
-  font-size: 16px;
-  font-family: "GmarketSans";
-  background-color: #ffffff;
-  border: none;
-  outline: none;
-  cursor: pointer;
-`;
-
-const StackIconCSS = {
-  width: "14px",
-  height: "14px",
-  margin: "4px",
-};
-
-const FinishIconCSS = {
-  width: "14px",
-  height: "16px",
-  margin: "3px 4px",
-};
-
-const PlaceIconCSS = {
-  width: "10px",
-  height: "16px",
-  margin: "3px 6px",
-};
-
-const peopleNumIconCSS = {
-  width: "16px",
-  height: "14px",
-  margin: "4px 3px",
-};
-
-const DuringIconCSS = {
-  width: "14px",
-  height: "14px",
-  margin: "4px",
-};
+import { IconType, IconStyle } from "../../types";
 
 interface OverCardProps {
   type: string;
@@ -123,74 +19,144 @@ interface OverCardProps {
   postId: number;
 }
 
-function shotInform(image: string, title: string, content: string, unit: string) {
+const iconStyles: Record<IconType, IconStyle> = {
+  '스택': {
+    width: "14px",
+    height: "14px",
+    margin: "4px"
+  },
+  '마감': {
+    width: "14px",
+    height: "16px",
+    margin: "3px 4px"
+  },
+  '장소': {
+    width: "10px",
+    height: "16px",
+    margin: "3px 6px"
+  },
+  '인원': {
+    width: "16px",
+    height: "14px",
+    margin: "4px 3px"
+  },
+  '기간': {
+    width: "14px",
+    height: "14px",
+    margin: "4px"
+  }
+};
+
+interface ShotInformProps {
+  image: string;
+  title: IconType;
+  content: string;
+  unit: string;
+}
+
+const ShotInform = ({ image, title, content, unit }: ShotInformProps) => {
   const isPlace = title === "장소";
   let displayContent = content;
 
   if (isPlace) {
-    const match = content.match(/\(([^)]+)\)/); 
-    displayContent = match ? match[1] : "";
+    const match = content.match(/\(([^)]+)\)/);
+    displayContent = match ? match[1] : content;
   }
 
   return (
-    <ShortContainer>
+    <div className="flex flex-row items-center">
       <img
         src={image}
         alt={title}
-        style={
-          title === "스택"
-            ? StackIconCSS
-            : title === "마감"
-            ? FinishIconCSS
-            : title === "장소"
-            ? PlaceIconCSS
-            : title === "인원"
-            ? peopleNumIconCSS
-            : title === "기간"
-            ? DuringIconCSS
-            : {}
-        }
+        style={iconStyles[title]}
       />
-      <ShortTitleContainer>{title}</ShortTitleContainer>
-      <ShortDetailContainer style={{ width: isPlace ? "80%" : "auto" }}>
-        {displayContent} {unit}
-      </ShortDetailContainer>
-    </ShortContainer>
+      <p className="text-regular text-sub font-scdream4 mx-2">{title}</p>
+      <div className="text-bold text-regular font-scdream4">
+        {displayContent}{unit}
+      </div>
+    </div>
   );
-}
+};
 
-function OverCard({ type, title, skill, deadline, progress, peopleNum, place, onClose, postId } : OverCardProps) {
+function OverCard({
+  type,
+  postId,
+  title,
+  skill,
+  deadline,
+  progress,
+  peopleNum,
+  place,
+  onClose
+}: OverCardProps) {
   const navigate = useNavigate();
 
-  const handleClose = () => {
-    if (onClose) {
-      onClose(); 
-    }
+  const handleClick = () => {
+    navigate(`/study/detail/${postId}`);
   };
 
-  function moveDetail() {
-    navigate(`/study/detail/${postId}`);
-  }
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  };
 
   return (
-    <AllContainer>
-      <LinkContainer onClick={moveDetail}>
-          <TitleContainer>[{type}] {title}</TitleContainer>
-        <PageContainer>
-          {shotInform(StackIcon, "스택", skill, "")}
-          {shotInform(FinishIcon, "마감", deadline, "")}
-          {shotInform(DuringIcon, "기간", progress, "개월")}
-          {shotInform(PeopleIcon, "인원", peopleNum.toString(), "명")}
-        </PageContainer>
-          {shotInform(PlaceIcon, "장소", place, "")}
-      </LinkContainer>
-      <ClosedButton
-        onClick={handleClose}
-        style={{ cursor: "pointer", verticalAlign: "top" }}
-      >
-        X
-      </ClosedButton>
-    </AllContainer>
+    <div
+      className="bg-white h-fit cursor-pointer box-content"
+      style={{ width: 'max-content' }}
+      onClick={handleClick}
+    >
+      <div className="flex flex-row justify-between p-5">
+        <div className="flex flex-col gap-2">
+          <p className="text-label text-bold font-gmarket-bold">
+            [{type}] {title}
+          </p>
+          <div className="flex items-center gap-12">
+            <ShotInform
+              image={StackIcon}
+              title="스택"
+              content={skill}
+              unit=""
+            />
+            <ShotInform
+              image={FinishIcon}
+              title="마감"
+              content={deadline}
+              unit=""
+            />
+          </div>
+          <div className="flex items-center gap-12">
+            <ShotInform
+              image={DuringIcon}
+              title="기간"
+              content={progress}
+              unit="개월"
+            />
+            <ShotInform
+              image={PeopleIcon}
+              title="인원"
+              content={peopleNum.toString()}
+              unit="명"
+            />
+          </div>
+          <div>
+            <ShotInform
+              image={PlaceIcon}
+              title="장소"
+              content={place}
+              unit=""
+            />
+          </div>
+        </div>
+        <button
+          onClick={handleClose}
+          className="text-sub hover:text-bold self-start font-gmarket-bold ml-2 text-regular"
+          aria-label="Close"
+        >
+          X
+        </button>
+      </div>
+    </div>
   );
 }
 

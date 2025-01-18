@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import StackIcon from "../../assets/icons/StackIcon.png";
 import FinishIcon from "../../assets/icons/FinishIcon.png";
 import PlaceIcon from "../../assets/icons/PlaceIcon.png";
@@ -7,61 +6,6 @@ import PeopleIcon from "../../assets/icons/PeopleIcon.png";
 import DuringIcon from "../../assets/icons/DuringIcon.png";
 import { useNavigate } from "react-router-dom";
 import { InformCardProps, IconType, IconStyle } from "../../types";
-
-const PageContainer = styled.div`
-  width: 335px;
-  height: 100px;
-  border-radius: 5px;
-  padding: 10px 20px;
-  padding-bottom: 32px;
-  background-color: #ffffff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 15px;
-`;
-
-const GridContainer = styled.div`
-  width: 335px;
-  height: 100px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: auto auto auto;
-  padding-bottom: 2px;
-`;
-
-const TitleContainer = styled.div`
-  grid-column: span 2;
-  color: #313866;
-  font-size: 20px;
-  font-family: "GmarketSans";
-  width: 100%;
-  /* margin-bottom: 3px; */
-`;
-
-const ShortContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  font-size: 16px;
-  align-items: center;
-  margin-bottom: 7px;
-`;
-
-const ShortTitleContainer = styled.div`
-  text-decoration: none;
-  text-align: center;
-  align-items: center;
-  color: #7c8bbe;
-  font-size: 16px;
-  font-family: "SCDream4";
-  margin: 0px 5px;
-`;
-
-const ShortDetailContainer = styled.div`
-  text-decoration: none;
-  /* text-align: center; */
-  color: #313866;
-  font-size: 16px;
-  font-family: "SCDream4";
-`;
 
 const iconStyles: Record<IconType, IconStyle> = {
   '스택': {
@@ -108,17 +52,19 @@ const shotInform = ({ image, title, content, unit }: ShotInformProps) => {
   }
 
   return (
-    <ShortContainer>
+    <div className="flex flex-row items-center mb-2">
       <img
         src={image}
         alt={title}
         style={iconStyles[title]}
       />
-      <ShortTitleContainer>{title}</ShortTitleContainer>
-      <ShortDetailContainer style={{ width: isPlace ? "80%" : "auto" }}>
-        {displayContent} {unit}
-      </ShortDetailContainer>
-    </ShortContainer>
+      <p className="text-center text-regular text-sub font-scdream4 mx-2">{title}</p>
+      <div
+        className="text-bold text-regular font-scdream4"
+      >
+        {displayContent}{unit}
+      </div>
+    </div>
   );
 }
 
@@ -135,20 +81,25 @@ function InformCard({
   const navigate = useNavigate();
 
   function moveDetail() {
-    navigate(`/study/detail/${postId}`); 
+    navigate(`/study/detail/${postId}`);
   }
 
   return (
-    <PageContainer onClick={moveDetail}>
-      <GridContainer>
-        <TitleContainer>[{type}] {title}</TitleContainer>
+    <div
+      className="bg-white rounded-lg shadow-md px-5 py-4 cursor-pointer w-3/5 min-w-max"
+      onClick={moveDetail}
+    >
+      <div className="w-full grid grid-cols-2 gap-1">
+        <p className="col-span-2 text-bold mb-2 text-label font-gmarket-bold w-full">[{type}] {title}</p>
         {shotInform({ image: StackIcon, title: '스택', content: skill, unit: "" })}
         {shotInform({ image: FinishIcon, title: '마감', content: deadline, unit: "" })}
         {shotInform({ image: DuringIcon, title: '기간', content: progress, unit: "개월" })}
         {shotInform({ image: PeopleIcon, title: '인원', content: peopleNum.toString(), unit: "명" })}
-      </GridContainer>
-      {shotInform({ image: PlaceIcon, title: '장소', content: place, unit: "" })}
-    </PageContainer>
+        <div className="col-span-2">
+          {shotInform({ image: PlaceIcon, title: '장소', content: place, unit: "" })}
+        </div>
+      </div>
+    </div>
   );
 }
 

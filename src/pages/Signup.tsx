@@ -1,126 +1,11 @@
 import React, { useState } from 'react';
-import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import StarIcon from "../assets/icons/StarIcon.png";
 import { RegisterUserRequest } from '../types/api/user';
 import { useRegister } from '../hooks/api/useUser';
-
-const PageContainer = styled.div`
-  padding: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #F6F1FB;
-  flex-direction: column;
-`;
-
-const TitleText = styled.p`
-  margin: 0px 0px 50px 0px;
-  font-size: 50px;
-  font-family: 'GmarketSans';
-  color: #7C8BBE;
-`;
-
-const Box = styled.div`
-  margin: 50px 0px 0px 0px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50%;
-  height: 100%;
-  border-radius: 20px;
-  background-color: #fff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  flex-direction: column;
-  padding: 50px;
-`;
-
-const InputWrapper = styled.div`
-  margin-bottom: 10px;
-`;
-
-const Input = styled.input`
-  margin-bottom: 15px;
-  padding: 15px;
-  border: 3px solid #B3B4DC;
-  border-radius: 10px;
-  width: 30vw;
-  font-size: 18px;
-  font-family: 'SCDream4';
-`;
-
-const Textarea = styled.textarea`
-  margin-bottom: 15px;
-  padding: 15px;
-  border: 3px solid #B3B4DC;
-  border-radius: 10px;
-  width: 30vw;
-  font-size: 18px;
-  font-family: 'SCDream4';
-  resize: none;
-`;
-
-const TextInput = styled.p`
-  margin: 0px;
-  font-size: 18px;
-  font-family: 'SCDream4';
-  color: #B3B4DC;
-`;
-
-const TextStudy = styled.p`
-  margin: 0px 0px 0px 10px;
-  font-size: 18px;
-  font-family: 'SCDream4';
-  color: #B3B4DC;
-`;
-
-const HorizontalLine = styled.div`
-  width: 30vw;
-  height: 2px;
-  background-color: #7C8BBE;
-  margin: 10px 0px 20px 0px;
-`;
-
-const Button = styled.button`
-  padding: 10px 20px;
-  margin-top: 40px;
-  width: 250px;
-  height: 50px;
-  border: none;
-  border-radius: 10px;
-  background-color: #B3B4DC;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  font-family: 'SCDream6';
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-`;
-
-const TextContent = styled.p`
-  margin: 0px 10px 0px 0px;
-  font-size: 18px;
-  font-family: 'SCDream4';
-  color: #313866;
-`;
-
-const TextLink = styled(Link)`
-  text-decoration: none;
-  font-size: 18px;
-  font-family: 'SCDream6';
-  color: #313866;
-`;
-
-const Text = styled.div`
-  display: flex;
-`;
-
-const RowWrapper = styled.div`
-  flex-direction: row;
-  display: flex;
-  margin: 10px 0px 30px 0px;
-  align-items: center;
-`;
+import Button from '../components/common/ui/Button';
+import TextInput from '../components/common/ui/TextInput';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -134,6 +19,15 @@ const Signup = () => {
     phoneNum: "",
     introduction: "",
   });
+  const [errors, setErrors] = useState({
+    loginId: '',
+    password: '',
+    name: '',
+    age: '',
+    email: '',
+    phoneNum: '',
+    introduction: '',
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -143,13 +37,64 @@ const Signup = () => {
       ...formData,
       [name]: name === 'age' ? parseInt(value) : value,
     });
+    // 입력 시 해당 필드의 에러 메시지 제거
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
   };
+
+  const validateForm = () => {
+    const newErrors = {
+      loginId: '',
+      password: '',
+      name: '',
+      age: '',
+      email: '',
+      phoneNum: '',
+      introduction: '',
+    };
+
+    if (!formData.loginId) {
+      newErrors.loginId = '아이디는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.password) {
+      newErrors.password = '비밀번호는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.name) {
+      newErrors.name = '이름는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.age) {
+      newErrors.age = '나이는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.email) {
+      newErrors.email = '이메일는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.phoneNum) {
+      newErrors.phoneNum = '전화번호는 필수 입력 사항입니다.';
+    }
+
+    if (!formData.introduction) {
+      newErrors.introduction = '한 줄 소개는 필수 입력 사항입니다.';
+    }
+
+    setErrors(newErrors);
+    return !newErrors.loginId && !newErrors.password && !newErrors.name && !newErrors.age && !newErrors.email && !newErrors.phoneNum && !newErrors.introduction;
+  }
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-
+    if (!validateForm()) return;
+    
     const form = new FormData();
     form.append('info', JSON.stringify(formData));
 
@@ -164,85 +109,145 @@ const Signup = () => {
   };
 
   return (
-    <PageContainer>
-      <TitleText>Sign Up</TitleText>
-      <Text>
-        <TextContent>이미 StarHub 회원이신가요?</TextContent>
-        <TextLink to="/login">로그인</TextLink>
-      </Text>
-      <Box>
+    <div className='flex justify-center items-center flex-col w-full bg-background p-16 '>
+      <p className='mb-12 text-6xl font-gmarket-bold text-sub'>
+        Sign Up
+      </p>
+      <div className='flex'>
+        <p className='text-regular text-bold mr-4'>
+          이미 StarHub 회원이신가요?
+        </p>
+        <Link className='text-regular font-scdream6 text-bold'
+          to="/login">
+          로그인
+        </Link>
+      </div>
+      <div className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl shadow-gray-300 px-20 py-12 mt-16'>
         <form onSubmit={handleSubmit}>
-          <InputWrapper>
-            <TextInput>아이디</TextInput>
-            <Input
+          <div className='mb-8'>
+            <p className='text-label font-scdream6 text-bold mb-4'>
+              아이디
+            </p>
+            <TextInput
               type="text"
               name="loginId"
+              placeholder='아이디를 입력해주세요.'
               value={formData.loginId}
               onChange={handleChange}
+              fullWidth
+              bordered
+              error={errors.loginId}
             />
-          </InputWrapper>
-          <InputWrapper>
-            <TextInput>비밀번호</TextInput>
-            <Input
+          </div>
+          <div className='mb-8'>
+            <p className='text-label font-scdream6 text-bold mb-4'>
+              비밀번호
+            </p>
+            <TextInput
               type="password"
               name="password"
+              placeholder='비밀번호를 입력해주세요.'
               value={formData.password}
               onChange={handleChange}
+              fullWidth
+              bordered
+              error={errors.password}
             />
-          </InputWrapper>
-          <HorizontalLine />
-          <RowWrapper>
-            <img src={StarIcon} alt={'Star Icon'} style={{ width: 'auto', height: '17px' }} />
-            <TextStudy>스터디 연락을 위한 정보입니다.</TextStudy>
-          </RowWrapper>
-          <InputWrapper>
-            <TextInput>이름</TextInput>
-            <Input
+          </div>
+          <div className='w-[30vw] h-px bg-sub mt-5 mb-5' />
+          <div className='flex flex-row mt-2 mb-8 items-center'>
+            <img
+              src={StarIcon}
+              alt={'Star Icon'}
+              className='w-6 mr-2'
+            />
+            <p className='text-regular text-main font-scdream4'>
+              스터디 연락을 위한 정보입니다.
+            </p>
+          </div>
+          <div className='mb-8'>
+            <p className='text-label font-scdream6 text-bold mb-4'>
+              이름
+            </p>
+            <TextInput
               type="text"
               name="name"
+              placeholder='이름을 입력해주세요.'
               value={formData.name}
               onChange={handleChange}
+              fullWidth
+              bordered
+              error={errors.name}
             />
-          </InputWrapper>
-          <InputWrapper>
-            <TextInput>나이</TextInput>
-            <Input
+          </div>
+          <div className='mb-8'>
+            <p className='text-label font-scdream6 text-bold mb-4'>
+              나이
+            </p>
+            <TextInput
               type="text"
               name="age"
+              placeholder='여러분들의 나이를 숫자로 입력해주세요.'
               value={formData.age}
               onChange={handleChange}
+              fullWidth
+              bordered
+              error={errors.age}
             />
-          </InputWrapper>
-          <InputWrapper>
-            <TextInput>이메일</TextInput>
-            <Input
+          </div>
+          <div className='mb-8'>
+            <p className='text-label font-scdream6 text-bold mb-4'>
+              이메일
+            </p>
+            <TextInput
               type="text"
               name="email"
+              placeholder="이메일을 입력해주세요."
               value={formData.email}
               onChange={handleChange}
+              fullWidth
+              bordered
+              error={errors.email}
             />
-          </InputWrapper>
-          <InputWrapper>
-            <TextInput>전화번호</TextInput>
-            <Input
+          </div>
+          <div className='mb-8'>
+            <p className='text-label font-scdream6 text-bold mb-4'>
+              전화번호
+            </p>
+            <TextInput
               type="text"
               name="phoneNum"
+              placeholder="전화번호를 입력해주세요."
               value={formData.phoneNum}
               onChange={handleChange}
+              fullWidth
+              bordered
+              error={errors.phoneNum}
             />
-          </InputWrapper>
-          <InputWrapper>
-            <TextInput>한 줄 소개</TextInput>
-            <Textarea
+          </div>
+          <div className='mb-8'>
+            <p className='text-label font-scdream6 text-bold mb-4'>
+              한 줄 소개
+            </p>
+            <TextInput
               name="introduction"
+              placeholder="여러분들을 간단히 소개해주세요."
               value={formData.introduction}
               onChange={handleChange}
+              fullWidth
+              bordered
+              error={errors.introduction}
             />
-          </InputWrapper>
-          <Button type="submit">Sign Up</Button>
+          </div>
+          <Button
+            type="submit"
+            fullWidth
+          >
+            Sign Up
+          </Button>
         </form>
-      </Box>
-    </PageContainer>
+      </div>
+    </div>
   );
 };
 

@@ -1,113 +1,15 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
+import React from "react";
 import StarIcon from "../assets/icons/StarIcon.png";
 import { AddressSearch } from "../components/study/form/AddressSearch";
 import { useRecruitForm } from "../hooks/study/useRecruitForm";
-
-const PageContainer = styled.div`
-  padding: 50px 100px 50px 100px;
-  display: flex;
-  background-color: #f6f1fb;
-  flex-direction: column;
-`;
-
-const Info = styled.div`
-  padding: 20px 0px 50px 0px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Intro = styled.div`
-  padding: 20px 0px 50px 0px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const HorizontalLine = styled.div`
-  width: 100%;
-  height: 2px;
-  background-color: #7c8bbe;
-  margin: 0px;
-`;
-
-const TitleText = styled.p`
-  margin: 0px 0px 0px 10px;
-  font-size: 24px;
-  font-family: "GmarketSans";
-  color: #7c8bbe;
-`;
-
-const InputWrapper = styled.div`
-  flex-direction: column;
-  margin: 0px 20px;
-`;
-
-const Inputbox = styled.div`
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const Input = styled.input`
-  margin-top: 5px;
-  margin-bottom: 15px;
-  padding: 15px;
-  border: 3px solid #b3b4dc;
-  border-radius: 10px;
-  width: 35vw;
-  font-size: 18px;
-  font-family: "SCDream4", sans-serif;
-`;
-
-const TextInput = styled.p`
-  flex-direction: column;
-  margin: 0px;
-  font-size: 18px;
-  font-family: "SCDream4";
-  color: #b3b4dc;
-`;
-
-const Textarea = styled.textarea`
-  margin-bottom: 15px;
-  padding: 15px;
-  border: 3px solid #b3b4dc;
-  border-radius: 10px;
-  width: 100%;
-  height: 450px;
-  font-size: 18px;
-  font-family: "SCDream4", sans-serif;
-  resize: none;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const Button = styled.button`
-  width: 100px;
-  height: 50px;
-  border: none;
-  border-radius: 10px;
-  background-color: #b3b4dc;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  font-family: "SCDream6";
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-`;
-
-const RowWrapper = styled.div`
-  flex-direction: row;
-  display: flex;
-  align-items: center;
-`;
+import Button from "../components/common/ui/Button";
+import TextArea from "../components/common/ui/TextArea";
+import TextInput from "../components/common/ui/TextInput";
 
 const StudyRecruitPage = () => {
   const {
     formData,
-    latLng,
+    errors,
     setFormData,
     setAddressObj,
     setLatLng,
@@ -115,121 +17,172 @@ const StudyRecruitPage = () => {
     handleSubmit,
   } = useRecruitForm();
 
-  useEffect(() => {
-    console.log("Latitude:", latLng.latitude);
-    console.log("Longitude:", latLng.longitude);
-    // window.location.reload();
-  }, [latLng]);
-
   return (
-    <PageContainer>
-      <RowWrapper>
+    <div className="flex flex-col w-full bg-background px-48 py-24">
+      <div className="flex items-center">
         <img
           src={StarIcon}
           alt={"Star Icon"}
-          style={{ width: "auto", height: "20px" }}
+          className="w-8 h-8 mr-2"
         />
-        <TitleText>프로젝트 기본 정보</TitleText>
-      </RowWrapper>
-      <HorizontalLine />
-      <Info>
-        <Inputbox>
-          <InputWrapper>
-            <TextInput>모집 구분</TextInput>
-            <Input
+        <p className="font-gmarket-bold text-page-title text-bold">
+          프로젝트 기본 정보
+        </p>
+      </div>
+
+      <div className='h-px bg-sub my-4' />
+
+      <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-2 gap-8">
+          <div className="flex flex-col mb-2">
+            <p className="font-scdream6 text-label text-bold mb-2">
+              모집 구분
+            </p>
+            <TextInput
               type="text"
               name="type"
               placeholder="스터디와 프로젝트 중 선택해주세요."
               value={formData.type}
+              fullWidth
+              bordered
+              error={errors.type}
               onChange={handleInputChange}
             />
-          </InputWrapper>
-          <InputWrapper>
-            <TextInput>기술 스택</TextInput>
-            <Input
+          </div>
+          <div className="flex flex-col mb-2">
+            <p className="font-scdream6 text-label text-bold mb-2">
+              기술 스택
+            </p>
+            <TextInput
               type="text"
               name="skill"
               placeholder="사용되는 기술 스택을 입력해주세요. ex) 리액트, 스프링..."
               value={formData.skill}
+              fullWidth
+              bordered
+              error={errors.skill}
               onChange={handleInputChange}
             />
-          </InputWrapper>
-        </Inputbox>
-        <Inputbox>
-          <InputWrapper>
-            <TextInput>모집 인원</TextInput>
-            <Input
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-8">
+          <div className="flex flex-col mb-2">
+            <p className="font-scdream6 text-label text-bold mb-2">
+              모집 인원
+            </p>
+            <TextInput
               type="text"
               name="peopleNum"
               placeholder="모집 인원 수를 입력해주세요. ex) 3~5"
               value={formData.peopleNum}
+              fullWidth
+              bordered
+              error={errors.peopleNum}
               onChange={handleInputChange}
             />
-          </InputWrapper>
-          <InputWrapper>
-            <TextInput>진행 기간</TextInput>
-            <Input
+          </div>
+          <div className="flex flex-col mb-2">
+            <p className="font-scdream6 text-label text-bold mb-2">
+              진행 기간
+            </p>
+            <TextInput
               type="text"
               name="progress"
               placeholder="진행 기간을 입력해주세요."
               value={formData.progress}
+              fullWidth
+              bordered
+              error={errors.progress}
               onChange={handleInputChange}
             />
-          </InputWrapper>
-        </Inputbox>
-        <Inputbox>
-          <InputWrapper>
-            <TextInput>진행 장소</TextInput>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-8">
+          <div className="flex flex-col mb-2">
+            <p className="font-scdream6 text-label text-bold mb-2">
+              진행 장소
+            </p>
             <AddressSearch
               addressValue={formData.place}
               setAddressObj={setAddressObj}
               setLatLng={setLatLng}
               setFormData={setFormData}
               handleInputChange={handleInputChange}
+              error={errors.place}
             />
-          </InputWrapper>
-          <InputWrapper>
-            <TextInput>모집 마감일</TextInput>
-            <Input
-              type="text"
+          </div>
+          <div className="flex flex-col mb-2">
+            <p className="font-scdream6 text-label text-bold mb-2">
+              모집 마감일
+            </p>
+            <TextInput
+              type="date"
               name="deadline"
               placeholder="**** - ** - **"
               value={formData.deadline}
+              fullWidth
+              bordered
+              error={errors.deadline}
               onChange={handleInputChange}
             />
-          </InputWrapper>
-        </Inputbox>
-      </Info>
-      <RowWrapper>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center mt-8">
         <img
           src={StarIcon}
           alt={"Star Icon"}
-          style={{ width: "auto", height: "20px" }}
+          className="w-8 h-8 mr-2"
         />
-        <TitleText>프로젝트 소개</TitleText>
-      </RowWrapper>
-      <HorizontalLine />
-      <Intro>
-        <TextInput>제목</TextInput>
-        <Input
+        <p className="font-gmarket-bold text-page-title text-bold">
+          프로젝트 소개
+        </p>
+      </div>
+
+      <div className='h-px bg-sub my-4'/>
+
+      <div className="flex flex-col py-4">
+        <p className="font-scdream6 text-label text-bold mb-2">
+          제목
+        </p>
+        <TextInput
           type="text"
           name="title"
           placeholder="제목을 입력해주세요."
           value={formData.title}
+          fullWidth
+          bordered
+          error={errors.title}
           onChange={handleInputChange}
         />
-        <TextInput>내용</TextInput>
-        <Textarea
+
+        <div className="my-4"/>
+
+        <p className="font-scdream6 text-label text-bold mb-2">
+          내용
+        </p>
+        <TextArea
           name="content"
           placeholder="내용을 입력해주세요."
+          fullWidth
           value={formData.content}
           onChange={handleInputChange}
+          error={errors.content}
+          className="rounded-xl"
+          rows={10}
         />
-      </Intro>
-      <ButtonContainer>
-        <Button onClick={handleSubmit}>글 등록</Button>
-      </ButtonContainer>
-    </PageContainer>
+      </div>
+
+      <div className="flex justify-end">
+        <Button
+          variant="secondary"
+          onClick={handleSubmit}
+        >
+          글 등록
+        </Button>
+      </div>
+    </div>
   );
 };
 
