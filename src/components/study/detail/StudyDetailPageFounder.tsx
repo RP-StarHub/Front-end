@@ -26,7 +26,7 @@ const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
             <p className="font-scdream6 text-main text-label">
               진행 장소
             </p>
-            <p className="font-scdream4 font-regular text-bold ml-4">
+            <p className="font-scdream4 text-regular text-bold ml-4">
               {studyDetail[0].place}
             </p>
           </div>
@@ -35,7 +35,7 @@ const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
             <p className="font-scdream6 text-main text-label">
               기술 스택
             </p>
-            <p className="font-scdream4 font-regular text-bold ml-4">
+            <p className="font-scdream4 text-regular text-bold ml-4">
               {studyDetail[0].skill}
             </p>
           </div>
@@ -44,7 +44,7 @@ const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
             <p className="font-scdream6 text-main text-label">
               진행 기간
             </p>
-            <p className="font-scdream4 font-regular text-bold ml-4">
+            <p className="font-scdream4 text-regular text-bold ml-4">
               {studyDetail[0].progress}개월
             </p>
           </div>
@@ -53,7 +53,7 @@ const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
             <p className="font-scdream6 text-main text-label">
               모집 인원
             </p>
-            <p className="font-scdream4 font-regular text-bold ml-4">
+            <p className="font-scdream4 text-regular text-bold ml-4">
               {studyDetail[0].peopleNum}명
             </p>
           </div>
@@ -62,7 +62,7 @@ const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
             <p className="font-scdream6 text-main text-label">
               모집 마감일
             </p>
-            <p className="font-scdream4 font-regular text-bold ml-4">
+            <p className="font-scdream4 text-regular text-bold ml-4">
               {studyDetail[0].deadline}
             </p>
           </div>
@@ -73,7 +73,7 @@ const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
         <p className='font-scdream6 text-main text-label mb-4'>
           스터디 소개
         </p>
-        <p className='font-scdream4 font-regular text-bold'>
+        <p className='font-scdream4 text-regular text-bold'>
           {studyDetail[0].content}
         </p>
       </div>
