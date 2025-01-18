@@ -1,61 +1,14 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { CommentInfo } from '../../../types/api/comment';
 import { useCommentPick } from '../../../hooks/api/useComment';
+import Button from '../../common/ui/Button';
 
 interface CommentListProps {
   comments: CommentInfo[];
   isSelectable: boolean;
   postId?: number;
 }
-
-interface CommentItemStyledProps extends React.HTMLAttributes<HTMLDivElement> {
-  $isSelected: boolean;
-  $isSelectable: boolean;
-}
-
-const CommentListContainer = styled.div`
-  width: 100%;
-`;
-
-const CommentItem = styled.div<CommentItemStyledProps>`
-  padding: 15px 25px;
-  margin: 40px 0;
-  border: 3px solid #7C8BBE;
-  border-radius: 30px;
-  font-family: 'SCDream4', sans-serif;
-  font-size: 18px;
-  color: #313866;
-  cursor: ${({ $isSelectable }) => ($isSelectable ? 'pointer' : 'default')};
-
-  ${({ $isSelected }) => $isSelected && `
-    background-color: #7C8BBE;
-    color: #F6F1FB;
-  `}
-`;
-
-const Content = styled.div`
-  margin: 5px 0;
-`;
-
-const Button = styled.button`
-  margin-top: 40px;
-  width: 150px;
-  height: 40px;
-  border: none;
-  border-radius: 10px;
-  background-color: #b3b4dc;
-  font-family: "SCDream4";
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
 
 const CommentList: React.FC<CommentListProps> = ({
   comments,
@@ -87,25 +40,41 @@ const CommentList: React.FC<CommentListProps> = ({
   };
 
   return (
-    <CommentListContainer>
+    <div className='w-full'>
       {comments.map((comment) => (
-        <CommentItem
+        <div
           key={comment.commentId}
-          $isSelected={selectedComments.includes(comment.commentId)}
-          $isSelectable={isSelectable}
+          className={`
+          px-6 py-4 my-4 
+          border-4 border-sub rounded-2xl 
+          font-scdream4 text-lg text-bold
+          ${isSelectable ? 'cursor-pointer' : 'cursor-default'}
+          ${selectedComments.includes(comment.commentId)
+              ? 'bg-sub text-white'
+              : 'bg-none'
+            }
+          transition-colors duration-200
+        `}
           onClick={() => handleCommentClick(comment.commentId)}
         >
           <div>{comment.username}</div>
           <div>{comment.createdAt}</div>
-          <Content>{comment.content}</Content>
-        </CommentItem>
+          <p className='mt-2'>{comment.content}</p>
+        </div>
       ))}
       {isSelectable && (
-        <ButtonContainer>
-          <Button onClick={handleConfirm}>스터디원 확정</Button>
-        </ButtonContainer>
+        <div className="flex justify-end">
+          <Button
+            variant='secondary'
+            size='small'
+            onClick={handleConfirm}
+            className='mt-4'
+          >
+            스터디원 확정
+          </Button>
+        </div>
       )}
-    </CommentListContainer>
+    </div>
   );
 };
 
