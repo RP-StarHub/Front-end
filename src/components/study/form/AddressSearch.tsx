@@ -23,6 +23,7 @@ interface AddressSearchProps {
   setLatLng: React.Dispatch<React.SetStateAction<LatLng>>;
   setFormData: React.Dispatch<React.SetStateAction<PostRequest>>;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
 }
 
 export const AddressSearch = ({
@@ -31,6 +32,7 @@ export const AddressSearch = ({
   setLatLng,
   setFormData,
   handleInputChange,
+  error
 }: AddressSearchProps) => {
   const handleComplete = useCallback((data: DaumPostcodeData) => {
     // 도로명 주소의 노출 규칙에 따라 주소를 표시
@@ -130,6 +132,7 @@ export const AddressSearch = ({
           name="place"
           placeholder="주소를 입력해주세요."
           value={addressValue}
+          error={error}
           fullWidth
           inputSize="medium"
           onChange={handleInputChange}

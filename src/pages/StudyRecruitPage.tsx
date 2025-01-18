@@ -9,19 +9,13 @@ import TextInput from "../components/common/ui/TextInput";
 const StudyRecruitPage = () => {
   const {
     formData,
-    // latLng,
+    errors,
     setFormData,
     setAddressObj,
     setLatLng,
     handleInputChange,
     handleSubmit,
   } = useRecruitForm();
-
-  // useEffect(() => {
-  //   console.log("Latitude:", latLng.latitude);
-  //   console.log("Longitude:", latLng.longitude);
-  //   // window.location.reload();
-  // }, [latLng]);
 
   return (
     <div className="flex flex-col w-full bg-background px-48 py-24">
@@ -51,6 +45,7 @@ const StudyRecruitPage = () => {
               value={formData.type}
               fullWidth
               bordered
+              error={errors.type}
               onChange={handleInputChange}
             />
           </div>
@@ -65,6 +60,7 @@ const StudyRecruitPage = () => {
               value={formData.skill}
               fullWidth
               bordered
+              error={errors.skill}
               onChange={handleInputChange}
             />
           </div>
@@ -81,6 +77,7 @@ const StudyRecruitPage = () => {
               value={formData.peopleNum}
               fullWidth
               bordered
+              error={errors.peopleNum}
               onChange={handleInputChange}
             />
           </div>
@@ -95,6 +92,7 @@ const StudyRecruitPage = () => {
               value={formData.progress}
               fullWidth
               bordered
+              error={errors.progress}
               onChange={handleInputChange}
             />
           </div>
@@ -110,6 +108,7 @@ const StudyRecruitPage = () => {
               setLatLng={setLatLng}
               setFormData={setFormData}
               handleInputChange={handleInputChange}
+              error={errors.place}
             />
           </div>
           <div className="flex flex-col mb-2">
@@ -117,12 +116,13 @@ const StudyRecruitPage = () => {
               모집 마감일
             </p>
             <TextInput
-              type="text"
+              type="date"
               name="deadline"
               placeholder="**** - ** - **"
               value={formData.deadline}
               fullWidth
               bordered
+              error={errors.deadline}
               onChange={handleInputChange}
             />
           </div>
@@ -153,6 +153,7 @@ const StudyRecruitPage = () => {
           value={formData.title}
           fullWidth
           bordered
+          error={errors.title}
           onChange={handleInputChange}
         />
 
@@ -167,6 +168,7 @@ const StudyRecruitPage = () => {
           fullWidth
           value={formData.content}
           onChange={handleInputChange}
+          error={errors.content}
           className="rounded-xl"
           rows={10}
         />
