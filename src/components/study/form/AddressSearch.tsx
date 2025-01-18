@@ -1,33 +1,9 @@
 import React, { useCallback, useEffect } from "react";
-import styled from "styled-components";
 import { LatLng } from "../../../types";
 import DaumPostcode from "react-daum-postcode";
 import { PostRequest } from "../../../types/api/post";
-
-const AddressInput = styled.input`
-  margin-top: 5px;
-  margin-bottom: 15px;
-  padding: 15px;
-  border: 3px solid #b3b4dc;
-  border-radius: 10px;
-  width: 28vw;
-  font-size: 18px;
-  font-family: "SCDream4", sans-serif;
-`;
-
-const FindAddressButton = styled.button`
-  margin-left: 20px;
-  width: 100px;
-  height: 50px;
-  border: none;
-  border-radius: 10px;
-  background-color: #b6b6b6;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  font-family: "SCDream6";
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-`;
+import TextInput from "../../common/ui/TextInput";
+import Button from "../../common/ui/Button";
 
 interface AddressObj {
   areaAddress: string;
@@ -146,19 +122,27 @@ export const AddressSearch = ({
   }, [handleComplete]);
 
   return (
-    <>
-      <AddressInput
-        type="text"
-        id="addressInput"
-        name="place"
-        placeholder="주소를 입력해주세요."
-        value={addressValue}
-        onChange={handleInputChange}
-      />
-      {/* @ts-ignore */}
-      <FindAddressButton type="button" onClick={() => window.address.open()}>
+    <div className="flex items-center gap-4">
+      <div className="flex-1">
+        <TextInput
+          type="text"
+          id="addressInput"
+          name="place"
+          placeholder="주소를 입력해주세요."
+          value={addressValue}
+          fullWidth
+          inputSize="medium"
+          onChange={handleInputChange}
+        />
+      </div>
+      <Button
+        type="button"
+        variant="secondary"
+        // @ts-ignore
+        onClick={() => window.address?.open()}
+      >
         주소 찾기
-      </FindAddressButton>
-    </>
+      </Button>
+    </div>
   )
 }
