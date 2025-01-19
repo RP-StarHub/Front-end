@@ -3,15 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { usePostCreate } from "../api/usePost";
 import { PostRequest } from "../../types/api/post";
 import { LatLng } from "../../types/models/common";
+import { useAuthStore } from "../../store";
 import { AddressObj, FormErrors } from "../../types/models/study"
 
 export const useRecruitForm = () => {
   const navigate = useNavigate();
   const postCreate = usePostCreate();
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+  const user = useAuthStore((state) => state.user);
 
   const [formData, setFormData] = useState<PostRequest>({
-    userId: userInfo?.userId || 0,
+    userId: user?.userId || 0,
     skill: "",
     place: "",
     latitude: 0,

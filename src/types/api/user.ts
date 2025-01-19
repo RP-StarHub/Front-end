@@ -24,6 +24,7 @@ export type UserInfo = {
   phoneNum: string;
   age: number;
   name: string;
+  userId: number;
 }
 
 export type PostUserLogin = ApiResponse<UserInfo>;
