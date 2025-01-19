@@ -15,9 +15,9 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      if (user?.loginId) {
+      if (user?.userId) {
         try {
-          await logoutMutation.mutateAsync(Number(user.loginId));
+          await logoutMutation.mutateAsync(Number(user.userId));
         } catch (error) {
           console.error('Logout API failed:', error);
         }
