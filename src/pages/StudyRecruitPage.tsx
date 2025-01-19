@@ -1,21 +1,31 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import StarIcon from "../assets/icons/StarIcon.png";
 import { AddressSearch } from "../components/study/form/AddressSearch";
-import { useRecruitForm } from "../hooks/study/useRecruitForm";
+import { useStudyFormStore } from "../store/studyForm";
+import { usePostCreate } from "../hooks/api/usePost";
 import Button from "../components/common/ui/Button";
 import TextArea from "../components/common/ui/TextArea";
 import TextInput from "../components/common/ui/TextInput";
 
 const StudyRecruitPage = () => {
+  const navigate = useNavigate();
+  const postCreate = usePostCreate();
   const {
     formData,
     errors,
-    setFormData,
-    setAddressObj,
-    setLatLng,
     handleInputChange,
-    handleSubmit,
-  } = useRecruitForm();
+    setFormData,
+    setAddressInfo,
+    setLocation,
+    handleSubmit
+  } = useStudyFormStore();
+
+  const onSubmit = async () => {
+    await handleSubmit(postCreate);
+    navigate('/');
+    window.location.reload();
+  };
 
   return (
     <div className="flex flex-col w-full bg-background px-48 py-24">
@@ -104,8 +114,8 @@ const StudyRecruitPage = () => {
             </p>
             <AddressSearch
               addressValue={formData.place}
-              setAddressObj={setAddressObj}
-              setLatLng={setLatLng}
+              setAddressInfo={setAddressInfo}
+              setLocation={setLocation}
               setFormData={setFormData}
               handleInputChange={handleInputChange}
               error={errors.place}
@@ -140,7 +150,7 @@ const StudyRecruitPage = () => {
         </p>
       </div>
 
-      <div className='h-px bg-sub my-4'/>
+      <div className='h-px bg-sub my-4' />
 
       <div className="flex flex-col py-4">
         <p className="font-scdream6 text-label text-bold mb-2">
@@ -157,7 +167,7 @@ const StudyRecruitPage = () => {
           onChange={handleInputChange}
         />
 
-        <div className="my-4"/>
+        <div className="my-4" />
 
         <p className="font-scdream6 text-label text-bold mb-2">
           내용
@@ -177,7 +187,7 @@ const StudyRecruitPage = () => {
       <div className="flex justify-end">
         <Button
           variant="secondary"
-          onClick={handleSubmit}
+          onClick={onSubmit}
         >
           글 등록
         </Button>

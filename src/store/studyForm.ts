@@ -9,7 +9,7 @@ interface StudyFormState {
   addressInfo: AddressObj;
   location: LatLng;
   errors: FormErrors;
-
+  
   setFormData: (data: Partial<PostRequest>) => void;
   setAddressInfo: (addressInfo: AddressObj) => void;
   setLocation: (location: LatLng) => void;
@@ -18,6 +18,7 @@ interface StudyFormState {
   clearErrors: () => void;
   resetForm: () => void;
   validateForm: () => boolean;
+  handleSubmit: (postCreate: any) => Promise<void>;
 }
 
 const initialFormData: PostRequest = {
@@ -130,5 +131,33 @@ export const useStudyFormStore = create<StudyFormState>()((set, get) => ({
 
     set({ errors: newErrors });
     return Object.keys(newErrors).length === 0;
-  }
+  },
+
+  handleSubmit: async (postCreate) => {
+    const { formData, location: latLng, addressInfo, validateForm } = get();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      if (!latLng.latitude || !latLng.longitude) {
+        alert("주소를 선택해주세요.");
+        return;
+      }
+      
+      const postData: PostRequest = {
+        ...formData,
+        latitude: latLng.latitude,
+        longitude: latLng.longitude,
+        place: addressInfo.townAddress,
+      }
+
+      await postCreate.mutateAsync(postData);
+      alert("글이 등록되었습니다.");
+    } catch (error) {
+      alert("글 등록에 실패했습니다.");
+      console.error("Error:", error);
+    }
+  },
 }));
