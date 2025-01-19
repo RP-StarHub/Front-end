@@ -3,22 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { usePostCreate } from "../api/usePost";
 import { PostRequest } from "../../types/api/post";
 import { LatLng } from "../../types/models/common";
-
-interface AddressObj {
-  areaAddress: string;
-  townAddress: string;
-}
-
-interface FormErrors {
-  type?: string;
-  skill?: string;
-  peopleNum?: string;
-  progress?: string;
-  place?: string;
-  deadline?: string;
-  title?: string;
-  content?: string;
-}
+import { AddressObj, FormErrors } from "../../types/models/study"
 
 export const useRecruitForm = () => {
   const navigate = useNavigate();

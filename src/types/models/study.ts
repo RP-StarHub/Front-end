@@ -17,6 +17,23 @@ export interface DetailPageProps {
   postId?: number;
 }
 
+export interface AddressObj {
+  areaAddress: string;
+  townAddress: string;
+}
+
+export interface FormErrors {
+  type?: string;
+  skill?: string;
+  peopleNum?: string;
+  progress?: string;
+  place?: string;
+  deadline?: string;
+  title?: string;
+  content?: string;
+}
+
+
 export interface BaseCardProps extends StudyCardInfo {}
 
 export interface InformCardProps extends BaseCardProps {}
