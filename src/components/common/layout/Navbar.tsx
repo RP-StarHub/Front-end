@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
 import StarHubIconNavbar from "../../../assets/icons/StarHubIconNavbar.png";
-import { User } from '../../../types/models/user';
 import { useLogout } from '../../../hooks/api/useUser';
 import { useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '../../../store';
 
 const Navbar = () => {
-  const [userInfo, setUserInfo] = useState<User | null>(
+  const [userInfo, setUserInfo] = React.useState(() => 
     JSON.parse(localStorage.getItem('userInfo') || 'null')
   );
+  const logoutStore = useAuthStore((state) => state.logout);
+  
   const logout = useLogout();
   const queryClient = useQueryClient();
 
@@ -18,7 +20,7 @@ const Navbar = () => {
         await logout.mutateAsync(userInfo.userId);
         localStorage.removeItem('userInfo');
         setUserInfo(null);
-
+        logoutStore();
         queryClient.clear();
       }
     } catch (error) {
