@@ -1,10 +1,9 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { User } from '../types/models/user'
 import { UserInfo } from '../types/api/user'
 
 interface AuthState {
-  user: User | null;
+  user: UserInfo | null;
   isAuthenticated: boolean;
   setUser: (userData: UserInfo) => void;
   logout: () => void;
@@ -16,10 +15,8 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       setUser: (userData) => set({ 
-        user: {
-          ...userData,
-          userId: Number(userData.loginId)
-        },
+        user: userData,
+        isAuthenticated: true 
       }),
       logout: () => set({ 
         user: null, 

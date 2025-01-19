@@ -21,7 +21,7 @@ export const userServices = {
   },
   getLogout: (loginId: number) => {
     return axiosInstance.get(
-      `/api/user/logout/`,
+      `/api/user/logout`,
       {
         params: { loginId },
       }

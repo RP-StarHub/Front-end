@@ -43,14 +43,12 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!validateForm()) return;
-
+  
     try {
       const response = await login.mutateAsync(loginData);
       const userData = response.data.data;
-      localStorage.setItem('userInfo', JSON.stringify(userData));
       setUser(userData);
       navigate('/');
-      window.location.reload();
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
