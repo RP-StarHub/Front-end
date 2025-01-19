@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { LoginUserRequest } from '../types/api/user';
 import { useLogin } from '../hooks/api/useUser';
+import { useAuthStore } from '../store';
 import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 
 const Login = () => {
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
+  
   const [loginData, setLoginData] = useState<LoginUserRequest>({
     loginId: '',
     password: '',
@@ -43,7 +46,9 @@ const Login = () => {
 
     try {
       const response = await login.mutateAsync(loginData);
-      localStorage.setItem('userInfo', JSON.stringify(response.data.data));
+      const userData = response.data.data;
+      localStorage.setItem('userInfo', JSON.stringify(userData));
+      setUser(userData);
       navigate('/');
       window.location.reload();
     } catch (error) {
