@@ -4,20 +4,25 @@ import CommentList from "./CommentList";
 import { DetailPageProps } from "../../../types/models/study";
 import { CommentCreateRequest } from "../../../types/api/comment";
 import { useCommentCreate } from "../../../hooks/api/useComment";
+import { useAuthStore } from "../../../store";
 import Button from "../../common/ui/Button";
 import TextArea from "../../common/ui/TextArea";
 
 const StudyDetailPageApplicant: React.FC<DetailPageProps> = ({ studyDetail }) => {
   const [comment, setComment] = useState("");
-  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "null");
-  const userId = userInfo.userId;
+  const user = useAuthStore((state) => state.user);
 
   const createComment = useCommentCreate();
 
   const handleSubmit = async () => {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
     const commentData: CommentCreateRequest = {
       postId: studyDetail[1],
-      userId: userId,
+      userId: Number(user.loginId),
       content: comment,
       pick: false,
     }
