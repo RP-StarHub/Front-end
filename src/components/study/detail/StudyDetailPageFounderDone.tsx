@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 import StarIcon from "../../../assets/icons/StarIcon.png";
-import { DetailPageProps } from '../../../types';
+import { DetailPageProps } from '../../../types/models/study';
 import Button from '../../common/ui/Button';
 
 const StudyDetailPageFounderDone: React.FC<DetailPageProps> = ({ studyDetail }) => {

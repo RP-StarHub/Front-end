@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { LatLng } from "../../../types";
+import { LatLng } from "../../../types/models/common";
 import DaumPostcode from "react-daum-postcode";
 import { PostRequest } from "../../../types/api/post";
 import TextInput from "../../common/ui/TextInput";

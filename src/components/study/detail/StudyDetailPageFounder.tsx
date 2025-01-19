@@ -1,7 +1,7 @@
 import React from "react";
 import StarIcon from "../../../assets/icons/StarIcon.png";
 import CommentList from "./CommentList";
-import { DetailPageProps } from "../../../types";
+import { DetailPageProps } from "../../../types/models/study";
 
 const StudyDetailPageFounder: React.FC<DetailPageProps> = ({ studyDetail }) => {
   return (

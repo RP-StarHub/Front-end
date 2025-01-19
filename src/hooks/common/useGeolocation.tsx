@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapPosition } from '../../types';
+import { MapPosition } from '../../types/models/common';
 
 export const useGeolocation = () => {
   const [location, setLocation] = useState<MapPosition | null>(null);

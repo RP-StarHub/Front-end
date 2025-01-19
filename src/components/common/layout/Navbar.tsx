@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import StarHubIconNavbar from "../../../assets/icons/StarHubIconNavbar.png";
-import { User } from '../../../types';
+import { User } from '../../../types/models/user';
 import { useLogout } from '../../../hooks/api/useUser';
 import { useQueryClient } from '@tanstack/react-query';
 

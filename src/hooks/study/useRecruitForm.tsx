@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePostCreate } from "../api/usePost";
 import { PostRequest } from "../../types/api/post";
-import { LatLng } from "../../types";
+import { LatLng } from "../../types/models/common";
 
 interface AddressObj {
   areaAddress: string;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import StarIcon from "../../../assets/icons/StarIcon.png";
 import CommentList from "./CommentList";
-import { DetailPageProps } from "../../../types";
+import { DetailPageProps } from "../../../types/models/study";
 import { CommentCreateRequest } from "../../../types/api/comment";
 import { useCommentCreate } from "../../../hooks/api/useComment";
 import Button from "../../common/ui/Button";
