@@ -5,7 +5,6 @@ import PhotoStep from './steps/PhotoStep';
 import PhotoUploadStep from './steps/PhotoUploadStep';
 import BioStep from './steps/BioStep';
 import CompletionStep from './steps/CompletionStep';
-import { useNavigate } from 'react-router-dom';
 
 export enum ProfileStep {
   WELCOME = 0,
@@ -14,11 +13,14 @@ export enum ProfileStep {
   CONTACT = 3
 }
 
-export default function ProfileSetupFlow() {
+interface ProfileSetupFlowProps {
+  onComplete: () => void;
+}
+
+export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) {
   const [currentStep, setCurrentStep] = useState<ProfileStep>(ProfileStep.WELCOME);
   const [showPhotoUpload, setShowPhotoUpload] = useState(false);
   const [selectedProfileImage, setSelectedProfileImage] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const steps = [
     { title: '기본 정보' },
@@ -33,14 +35,12 @@ export default function ProfileSetupFlow() {
   return (
     <div className="fixed inset-0 bg-sub/30 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl w-full max-w-2xl">
-        {/* StepIndicator는 경우에 따라 보임 */}
         {currentStep !== ProfileStep.WELCOME && (
           <div className="px-8 pt-8">
             <StepIndicator currentStep={currentStep - 1} steps={steps} />
           </div>
         )}
 
-        {/* 모달 세부 내용 */}
         <div className="p-8">
           {currentStep === ProfileStep.WELCOME && (
             <WelcomeStep onNext={handleNext} />
@@ -70,9 +70,7 @@ export default function ProfileSetupFlow() {
 
           {currentStep === ProfileStep.CONTACT && (
             <CompletionStep
-              onComplete={() => {
-                navigate('/');
-              }}
+              onComplete={onComplete}
             />
           )}
         </div>
