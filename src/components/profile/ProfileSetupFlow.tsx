@@ -33,7 +33,7 @@ export default function ProfileSetupFlow() {
         {/* StepIndicator는 경우에 따라 보임 */}
         {currentStep !== ProfileStep.WELCOME && (
           <div className="px-8 pt-8">
-            <StepIndicator currentStep={currentStep} steps={steps} />
+            <StepIndicator currentStep={ currentStep - 1 } steps={steps} />
           </div>
         )}
 
