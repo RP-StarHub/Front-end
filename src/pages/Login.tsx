@@ -82,7 +82,7 @@ const Login = () => {
 
       <div className='flex flex-col justify-center items-center w-[500px]'>
         <div className='relative w-full'>
-          <PersonIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400' />
+          <PersonIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-sub' />
           <TextInput
             inputSize="medium"
             type="text"
@@ -100,7 +100,7 @@ const Login = () => {
         <div className='mb-8' />
 
         <div className='relative w-full'>
-          <LockIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400' />
+          <LockIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-sub' />
           <TextInput
             inputSize="medium"
             type="password"
