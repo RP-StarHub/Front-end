@@ -4,6 +4,7 @@ import StarIcon from "../assets/icons/StarIcon.png";
 import { AddressSearch } from "../components/study/form/AddressSearch";
 import { useStudyFormStore } from "../store/studyForm";
 import { usePostCreate } from "../hooks/api/usePost";
+import { useQueryClient } from "@tanstack/react-query";
 import Button from "../components/common/ui/Button";
 import TextArea from "../components/common/ui/TextArea";
 import TextInput from "../components/common/ui/TextInput";
@@ -11,6 +12,7 @@ import TextInput from "../components/common/ui/TextInput";
 const StudyRecruitPage = () => {
   const navigate = useNavigate();
   const postCreate = usePostCreate();
+  const queryClient = useQueryClient();
   const {
     formData,
     errors,
@@ -23,8 +25,8 @@ const StudyRecruitPage = () => {
 
   const onSubmit = async () => {
     await handleSubmit(postCreate);
+    await queryClient.invalidateQueries({ queryKey: ['posts'] });  
     navigate('/');
-    window.location.reload();
   };
 
   return (
