@@ -79,8 +79,9 @@ const Login = () => {
       <div className='mb-16 text-6xl font-gmarket-bold text-sub'>
         Sign In
       </div>
-      <div className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl shadow-gray-300 px-20 py-14 mb-12 w-1/4 '>
-        <div className='relative'>
+
+      <div className='flex flex-col justify-center items-center w-[500px]'>
+        <div className='relative w-full'>
           <PersonIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400' />
           <TextInput
             inputSize="medium"
@@ -95,8 +96,10 @@ const Login = () => {
             className="pl-12"
           />
         </div>
+
         <div className='mb-8' />
-        <div className='relative'>
+
+        <div className='relative w-full'>
           <LockIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400' />
           <TextInput
             inputSize="medium"
@@ -111,16 +114,17 @@ const Login = () => {
             className="pl-12"
           />
         </div>
+
+        <Button
+          variant="primary"
+          size="medium"
+          onClick={handleLogin}
+          className="mt-10 w-full"
+        >
+          로그인
+        </Button>
       </div>
-      <Button
-        variant="primary"
-        size="medium"
-        onClick={handleLogin}
-        className="mt-10 w-96"
-      >
-        로그인
-      </Button>
-      
+
       <div className='w-1/3 h-px bg-sub mt-16 mb-10' />
 
       <div className='flex'>
