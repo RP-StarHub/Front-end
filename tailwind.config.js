@@ -19,6 +19,7 @@ module.exports = {
         "scdream6": ["SCDream6", "sans-serif"]
       },
       fontSize: {
+        "big-title": ["50px", { lineHeight: "1.5" }],
         "page-title": ["30px", { lineHeight: "1.5" }],
         "button": ["24px", { lineHeight: "1.5" }],
         "label": ["24px", { lineHeight: "1.5" }],
