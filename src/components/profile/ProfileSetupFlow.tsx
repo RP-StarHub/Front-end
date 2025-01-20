@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import WelcomeStep from './steps/WelcomeStep';
 import StepIndicator from '../common/ui/StepIndicator';
+import WelcomeStep from './steps/WelcomeStep';
+import PhotoStep from './steps/PhotoStep';
+import PhotoUploadStep from './steps/PhotoUploadStep';
 
 export enum ProfileStep {
   WELCOME = 0,
@@ -11,6 +13,9 @@ export enum ProfileStep {
 
 export default function ProfileSetupFlow() {
   const [currentStep, setCurrentStep] = useState<ProfileStep>(ProfileStep.WELCOME);
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
+  const [selectedProfileImage, setSelectedProfileImage] = useState<string | null>(null);
+  
 
   const steps = [
     { title: '기본 정보' },
@@ -31,11 +36,27 @@ export default function ProfileSetupFlow() {
             <StepIndicator currentStep={currentStep} steps={steps} />
           </div>
         )}
-        
+
         {/* 모달 세부 내용 */}
         <div className="p-8">
           {currentStep === ProfileStep.WELCOME && (
             <WelcomeStep onNext={handleNext} />
+          )}
+          {currentStep === ProfileStep.PHOTO && (
+            <PhotoStep 
+              onNext={handleNext}
+              onOpenPhotoSelect={() => setShowPhotoUpload(true)}
+              selectedImage={selectedProfileImage} 
+            />
+          )}
+          {showPhotoUpload && (
+            <PhotoUploadStep
+              onClose={() => setShowPhotoUpload(false)}
+              onSelect={(image) => {
+                setSelectedProfileImage(image);
+                setShowPhotoUpload(false);
+              }}
+            />
           )}
         </div>
       </div>
