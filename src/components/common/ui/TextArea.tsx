@@ -40,7 +40,7 @@ const TextArea = ({
   ...props
 }: TextAreaProps) => {
   // 기본 스타일
-  const baseStyle = "rounded-3xl font-scdream4 transition-colors focus:outline-none resize-none";
+  const baseStyle = "rounded-lg font-scdream4 transition-colors focus:outline-none resize-none";
   
   // border 스타일 조건부 적용
   const borderStyle = bordered ? "border-4 border-solid border-main" : "border-0";
