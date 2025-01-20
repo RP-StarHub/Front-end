@@ -4,13 +4,15 @@ import { Link } from "react-router-dom";
 import { LoginUserRequest } from '../types/api/user';
 import { useLogin } from '../hooks/api/useUser';
 import { useAuthStore } from '../store';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
 import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 
 const Login = () => {
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
-  
+
   const [loginData, setLoginData] = useState<LoginUserRequest>({
     loginId: '',
     password: '',
@@ -43,7 +45,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!validateForm()) return;
-  
+
     try {
       const response = await login.mutateAsync(loginData);
       const userData = response.data.data;
@@ -77,30 +79,38 @@ const Login = () => {
       <div className='mb-16 text-6xl font-gmarket-bold text-sub'>
         Sign In
       </div>
-      <div className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl shadow-gray-300 px-20 py-14 mb-12 w-1/5 '>
-        <TextInput
-          inputSize="medium"
-          type="text"
-          name="loginId"
-          placeholder="아이디"
-          value={loginData.loginId}
-          onChange={handleChange}
-          fullWidth
-          bordered
-          error={errors.loginId}
-        />
-        <div className='mb-8'/>
-        <TextInput
-          inputSize="medium"
-          type="password"
-          name="password"
-          placeholder="비밀번호"
-          value={loginData.password}
-          onChange={handleChange}
-          fullWidth
-          bordered
-          error={errors.password}
-        />
+      <div className='flex flex-col justify-center items-center bg-white rounded-2xl shadow-2xl shadow-gray-300 px-20 py-14 mb-12 w-1/4 '>
+        <div className='relative'>
+          <PersonIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400' />
+          <TextInput
+            inputSize="medium"
+            type="text"
+            name="loginId"
+            placeholder="아이디"
+            value={loginData.loginId}
+            onChange={handleChange}
+            fullWidth
+            bordered
+            error={errors.loginId}
+            className="pl-12"
+          />
+        </div>
+        <div className='mb-8' />
+        <div className='relative'>
+          <LockIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400' />
+          <TextInput
+            inputSize="medium"
+            type="password"
+            name="password"
+            placeholder="비밀번호"
+            value={loginData.password}
+            onChange={handleChange}
+            fullWidth
+            bordered
+            error={errors.password}
+            className="pl-12"
+          />
+        </div>
       </div>
       <Button
         variant="primary"
