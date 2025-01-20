@@ -7,6 +7,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
+import InputWithIcon from '../components/common/ui/InputWithIcon';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -74,25 +75,24 @@ const Signup = () => {
     const regExp = /^[a-zA-Z][a-zA-Z0-9-_]{5,11}$/;
     return regExp.test(username);
   }
-  
+
   // 비밀번호 검증: 8-20자, 영문/숫자/특수문자 중 2가지 이상 조합
   function canPassword(password: string) {
     // 길이 체크
     if (password.length < 8 || password.length > 20) return false;
-    
+
     let containsLetter = /[a-zA-Z]/.test(password);
     let containsNumber = /[0-9]/.test(password);
     let containsSpecial = /[!@#$%^&*]/.test(password);
-    
+
     // 2가지 이상 조합 체크
     let combinationCount = 0;
     if (containsLetter) combinationCount++;
     if (containsNumber) combinationCount++;
     if (containsSpecial) combinationCount++;
-    
+
     return combinationCount >= 2;
   }
-  
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -134,21 +134,21 @@ const Signup = () => {
             <p className='text-label font-scdream6 text-bold mb-4'>
               아이디
             </p>
-            <div className="flex gap-2">
-              <div className='relative w-full'>
-                <PersonIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-sub' />
-                <TextInput
-                  type="text"
-                  name="loginId"
-                  placeholder="아이디를 입력해주세요"
-                  value={formData.loginId}
-                  fullWidth
-                  onChange={handleChange}
-                  error={errors.loginId}
-                  className="flex-1 pl-12"
-                />
+            <div className="flex gap-2 items-start">
+              <div className="flex-1">
+                <InputWithIcon icon={PersonIcon}>
+                  <TextInput
+                    type="text"
+                    name="loginId"
+                    placeholder="아이디를 입력해주세요"
+                    value={formData.loginId}
+                    fullWidth
+                    onChange={handleChange}
+                    error={errors.loginId}
+                    className="pl-12"
+                  />
+                </InputWithIcon>
               </div>
-
               <Button
                 type="button"
                 variant="secondary"
@@ -163,8 +163,7 @@ const Signup = () => {
             <p className='text-label font-scdream6 text-bold mb-4'>
               비밀번호
             </p>
-            <div className='relative w-full'>
-              <LockIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-sub' />
+            <InputWithIcon icon={LockIcon}>
               <TextInput
                 type="password"
                 name="password"
@@ -176,14 +175,14 @@ const Signup = () => {
                 error={errors.password}
                 className='pl-12'
               />
-            </div>
+            </InputWithIcon>
           </div>
+
           <div className='mb-8'>
             <p className='text-label font-scdream6 text-bold mb-4'>
               비밀번호 확인
             </p>
-            <div className='relative w-full'>
-              <LockIcon className='absolute left-4 top-1/2 transform -translate-y-1/2 text-sub' />
+            <InputWithIcon icon={LockIcon}>
               <TextInput
                 type="password"
                 name="confirmPassword"
@@ -195,7 +194,7 @@ const Signup = () => {
                 error={errors.confirmPassword}
                 className='pl-12'
               />
-            </div>
+            </InputWithIcon>
           </div>
 
           <Button
