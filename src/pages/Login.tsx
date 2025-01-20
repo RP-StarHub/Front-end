@@ -120,10 +120,12 @@ const Login = () => {
       >
         로그인
       </Button>
-      <div className='w-1/2 h-px bg-sub mt-16 mb-5' />
+      
+      <div className='w-1/3 h-px bg-sub mt-16 mb-10' />
+
       <div className='flex'>
         <p className='text-regular text-bold mr-4'>
-          아직 회원이 아니신가요?
+          StarHub와 함께 빛나는 별이 되고 싶다면
         </p>
         <Link className='text-regular font-scdream6 text-bold' to="/signup">
           회원가입
