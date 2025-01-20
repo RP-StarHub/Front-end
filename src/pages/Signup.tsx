@@ -49,10 +49,14 @@ const Signup = () => {
 
     if (!formData.loginId) {
       newErrors.loginId = '아이디는 필수 입력 사항입니다.';
+    } else if (!canUsername(formData.loginId)) {
+      newErrors.loginId = '아이디는 6-12자의 영문, 숫자, 기호( - _ )만 사용이 가능합니다.';
     }
 
     if (!formData.password) {
       newErrors.password = '비밀번호는 필수 입력 사항입니다.';
+    } else if (!canPassword(formData.password)) {
+      newErrors.password = '비밀번호는 반드시 8-20자 이내 숫자, 특수문자, 영문자 중 2가지 이상을 조합해야합니다.';
     }
 
     if (!formData.confirmPassword) {
@@ -64,6 +68,31 @@ const Signup = () => {
     setErrors(newErrors);
     return !newErrors.loginId && !newErrors.password && !newErrors.confirmPassword
   }
+
+  // 아이디 검증: 6-12자의 영문으로 시작하고, 영문/숫자/-/_ 조합
+  function canUsername(username: string) {
+    const regExp = /^[a-zA-Z][a-zA-Z0-9-_]{5,11}$/;
+    return regExp.test(username);
+  }
+  
+  // 비밀번호 검증: 8-20자, 영문/숫자/특수문자 중 2가지 이상 조합
+  function canPassword(password: string) {
+    // 길이 체크
+    if (password.length < 8 || password.length > 20) return false;
+    
+    let containsLetter = /[a-zA-Z]/.test(password);
+    let containsNumber = /[0-9]/.test(password);
+    let containsSpecial = /[!@#$%^&*]/.test(password);
+    
+    // 2가지 이상 조합 체크
+    let combinationCount = 0;
+    if (containsLetter) combinationCount++;
+    if (containsNumber) combinationCount++;
+    if (containsSpecial) combinationCount++;
+    
+    return combinationCount >= 2;
+  }
+  
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
