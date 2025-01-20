@@ -3,6 +3,7 @@ import StepIndicator from '../common/ui/StepIndicator';
 import WelcomeStep from './steps/WelcomeStep';
 import PhotoStep from './steps/PhotoStep';
 import PhotoUploadStep from './steps/PhotoUploadStep';
+import BioStep from './steps/BioStep';
 
 export enum ProfileStep {
   WELCOME = 0,
@@ -15,7 +16,7 @@ export default function ProfileSetupFlow() {
   const [currentStep, setCurrentStep] = useState<ProfileStep>(ProfileStep.WELCOME);
   const [showPhotoUpload, setShowPhotoUpload] = useState(false);
   const [selectedProfileImage, setSelectedProfileImage] = useState<string | null>(null);
-  
+
 
   const steps = [
     { title: '기본 정보' },
@@ -33,7 +34,7 @@ export default function ProfileSetupFlow() {
         {/* StepIndicator는 경우에 따라 보임 */}
         {currentStep !== ProfileStep.WELCOME && (
           <div className="px-8 pt-8">
-            <StepIndicator currentStep={ currentStep - 1 } steps={steps} />
+            <StepIndicator currentStep={currentStep - 1} steps={steps} />
           </div>
         )}
 
@@ -42,13 +43,15 @@ export default function ProfileSetupFlow() {
           {currentStep === ProfileStep.WELCOME && (
             <WelcomeStep onNext={handleNext} />
           )}
+
           {currentStep === ProfileStep.PHOTO && (
-            <PhotoStep 
+            <PhotoStep
               onNext={handleNext}
               onOpenPhotoSelect={() => setShowPhotoUpload(true)}
-              selectedImage={selectedProfileImage} 
+              selectedImage={selectedProfileImage}
             />
           )}
+
           {showPhotoUpload && (
             <PhotoUploadStep
               onClose={() => setShowPhotoUpload(false)}
@@ -57,6 +60,10 @@ export default function ProfileSetupFlow() {
                 setShowPhotoUpload(false);
               }}
             />
+          )}
+
+          {currentStep === ProfileStep.BIO && (
+            <BioStep onNext={handleNext} />
           )}
         </div>
       </div>
