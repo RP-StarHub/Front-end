@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { MapMarker } from "react-kakao-maps-sdk";
-import { MapPosition, KakaoLatLng, MarkerState, StudyCardInfo } from "../../types";
+import { MapPosition, KakaoLatLng, MarkerState } from '../../types/models/common'
 import OverCard from './OverCard';
+import { StudyCardInfo } from '../../types/models/study';
 
 interface EventMarkerProps extends StudyCardInfo {
   position: MapPosition;

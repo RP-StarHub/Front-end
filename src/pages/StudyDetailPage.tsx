@@ -7,26 +7,26 @@ import { usePostDetail } from "../hooks/api/usePost";
 import { useCommentList } from "../hooks/api/useComment";
 import { PostInfo } from "../types/api/post";
 import { CommentInfo } from "../types/api/comment";
+import { useAuthStore } from "../store";
 
 const StudyDetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const numericPostId = Number(postId);
+  const user = useAuthStore((state) => state.user);
   
   const { data: postResponse, isLoading: isLoadingPost } = usePostDetail(numericPostId);
   const { data: commentsResponse, isLoading: isLoadingComments } = useCommentList(numericPostId);
   
   const studyDetail: PostInfo | undefined = postResponse?.data.data;
   const comments: CommentInfo[] = commentsResponse?.data.data || [];
-  
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
 
   // 데이터 로딩 중이면 로딩 상태 표시
   if (isLoadingPost || isLoadingComments || !studyDetail) {
     return <div>Loading...</div>;
   }
 
-  // userInfo와 studyDetail의 userName이 같은지 확인
-  const isCurrentUser = userInfo && userInfo.name === studyDetail.userName;
+  // user와 studyDetail의 userName이 같은지 확인
+  const isCurrentUser = user && user.name === studyDetail.userName;
   
   const detailArray: [PostInfo, number, CommentInfo[]] = [studyDetail, numericPostId, comments];
 

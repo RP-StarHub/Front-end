@@ -5,7 +5,7 @@ import PlaceIcon from "../../assets/icons/PlaceIcon.png";
 import PeopleIcon from "../../assets/icons/PeopleIcon.png";
 import DuringIcon from "../../assets/icons/DuringIcon.png";
 import { useNavigate } from "react-router-dom";
-import { IconType, IconStyle } from "../../types";
+import { IconType, IconStyle } from "../../types/models/common";
 
 interface OverCardProps {
   type: string;

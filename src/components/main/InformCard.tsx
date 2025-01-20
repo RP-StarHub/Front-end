@@ -5,7 +5,8 @@ import PlaceIcon from "../../assets/icons/PlaceIcon.png";
 import PeopleIcon from "../../assets/icons/PeopleIcon.png";
 import DuringIcon from "../../assets/icons/DuringIcon.png";
 import { useNavigate } from "react-router-dom";
-import { InformCardProps, IconType, IconStyle } from "../../types";
+import { IconType, IconStyle } from "../../types/models/common"
+import { InformCardProps } from "../../types/models/study"
 
 const iconStyles: Record<IconType, IconStyle> = {
   '스택': {

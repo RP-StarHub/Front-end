@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { LoginUserRequest } from '../types/api/user';
 import { useLogin } from '../hooks/api/useUser';
+import { useAuthStore } from '../store';
 import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 
 const Login = () => {
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
+  
   const [loginData, setLoginData] = useState<LoginUserRequest>({
     loginId: '',
     password: '',
@@ -40,12 +43,12 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!validateForm()) return;
-
+  
     try {
       const response = await login.mutateAsync(loginData);
-      localStorage.setItem('userInfo', JSON.stringify(response.data.data));
+      const userData = response.data.data;
+      setUser(userData);
       navigate('/');
-      window.location.reload();
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);

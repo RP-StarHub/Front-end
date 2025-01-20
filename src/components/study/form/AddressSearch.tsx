@@ -1,14 +1,10 @@
 import React, { useCallback, useEffect } from "react";
-import { LatLng } from "../../../types";
 import DaumPostcode from "react-daum-postcode";
-import { PostRequest } from "../../../types/api/post";
 import TextInput from "../../common/ui/TextInput";
 import Button from "../../common/ui/Button";
-
-interface AddressObj {
-  areaAddress: string;
-  townAddress: string;
-}
+import { PostRequest } from "../../../types/api/post";
+import { AddressObj } from "../../../types/models/study";
+import { LatLng } from "../../../types/models/common";
 
 interface DaumPostcodeData {
   address: string;
@@ -19,17 +15,17 @@ interface DaumPostcodeData {
 
 interface AddressSearchProps {
   addressValue: string;
-  setAddressObj: React.Dispatch<React.SetStateAction<AddressObj>>;
-  setLatLng: React.Dispatch<React.SetStateAction<LatLng>>;
-  setFormData: React.Dispatch<React.SetStateAction<PostRequest>>;
+  setAddressInfo: (addressInfo: AddressObj) => void;
+  setLocation: (location: LatLng) => void;
+  setFormData: (data: Partial<PostRequest>) => void;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
 }
 
 export const AddressSearch = ({
   addressValue,
-  setAddressObj,
-  setLatLng,
+  setAddressInfo,
+  setLocation,
   setFormData,
   handleInputChange,
   error
@@ -38,6 +34,7 @@ export const AddressSearch = ({
     // 도로명 주소의 노출 규칙에 따라 주소를 표시
     let fullAddress = data.address;
     let extraAddress = "";
+
     if (data.addressType === "R") {
       if (data.bname !== "") {
         extraAddress += data.bname;
@@ -49,22 +46,15 @@ export const AddressSearch = ({
 
       fullAddress += extraAddress !== "" ? `(${extraAddress})` : "";
 
-      setAddressObj({
+      setAddressInfo({
         areaAddress: "",
         townAddress: fullAddress,
       });
 
-      setFormData(prev => ({
-        ...prev,
+      setFormData({
         place: fullAddress
-      }));
-
-      // 사용자가 입력한 주소 정보를 입력 필드에 넣음
-      const addressInput = document.getElementById("addressInput") as HTMLInputElement;
-      if (addressInput) {
-        addressInput.value = fullAddress;
-      }
-
+      });
+      
       // 주소로 좌표를 검색 (Kakao Map API 사용)
       window.kakao.maps.load(() => {
         const geocoder = new window.kakao.maps.services.Geocoder();
@@ -73,26 +63,15 @@ export const AddressSearch = ({
             const latitude = parseFloat(result[0].y);
             const longitude = parseFloat(result[0].x);
 
-            setAddressObj({
-              areaAddress: "",
-              townAddress: fullAddress,
-            });
-
-            // 입력받은 주소의 위도, 경도 정보를 state에 저장
-            setLatLng({
+            setLocation({
               latitude,
               longitude,
-            })
-
-            const addressInput = document.getElementById("addressInput") as HTMLInputElement;
-            if (addressInput) {
-              addressInput.value = fullAddress;
-            }
+            });
           }
         });
       });
     }
-  }, [setAddressObj, setFormData, setLatLng]);
+  }, [setAddressInfo, setFormData, setLocation]);
 
   // 주소 검색 API를 이용해 주소 찾기
   useEffect(() => {
@@ -147,5 +126,5 @@ export const AddressSearch = ({
         주소 찾기
       </Button>
     </div>
-  )
-}
+  );
+};

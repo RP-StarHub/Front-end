@@ -19,11 +19,11 @@ export const userServices = {
       }
     )
   },
-  getLogout: (loginId: number) => {
+  getLogout: (userId: number) => {
     return axiosInstance.get(
-      `/api/user/logout/`,
+      `/api/user/logout`,
       {
-        params: { loginId },
+        params: { loginId: userId },
       }
     )
   }
