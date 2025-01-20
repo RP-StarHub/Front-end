@@ -4,6 +4,8 @@ import WelcomeStep from './steps/WelcomeStep';
 import PhotoStep from './steps/PhotoStep';
 import PhotoUploadStep from './steps/PhotoUploadStep';
 import BioStep from './steps/BioStep';
+import CompletionStep from './steps/CompletionStep';
+import { useNavigate } from 'react-router-dom';
 
 export enum ProfileStep {
   WELCOME = 0,
@@ -16,7 +18,7 @@ export default function ProfileSetupFlow() {
   const [currentStep, setCurrentStep] = useState<ProfileStep>(ProfileStep.WELCOME);
   const [showPhotoUpload, setShowPhotoUpload] = useState(false);
   const [selectedProfileImage, setSelectedProfileImage] = useState<string | null>(null);
-
+  const navigate = useNavigate();
 
   const steps = [
     { title: '기본 정보' },
@@ -64,6 +66,14 @@ export default function ProfileSetupFlow() {
 
           {currentStep === ProfileStep.BIO && (
             <BioStep onNext={handleNext} />
+          )}
+
+          {currentStep === ProfileStep.CONTACT && (
+            <CompletionStep
+              onComplete={() => {
+                navigate('/');
+              }}
+            />
           )}
         </div>
       </div>
