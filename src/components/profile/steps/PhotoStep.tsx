@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { profileStore } from '../../../store/profile';
+import PhotoUploadStep from './PhotoUploadStep';
 import Button from '../../common/ui/Button';
 import TextInput from '../../common/ui/TextInput';
 import PersonIcon from '@mui/icons-material/Person';
@@ -7,20 +9,24 @@ import EditIcon from '@mui/icons-material/Edit';
 interface PhotoStepProps {
   onPreview: () => void;
   onNext: () => void;
-  onOpenPhotoSelect: () => void;
-  selectedImage: string | null;
 }
 
-export default function PhotoStep({ onPreview, onNext, onOpenPhotoSelect, selectedImage }: PhotoStepProps) {
-  const [nickname, setNickname] = useState('');
+export default function PhotoStep({ onPreview, onNext }: PhotoStepProps) {
+  const { formData, updateFormData } = profileStore();
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
   const [error, setError] = useState('');
 
   const handleNext = () => {
-    if (!nickname.trim()) {
+    if (!formData.nickname.trim()) {
       setError('닉네임은 필수 입력 사항입니다.');
       return;
     }
     onNext();
+  };
+
+  const handlePhotoSelect = (image: string) => {
+    updateFormData({ profileImage: image });
+    setShowPhotoUpload(false);
   };
 
   return (
@@ -41,12 +47,12 @@ export default function PhotoStep({ onPreview, onNext, onOpenPhotoSelect, select
       <div className="flex flex-col items-center my-8">
         <div
           className="relative w-32 h-32 cursor-pointer mb-2"
-          onClick={onOpenPhotoSelect}
+          onClick={() => setShowPhotoUpload(true)}
         >
-          {selectedImage ? (
+          {formData.profileImage ? (
             <div className="w-full h-full rounded-full overflow-hidden">
               <img
-                src={selectedImage}
+                src={formData.profileImage}
                 alt="Selected profile"
                 className="w-full h-full object-cover"
               />
@@ -71,9 +77,9 @@ export default function PhotoStep({ onPreview, onNext, onOpenPhotoSelect, select
           <TextInput
             type="text"
             placeholder="사용할 닉네임을 입력해주세요"
-            value={nickname}
+            value={formData.nickname}
             onChange={(e) => {
-              setNickname(e.target.value);
+              updateFormData({ nickname: e.target.value });
               setError('');
             }}
             error={error}
@@ -102,6 +108,13 @@ export default function PhotoStep({ onPreview, onNext, onOpenPhotoSelect, select
       >
         다음
       </Button>
+
+      {showPhotoUpload && (
+        <PhotoUploadStep
+          onClose={() => setShowPhotoUpload(false)}
+          onSelect={handlePhotoSelect}
+        />
+      )}
     </div>
   );
 }
