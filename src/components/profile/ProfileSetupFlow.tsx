@@ -4,7 +4,7 @@ import WelcomeStep from './steps/WelcomeStep';
 import PhotoStep from './steps/PhotoStep';
 import PhotoUploadStep from './steps/PhotoUploadStep';
 import BioStep from './steps/BioStep';
-import CompletionStep from './steps/CompletionStep';
+import ContactStep from './steps/ContactStep';
 
 export enum ProfileStep {
   WELCOME = 0,
@@ -69,7 +69,7 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
           )}
 
           {currentStep === ProfileStep.CONTACT && (
-            <CompletionStep
+            <ContactStep
               onComplete={onComplete}
             />
           )}

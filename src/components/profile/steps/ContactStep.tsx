@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import Button from '../../common/ui/Button';
 import TextInput from '../../common/ui/TextInput';
 
-interface CompletionStepProps {
+interface ContactStepProps {
   onComplete: () => void;
 }
 
-export default function CompletionStep({ onComplete }: CompletionStepProps) {
+export default function ContactStep({ onComplete }: ContactStepProps) {
   const [formData, setFormData] = useState({
     email: '',
     phoneNum: ''
