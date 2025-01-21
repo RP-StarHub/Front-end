@@ -1,6 +1,35 @@
 import { useMutation } from "@tanstack/react-query"
-import { LoginUserRequest } from "../../types/api/user"
+import { 
+  LoginUserRequest,
+  RegisterUserRequest,
+  CreateProfileRequest,
+  CheckUsernameRequest 
+} from "../../types/api/user";
 import { userServices, mockUserService } from "../../services/api/user"
+
+export const useRegister = () => {
+  return useMutation({
+    mutationFn: (data: RegisterUserRequest) =>
+      userServices.postRegister(data)
+  });
+  // return useMutation({
+  //   mutationFn: (form: FormData) => mockUserService.postRegister(form)
+  // });
+};
+
+export const useCheckUsername = () => {
+  return useMutation({
+    mutationFn: (data: CheckUsernameRequest) =>
+      userServices.postCheckUsername(data)
+  });
+};
+
+export const useCreateProfile = () => {
+  return useMutation({
+    mutationFn: (data: CreateProfileRequest) =>
+      userServices.postCreateProfile(data)
+  });
+};
 
 export const useLogin = () => {
   return useMutation({
@@ -9,19 +38,14 @@ export const useLogin = () => {
   });
 };
 
-export const useRegister = () => {
-  return useMutation({
-    mutationFn: (form: FormData) =>
-      userServices.postRegister(form)
-  });
-  // return useMutation({
-  //   mutationFn: (form: FormData) => mockUserService.postRegister(form)
-  // });
-}
-
 export const useLogout = () => {
   return useMutation({
-    mutationFn: (loginId: number) =>
-      userServices.getLogout(loginId)
+    mutationFn: () => userServices.postLogout()
   });
-}
+};
+
+export const useTokenReissue = () => {
+  return useMutation({
+    mutationFn: () => userServices.postTokenReissue()
+  });
+};
