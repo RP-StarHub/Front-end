@@ -49,7 +49,7 @@ export default function BioStep({ onPreview, onNext }: BioStepProps) {
 
     if (!formData.age.trim()) {
       newErrors.age = '나이는 필수 입력 사항입니다.';
-    } else if (isNaN(Number(formData.age))) {
+    } else if (!Number.isInteger(Number(formData.age))) {
       newErrors.age = '숫자만 입력 가능합니다.'
     }
 

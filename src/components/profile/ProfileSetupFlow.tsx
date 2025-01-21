@@ -29,11 +29,15 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
   ];
 
   const handlePreview = () => {
-    setCurrentStep(prev => prev - 1 as ProfileStep);
+    if (currentStep > ProfileStep.WELCOME) {  
+      setCurrentStep(prev => (prev - 1) as ProfileStep);  
+    }  
   }
 
   const handleNext = () => {
-    setCurrentStep(prev => prev + 1 as ProfileStep);
+    if (currentStep < ProfileStep.CONTACT) {  
+      setCurrentStep(prev => (prev + 1) as ProfileStep);  
+    }  
   };
 
   return (
