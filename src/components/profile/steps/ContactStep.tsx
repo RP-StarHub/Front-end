@@ -3,10 +3,11 @@ import Button from '../../common/ui/Button';
 import TextInput from '../../common/ui/TextInput';
 
 interface ContactStepProps {
+  onPreview: () => void;
   onComplete: () => void;
 }
 
-export default function ContactStep({ onComplete }: ContactStepProps) {
+export default function ContactStep({ onPreview, onComplete }: ContactStepProps) {
   const [formData, setFormData] = useState({
     email: '',
     phoneNum: ''
@@ -19,24 +20,24 @@ export default function ContactStep({ onComplete }: ContactStepProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-  // 전화번호 자동 하이픈 추가
-  if (name === 'phoneNum') {
-    const phoneNum = value.replace(/[^0-9]/g, '');
-    if (phoneNum.length <= 11) {
-      const formattedPhone = phoneNum.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-      setFormData(prev => ({
-        ...prev,
-        [name]: formattedPhone
-      }));
+    // 전화번호 자동 하이픈 추가
+    if (name === 'phoneNum') {
+      const phoneNum = value.replace(/[^0-9]/g, '');
+      if (phoneNum.length <= 11) {
+        const formattedPhone = phoneNum.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+        setFormData(prev => ({
+          ...prev,
+          [name]: formattedPhone
+        }));
+      }
+      return;
     }
-    return;
-  }
 
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
+
     if (errors[name as keyof typeof errors]) {
       setErrors({
         ...errors,
@@ -128,6 +129,16 @@ export default function ContactStep({ onComplete }: ContactStepProps) {
       </div>
 
       <div className="mt-8 space-y-3">
+        <Button
+          variant="secondary"
+          fullWidth
+          onClick={onPreview}
+          className="mt-4"
+          size="small"
+        >
+          이전
+        </Button>
+
         <Button
           variant="secondary"
           fullWidth

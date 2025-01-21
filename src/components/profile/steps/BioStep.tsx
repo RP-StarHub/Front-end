@@ -4,10 +4,11 @@ import TextInput from '../../common/ui/TextInput';
 import TextArea from '../../common/ui/TextArea';
 
 interface BioStepProps {
+  onPreview: () => void;
   onNext: () => void;
 }
 
-export default function BioStep({ onNext }: BioStepProps) {
+export default function BioStep({ onPreview, onNext }: BioStepProps) {
   const [formData, setFormData] = useState({
     name: '',
     age: '',
@@ -127,8 +128,18 @@ export default function BioStep({ onNext }: BioStepProps) {
       <Button
         variant="secondary"
         fullWidth
+        onClick={onPreview}
+        className="mt-4"
+        size="small"
+      >
+        이전
+      </Button>
+
+      <Button
+        variant="secondary"
+        fullWidth
         onClick={handleNext}
-        className="mt-8"
+        className="mt-4"
         size="small"
       >
         다음

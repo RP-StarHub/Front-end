@@ -5,12 +5,13 @@ import PersonIcon from '@mui/icons-material/Person';
 import EditIcon from '@mui/icons-material/Edit';
 
 interface PhotoStepProps {
+  onPreview: () => void;
   onNext: () => void;
   onOpenPhotoSelect: () => void;
   selectedImage: string | null;
 }
 
-export default function PhotoStep({ onNext, onOpenPhotoSelect, selectedImage }: PhotoStepProps) {
+export default function PhotoStep({ onPreview, onNext, onOpenPhotoSelect, selectedImage }: PhotoStepProps) {
   const [nickname, setNickname] = useState('');
   const [error, setError] = useState('');
 
@@ -85,8 +86,18 @@ export default function PhotoStep({ onNext, onOpenPhotoSelect, selectedImage }: 
       <Button
         variant="secondary"
         fullWidth
-        onClick={handleNext}
+        onClick={onPreview}
         className="mt-8"
+        size="small"
+      >
+        이전
+      </Button>
+
+      <Button
+        variant="secondary"
+        fullWidth
+        onClick={handleNext}
+        className="mt-4"
         size="small"
       >
         다음

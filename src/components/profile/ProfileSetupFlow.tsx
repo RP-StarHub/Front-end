@@ -28,6 +28,10 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
     { title: '완료' }
   ];
 
+  const handlePreview = () => {
+    setCurrentStep(prev => prev - 1 as ProfileStep);
+  }
+
   const handleNext = () => {
     setCurrentStep(prev => prev + 1 as ProfileStep);
   };
@@ -48,6 +52,7 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
 
           {currentStep === ProfileStep.PHOTO && (
             <PhotoStep
+              onPreview={handlePreview}
               onNext={handleNext}
               onOpenPhotoSelect={() => setShowPhotoUpload(true)}
               selectedImage={selectedProfileImage}
@@ -65,11 +70,15 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
           )}
 
           {currentStep === ProfileStep.BIO && (
-            <BioStep onNext={handleNext} />
+            <BioStep
+              onPreview={handlePreview}
+              onNext={handleNext}
+            />
           )}
 
           {currentStep === ProfileStep.CONTACT && (
             <ContactStep
+              onPreview={handlePreview}
               onComplete={onComplete}
             />
           )}
