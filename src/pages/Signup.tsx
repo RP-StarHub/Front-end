@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '../store';
 import { useRegister } from '../hooks/api/useUser';
 import ProfileSetupFlow from '../components/profile/ProfileSetupFlow';
+import toast, { Toaster } from 'react-hot-toast';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import Button from '../components/common/ui/Button';
@@ -25,7 +26,7 @@ const Signup = () => {
     password: '',
     confirmPassword: '',
   });
-  const [showProfileSetup, setShowProfileSetup] = useState(true);
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -110,7 +111,24 @@ const Signup = () => {
       const userData = response.data.data;
       setUser(userData);
       setShowProfileSetup(true);
+      toast.success('회원가입이 완료되었습니다!', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          width: 1000,
+          fontSize: '16px'
+        },
+        icon: '🤚',
+      });
     } catch (error) {
+      toast.error('회원가입 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          width: 1000,
+          fontSize: '16px'
+        }
+      });
       console.error('Error during signup:', error);
     }
   };
@@ -220,6 +238,8 @@ const Signup = () => {
           }}
         />
       )}
+
+      <Toaster />
     </>
   );
 };

@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import ApplicantListPage from "./pages/ApplicantListPage";
 import StudyDetailPage from "./pages/StudyDetailPage";
 import StudyRecruitPage from "./pages/StudyRecruitPage";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <Toaster />
     </div>
   );
 }

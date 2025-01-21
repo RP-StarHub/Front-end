@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../../common/ui/Button';
 import TextInput from '../../common/ui/TextInput';
+import toast from 'react-hot-toast';
 
 interface ContactStepProps {
   onPreview: () => void;
@@ -71,9 +72,18 @@ export default function ContactStep({ onPreview, onComplete }: ContactStepProps)
   }
 
   const handleComplete = () => {
-    if (validateForm()) {
-      onComplete();
-    }
+    if (!validateForm()) return;
+
+    toast.success('회원가입이 완료되었습니다!', {
+      duration: 3000,
+      position: 'top-center',
+      style: {
+        width: 1000,
+        fontSize: '16px'
+      },
+      icon: '✨',
+    });
+    onComplete();
   }
 
   return (
