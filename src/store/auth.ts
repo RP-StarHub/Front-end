@@ -1,11 +1,15 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { UserInfo } from '../types/api/user'
+import { UserInfo } from '../types/models/user'
 
 interface AuthState {
   user: UserInfo | null;
   isAuthenticated: boolean;
-  setUser: (userData: UserInfo) => void;
+  accessToken: string | null;
+  refreshToken: string | null;
+  
+  setUser: (userData: UserInfo, tokens: { accessToken: string; refreshToken: string }) => void;
+  setTokens: (tokens: { accessToken: string; refreshToken: string }) => void;
   logout: () => void;
 }
 
@@ -14,13 +18,26 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
-      setUser: (userData) => set({ 
+      accessToken: null,
+      refreshToken: null,
+
+      setUser: (userData, tokens) => set({ 
         user: userData,
-        isAuthenticated: true 
+        isAuthenticated: true,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken
       }),
+
+      setTokens: (tokens) => set({
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken
+      }),
+
       logout: () => set({ 
         user: null, 
-        isAuthenticated: false 
+        isAuthenticated: false,
+        accessToken: null,
+        refreshToken: null
       }),
     }),
     {

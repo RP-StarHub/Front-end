@@ -7,3 +7,9 @@ export interface User {
   introduction: string;
   age: number;
 }
+
+export interface UserInfo {
+  username: string;
+  nickname: string | null;
+  isProfileComplete: boolean;
+}
