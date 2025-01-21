@@ -7,26 +7,25 @@ export enum ProfileStep {
   CONTACT = 'CONTACT'
 }
 
+interface ProfileFormData {
+  profileImage: string;
+  nickname: string;
+  name: string;
+  age: number;
+  bio: string;
+  email: string;
+  phoneNumber: string;
+}
+
 interface ProfileState {
-  // 프로필 모달 상태 
   isModalOpen: boolean;
   currentStep: ProfileStep;
-
-  // 프로필 입력 폼 데이터
-  formData: {
-    profileImage: string;
-    nickname: string;
-    name: string;
-    age: number;
-    bio: string;
-    email: string;
-    phoneNumber: string;
-  }
+  formData: ProfileFormData;
 
   openModal: () => void;
   closeModal: () => void;
   setStep: (step: ProfileStep) => void;
-  updateFormData: (data: Partial<typeof FormData>) => void;
+  updateFormData: (data: Partial<ProfileFormData>) => void;
   resetForm: () => void;
 }
 
