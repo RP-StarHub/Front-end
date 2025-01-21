@@ -81,7 +81,7 @@ const Login = () => {
       </div>
       
       <div className='flex flex-col justify-center items-center w-[500px]'>
-        <InputWithIcon icon={PersonIcon} error={errors.loginId}>
+        <InputWithIcon icon={PersonIcon}>
           <TextInput
             inputSize="medium"
             type="text"
@@ -98,7 +98,7 @@ const Login = () => {
         
         <div className='mb-8' />
         
-        <InputWithIcon icon={LockIcon} error={errors.password}>
+        <InputWithIcon icon={LockIcon}>
           <TextInput
             inputSize="medium"
             type="password"
