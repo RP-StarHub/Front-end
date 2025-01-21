@@ -11,14 +11,69 @@ export default function ContactStep({ onComplete }: ContactStepProps) {
     email: '',
     phoneNum: ''
   });
+  const [errors, setErrors] = useState({
+    email: '',
+    phoneNum: ''
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+  // 전화번호 자동 하이픈 추가
+  if (name === 'phoneNum') {
+    const phoneNum = value.replace(/[^0-9]/g, '');
+    if (phoneNum.length <= 11) {
+      const formattedPhone = phoneNum.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+      setFormData(prev => ({
+        ...prev,
+        [name]: formattedPhone
+      }));
+    }
+    return;
+  }
+
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+    
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
   };
+
+  const validateForm = () => {
+    const newErrors = {
+      email: '',
+      phoneNum: ''
+    };
+
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!formData.email) {
+      newErrors.email = '이메일은 필수 입력 사항입니다.';
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = '올바른 이메일 형식이 아닙니다. (예: starhub@starhub.com)';
+    }
+
+    const phoneRegex = /^010-\d{4}-\d{4}$/;
+    if (!formData.phoneNum) {
+      newErrors.phoneNum = '전화번호는 필수 입력 사항입니다.';
+    } else if (!phoneRegex.test(formData.phoneNum)) {
+      newErrors.phoneNum = '올바른 전화번호 형식이 아닙니다. (예: 010-0000-0000)';
+    }
+
+    setErrors(newErrors);
+    return !newErrors.email && !newErrors.phoneNum;
+  }
+
+  const handleComplete = () => {
+    if (validateForm()) {
+      onComplete();
+    }
+  }
 
   return (
     <div className="p-8">
@@ -47,6 +102,7 @@ export default function ContactStep({ onComplete }: ContactStepProps) {
             placeholder="이메일을 입력해주세요"
             value={formData.email}
             onChange={handleChange}
+            error={errors.email}
             fullWidth
             bordered
             className="text-placeholder"
@@ -63,6 +119,7 @@ export default function ContactStep({ onComplete }: ContactStepProps) {
             placeholder="전화번호를 입력해주세요"
             value={formData.phoneNum}
             onChange={handleChange}
+            error={errors.phoneNum}
             fullWidth
             bordered
             className="text-placeholder"
@@ -74,7 +131,7 @@ export default function ContactStep({ onComplete }: ContactStepProps) {
         <Button
           variant="secondary"
           fullWidth
-          onClick={onComplete}
+          onClick={handleComplete}
           size="small"
         >
           완료

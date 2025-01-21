@@ -20,7 +20,7 @@ module.exports = {
       },
       fontSize: {
         "big-title": ["50px", { lineHeight: "1.5" }],
-        "page-title": ["30px", { lineHeight: "1.5" }],
+        "page-title": ["28px", { lineHeight: "1.5" }],
         "button": ["24px", { lineHeight: "1.5" }],
         "label": ["24px", { lineHeight: "1.5" }],
         "placeholder": ["24px", { lineHeight: "1.5" }],

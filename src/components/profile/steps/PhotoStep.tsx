@@ -12,6 +12,15 @@ interface PhotoStepProps {
 
 export default function PhotoStep({ onNext, onOpenPhotoSelect, selectedImage }: PhotoStepProps) {
   const [nickname, setNickname] = useState('');
+  const [error, setError] = useState('');
+
+  const handleNext = () => {
+    if (!nickname.trim()) {
+      setError('닉네임은 필수 입력 사항입니다.');
+      return;
+    }
+    onNext();
+  };
 
   return (
     <div className="p-8">
@@ -58,15 +67,17 @@ export default function PhotoStep({ onNext, onOpenPhotoSelect, selectedImage }: 
           닉네임
         </p>
         <div className="relative">
-          <PersonIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-sub z-10" />
           <TextInput
             type="text"
             placeholder="사용할 닉네임을 입력해주세요"
             value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={(e) => {
+              setNickname(e.target.value);
+              setError('');
+            }}
+            error={error}
             fullWidth
             bordered
-            className="pl-12 text-placeholder"
           />
         </div>
       </div>
@@ -74,7 +85,7 @@ export default function PhotoStep({ onNext, onOpenPhotoSelect, selectedImage }: 
       <Button
         variant="secondary"
         fullWidth
-        onClick={onNext}
+        onClick={handleNext}
         className="mt-8"
         size="small"
       >

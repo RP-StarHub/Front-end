@@ -13,6 +13,11 @@ export default function BioStep({ onNext }: BioStepProps) {
     age: '',
     bio: ''
   });
+  const [errors, setErrors] = useState({
+    name: '',
+    age: '',
+    bio: ''
+  })
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -22,7 +27,44 @@ export default function BioStep({ onNext }: BioStepProps) {
       ...prev,
       [name]: value
     }));
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
   };
+
+  const validateForm = () => {
+    const newErrors = {
+      name: '',
+      age: '',
+      bio: ''
+    };
+
+    if (!formData.name.trim()) {
+      newErrors.name = '이름은 필수 입력 사항입니다.';
+    }
+
+    if (!formData.age.trim()) {
+      newErrors.age = '나이는 필수 입력 사항입니다.';
+    } else if (isNaN(Number(formData.age))) {
+      newErrors.age = '숫자만 입력 가능합니다.'
+    }
+
+    if (!formData.bio.trim()) {
+      newErrors.bio = '한 줄 소개는 필수 입력 사항입니다.';
+    }
+
+    setErrors(newErrors);
+    return !newErrors.name && !newErrors.age && !newErrors.bio;
+  }
+
+  const handleNext = () => {
+    if (validateForm()) {
+      onNext();
+    }
+  }
 
   return (
     <div className="p-8">
@@ -49,6 +91,7 @@ export default function BioStep({ onNext }: BioStepProps) {
           placeholder="여러분들의 이름을 입력해주세요"
           value={formData.name}
           onChange={handleChange}
+          error={errors.name}
           fullWidth
         />
       </div>
@@ -62,6 +105,7 @@ export default function BioStep({ onNext }: BioStepProps) {
           placeholder="여러분들의 나이를 입력해주세요"
           value={formData.age}
           onChange={handleChange}
+          error={errors.age}
           fullWidth
         />
       </div>
@@ -75,6 +119,7 @@ export default function BioStep({ onNext }: BioStepProps) {
           placeholder="여러분들을 간단히 소개해주세요"
           value={formData.bio}
           onChange={handleChange}
+          error={errors.bio}
           fullWidth
         />
       </div>
@@ -82,7 +127,7 @@ export default function BioStep({ onNext }: BioStepProps) {
       <Button
         variant="secondary"
         fullWidth
-        onClick={onNext}
+        onClick={handleNext}
         className="mt-8"
         size="small"
       >

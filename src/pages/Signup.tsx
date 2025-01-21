@@ -25,7 +25,7 @@ const Signup = () => {
     password: '',
     confirmPassword: '',
   });
-  const [showProfileSetup, setShowProfileSetup] = useState(false);
+  const [showProfileSetup, setShowProfileSetup] = useState(true);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -35,7 +35,6 @@ const Signup = () => {
       ...formData,
       [name]: name === 'age' ? parseInt(value) : value,
     });
-    // 입력 시 해당 필드의 에러 메시지 제거
     if (errors[name as keyof typeof errors]) {
       setErrors({
         ...errors,
