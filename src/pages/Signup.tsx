@@ -11,12 +11,11 @@ import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 import InputWithIcon from '../components/common/ui/InputWithIcon';
 import { RegisterUserRequest } from '../types/api/user';
-import { getTokensFromResponse } from '../services/api/axios';
 
 const Signup = () => {
   const navigate = useNavigate();
   const register = useRegister();
-  const setUser = useAuthStore((state) => state.setUser);
+  const { setPendingCredentials } = useAuthStore();
 
   const [formData, setFormData] = useState<
     RegisterUserRequest & { confirmPassword: string }
@@ -103,9 +102,7 @@ const Signup = () => {
     return combinationCount >= 2;
   }
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
 
@@ -115,38 +112,34 @@ const Signup = () => {
         password: formData.password,
       });
 
-      const { data } = response.data;
-      const tokens = getTokensFromResponse(response);
-
-      setUser(
-        {
-          username: data.username,
-          isProfileComplete: false,
-          nickname: null,
-        },
-        tokens.accessToken
-      );
-
-      setShowProfileSetup(true);
-      toast.success('회원가입이 완료되었습니다!', {
-        duration: 3000,
-        position: 'top-center',
+      // 회원가입 성공 시, pendingCredentials에 저장 후 프로필 설정 페이지로 이동
+      if (response.data.status === 201) {
+        setPendingCredentials({
+          username: formData.username,
+          password: formData.password
+        });
+        
+        setShowProfileSetup(true);
+        toast.success('회원가입이 완료되었습니다!', {
+          duration: 3000,
+          position: 'top-center',
         style: {
           width: 1000,
           fontSize: '16px'
         },
         icon: '🤚',
-      });
+        });
+      }
     } catch (error) {
         toast.error('회원가입 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
-          duration: 3000,
-          position: 'top-center',
+        duration: 3000,
+        position: 'top-center',
           style: {
             width: 1000,
             fontSize: '16px'
           }
-        });
-        console.error('회원가입 에러:', error);
+      });
+      console.error('회원가입 에러:', error);
     }
   };
 

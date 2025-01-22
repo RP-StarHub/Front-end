@@ -1,17 +1,24 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { profileStore, ProfileStep } from '../../store/profile';
+import { useAuthStore } from '../../store/auth';
+import { useLogin } from '../../hooks/api/useUser';
 import StepIndicator from '../common/ui/StepIndicator';
 import WelcomeStep from './steps/WelcomeStep';
 import PhotoStep from './steps/PhotoStep';
 import BioStep from './steps/BioStep';
 import ContactStep from './steps/ContactStep';
+import { getTokensFromResponse } from '../../services/api/axios';
 
 interface ProfileSetupFlowProps {
   onComplete: () => void;
 }
 
 export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) {
+  const navigate = useNavigate();
+  const login = useLogin();
   const { currentStep, setStep, closeModal } = profileStore();
+  const { pendingCredentials, setUser, clearPendingCredentials } = useAuthStore();
 
   const steps = [
     { title: '기본 정보' },
@@ -33,9 +40,36 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
     }
   };
 
-  const handleComplete = () => {
-    closeModal();
-    onComplete();
+  const handleComplete = async () => {
+    // 펜딩 데이터가 없는 경우 로그인 페이지로 연결
+    if (!pendingCredentials) {
+      console.error('Pending credentials 없음');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      // 프로필 설정 완료 후 자동 로그인
+      const response = await login.mutateAsync(pendingCredentials);
+      const { data } = response.data;
+      const accessToken = getTokensFromResponse(response);
+      
+      setUser(
+        {
+          username: data.username,
+          nickname: data.nickname,
+          isProfileComplete: true
+        },
+        accessToken
+      );
+
+      clearPendingCredentials();
+      closeModal();
+      onComplete();
+    } catch (error) {
+      console.error('자동 로그인 실패:', error);
+      navigate('/login');
+    }
   };
 
   return (
