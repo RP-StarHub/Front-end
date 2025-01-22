@@ -58,6 +58,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         // 재발급 진행 중인 경우 대기열에 추가
+        console.log('재발급 대기열 추가');
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -65,10 +66,12 @@ axiosInstance.interceptors.response.use(
           .catch((err) => Promise.reject(err));
       }
 
+      console.log('토큰 재발급');
       originalRequest._retry = true;
       isRefreshing = true;
 
       try {
+        console.log('토큰 재발급 요청');
         const { userServices } = await import('./user');
         const response = await userServices.postTokenReissue();
         const newToken = getTokensFromResponse(response);
@@ -79,8 +82,10 @@ axiosInstance.interceptors.response.use(
         processQueue();
         isRefreshing = false;
         
+        console.log('토큰 재발급 완료');
         return axiosInstance(originalRequest);
       } catch (refreshError: any) {
+        console.error('토큰 재발급 실패:', refreshError);
         processQueue(refreshError);
         isRefreshing = false;
         
