@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '../store';
-import { useRegister } from '../hooks/api/useUser';
+import { useCheckUsername, useRegister } from '../hooks/api/useUser';
 import ProfileSetupFlow from '../components/profile/ProfileSetupFlow';
 import toast, { Toaster } from 'react-hot-toast';
 import PersonIcon from '@mui/icons-material/Person';
@@ -15,6 +15,7 @@ import { RegisterUserRequest } from '../types/api/user';
 const Signup = () => {
   const navigate = useNavigate();
   const register = useRegister();
+  const checkUsername = useCheckUsername();
   const { setPendingCredentials } = useAuthStore();
 
   const [formData, setFormData] = useState<
@@ -32,6 +33,7 @@ const Signup = () => {
   });
 
   const [showProfileSetup, setShowProfileSetup] = useState(false);
+  const [isUsernameChecked, setIsUsernameChecked] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -41,11 +43,58 @@ const Signup = () => {
       ...formData,
       [name]: name === 'age' ? parseInt(value) : value,
     });
+
+    // 아이디 변경 시 중복 확인 초기화
+    if (name === 'username') {
+      setIsUsernameChecked(false);
+    }
+
     if (errors[name as keyof typeof errors]) {
       setErrors({
         ...errors,
         [name]: ''
       });
+    }
+  };
+
+  const handleCheckUsername = async () => {
+    if (!formData.username) {
+      setErrors(prev => ({
+        ...prev,
+        username: '아이디는 필수 입력 사항입니다.'
+      }));
+      return;
+    }
+
+    if (!canUsername(formData.username)) {
+      setErrors(prev => ({
+        ...prev,
+        username: '아이디는 6-12자의 영문, 숫자, 기호( - _ )만 사용이 가능합니다.'
+      }));
+      return;
+    }
+
+    try {
+      const response = await checkUsername.mutateAsync({
+        username: formData.username
+      });
+
+      const { available } = response.data.data;
+
+      if (available) {
+        toast.success('사용 가능한 아이디입니다.');
+        setIsUsernameChecked(true);
+      } else {
+        toast.error('이미 사용 중인 아이디입니다.');
+        setIsUsernameChecked(false);
+      }
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        toast.error('올바른 아이디 형식이 아닙니다.');
+      } else {
+        toast.error('중복 확인 중 오류가 발생했습니다.');
+      }
+      setIsUsernameChecked(false);
     }
   };
 
@@ -60,6 +109,8 @@ const Signup = () => {
       newErrors.username = '아이디는 필수 입력 사항입니다.';
     } else if (!canUsername(formData.username)) {
       newErrors.username = '아이디는 6-12자의 영문, 숫자, 기호( - _ )만 사용이 가능합니다.';
+    } else if (!isUsernameChecked) {
+      newErrors.username = '아이디 중복 확인을 해주세요.';
     }
 
     if (!formData.password) {
@@ -130,7 +181,7 @@ const Signup = () => {
           icon: '🤚',
         });
       }
-    } catch (error : any) {
+    } catch (error: any) {
       console.error('회원가입 에러:', error);
       if (error.response?.status === 400) {
         toast.error('잘못된 요청입니다. 입력한 정보를 다시 확인해주세요.', {
@@ -195,6 +246,7 @@ const Signup = () => {
                   type="button"
                   variant="secondary"
                   className="shrink-0"
+                  onClick={handleCheckUsername}
                 >
                   중복확인
                 </Button>
