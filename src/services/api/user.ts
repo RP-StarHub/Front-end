@@ -1,17 +1,21 @@
 import { 
   LoginUserRequest, 
   RegisterUserRequest,
-  PostUserLogout,
   CreateProfileRequest,
   CheckUsernameRequest,
-  PostTokenReissue
+  UserRegisterResponse,
+  UserCheckUsernameResponse,
+  UserProfileCreateResponse,
+  UserLoginResponse,
+  UserLogoutResponse,
+  TokenReissueResponse,
 } from "../../types/api/user";
 import { axiosInstance } from "./axios"
 
 export const userServices = {
   // 회원가입
   postRegister: (data: RegisterUserRequest) => {
-    return axiosInstance.post<RegisterUserRequest>(
+    return axiosInstance.post<UserRegisterResponse>(
       '/api/v1/register',
       data
     );
@@ -19,7 +23,7 @@ export const userServices = {
 
   // 사용자 이름 중복 확인
   postCheckUsername: (data: CheckUsernameRequest) => {
-    return axiosInstance.post<CheckUsernameRequest>(
+    return axiosInstance.post<UserCheckUsernameResponse>(
       '/api/v1/users/check',
       data
     );
@@ -27,7 +31,7 @@ export const userServices = {
 
   // 프로필 생성
   postCreateProfile: (data: CreateProfileRequest) => {
-    return axiosInstance.post<CreateProfileRequest>(
+    return axiosInstance.post<UserProfileCreateResponse>(
       '/api/v1/users/profile',
       data
     );
@@ -35,7 +39,7 @@ export const userServices = {
 
   // 로그인
   postLogin: (data: LoginUserRequest) => {
-    return axiosInstance.post<LoginUserRequest>(
+    return axiosInstance.post<UserLoginResponse>(
       '/api/v1/login',
       data
     );
@@ -43,14 +47,14 @@ export const userServices = {
 
   // 로그아웃
   postLogout: () => {
-    return axiosInstance.post<PostUserLogout>(
+    return axiosInstance.post<UserLogoutResponse>(
       '/api/v1/logout'
     );
   },
 
   // 토큰 재발급
   postTokenReissue: () => {
-    return axiosInstance.post<PostTokenReissue>(
+    return axiosInstance.post<TokenReissueResponse>(
       '/api/v1/reissue'
     );
   }

@@ -50,15 +50,15 @@ export interface LoginUserData {
 }
 
 // API Response (실제 API 응답 타입)
-export type PostUserRegister = ApiResponse<RegisterUserData>;
-export type PostUserCheckUsername = ApiResponse<CheckUsernameData>;
-export type PostUserProfileCreate = ApiResponse<ProfileData>;
-export type PostUserLogin = ApiResponse<LoginUserData>;
-export type PostUserLogout = ApiResponse<null>;
-export type PostTokenReissue = ApiResponse<{
+export type UserRegisterResponse = ApiResponse<RegisterUserData>;
+export type UserCheckUsernameResponse = ApiResponse<CheckUsernameData>;
+export type UserProfileCreateResponse = ApiResponse<ProfileData>;
+export type UserLoginResponse = ApiResponse<LoginUserData>;
+export type UserLogoutResponse = ApiResponse<null>;
+export type TokenReissueResponse = ApiResponse<{
   accessToken: string;
   refreshToken: string;
 }>;
 
 // API Error Response
-export type PostUserRegisterError = ApiErrorResponse;
+export type UserRegisterError = ApiErrorResponse;
