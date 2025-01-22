@@ -1,24 +1,33 @@
 import axios from 'axios';
+import { useAuthStore } from '../../store';
 
 export const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    // Authorization: `Bearer ${token}`,
   },
   timeout: 5000,
 });
 
-// 공통 에러 처리
-axiosInstance.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response?.status === 404) {
-      console.error('요청하신 페이지를 찾을 수 없습니다.');
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const accessToken = useAuthStore.getState().accessToken;
+
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
-    if (error.response?.status === 500) {
-      console.error('서버 에러가 발생했습니다.');
-    }
+
+    // refresh 토큰은 자동으로 쿠키에서 처리, 헤더에 추가 X
+    return config;
+  },
+  (error) => {
     return Promise.reject(error);
   }
 );
+
+// 로그인 응답에서 토큰을 처리하는 함수
+export const getTokensFromResponse = (response: any) => {
+  const accessToken = response.headers.authorization?.replace('Bearer ', '') || '';
+  return accessToken;
+};

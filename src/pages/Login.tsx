@@ -9,6 +9,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 import InputWithIcon from '../components/common/ui/InputWithIcon';
+import { getTokensFromResponse } from '../services/api/axios';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ const Login = () => {
     try {
       const response = await login.mutateAsync(loginData);
       const { data } = response.data;
+      const tokens = getTokensFromResponse(response);
 
       setUser(
         {
@@ -58,10 +60,7 @@ const Login = () => {
           nickname: data.nickname,
           isProfileComplete: data.isProfileComplete
         },
-        {
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-        }
+        tokens.accessToken
       )
 
       if (!data.isProfileComplete) {

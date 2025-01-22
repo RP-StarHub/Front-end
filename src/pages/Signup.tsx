@@ -11,6 +11,7 @@ import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 import InputWithIcon from '../components/common/ui/InputWithIcon';
 import { RegisterUserRequest } from '../types/api/user';
+import { getTokensFromResponse } from '../services/api/axios';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -115,16 +116,15 @@ const Signup = () => {
       });
 
       const { data } = response.data;
+      const tokens = getTokensFromResponse(response);
+
       setUser(
         {
           username: data.username,
           isProfileComplete: false,
           nickname: null,
         },
-        {
-          accessToken: '',
-          refreshToken: '',
-        }
+        tokens.accessToken
       );
 
       setShowProfileSetup(true);
