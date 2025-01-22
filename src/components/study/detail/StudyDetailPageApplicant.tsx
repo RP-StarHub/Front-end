@@ -14,6 +14,7 @@ const StudyDetailPageApplicant: React.FC<DetailPageProps> = ({ studyDetail }) =>
 
   const createComment = useCommentCreate();
 
+  {/*
   const handleSubmit = async () => {
     if (!user) {
       alert('로그인이 필요합니다.');
@@ -34,6 +35,9 @@ const StudyDetailPageApplicant: React.FC<DetailPageProps> = ({ studyDetail }) =>
       console.error('Error creating comment:', error);
     }
   };
+  */}
+
+  const handleSubmit = () => {};
 
   return (
     <div className='flex flex-col w-full px-60 py-24 bg-white'>

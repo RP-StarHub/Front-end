@@ -12,7 +12,8 @@ export const useRecruitForm = () => {
   const user = useAuthStore((state) => state.user);
 
   const [formData, setFormData] = useState<PostRequest>({
-    userId: user?.userId || 0,
+    // userId: user?.userId || 0,
+    userId: 0,
     skill: "",
     place: "",
     latitude: 0,
