@@ -4,6 +4,7 @@ import StarHubIconNavbar from "../../../assets/icons/StarHubIconNavbar.png";
 import { useLogout } from '../../../hooks/api/useUser';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../../../store';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -15,19 +16,13 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      if (user?.userId) {
-        try {
-          await logoutMutation.mutateAsync(Number(user.userId));
-        } catch (error) {
-          console.error('Logout API failed:', error);
-        }
-        logout();
-        queryClient.clear();
-        navigate('/');
-      }
+      await logoutMutation.mutateAsync();
+      logout();
+      queryClient.clear();
+      navigate('/');
     } catch (error) {
-      console.error('Logout process failed:', error);
-      alert('로그아웃에 실패했습니다.');
+      console.error('로그아웃 실패: ', error);
+      toast.error('로그아웃에 실패했습니다. 잠시 뒤 다시 시도해주세요.');
     }
   };
 
@@ -52,7 +47,7 @@ const Navbar = () => {
           {user ? (
             <>
               <span className='text-white font-scdream4 cursor-pointer mx-4 text-label'>
-                {user.name} 님
+                {user.nickname} 님
               </span>
               <span
                 className='text-white font-scdream4 cursor-pointer mx-4 text-label'

@@ -10,22 +10,27 @@ import LockIcon from '@mui/icons-material/Lock';
 import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 import InputWithIcon from '../components/common/ui/InputWithIcon';
+import { RegisterUserRequest } from '../types/api/user';
 
 const Signup = () => {
   const navigate = useNavigate();
   const register = useRegister();
   const setUser = useAuthStore((state) => state.setUser);
 
-  const [formData, setFormData] = useState({
-    loginId: "",
+  const [formData, setFormData] = useState<
+    RegisterUserRequest & { confirmPassword: string }
+  >({
+    username: "",
     password: "",
     confirmPassword: "",
   });
+
   const [errors, setErrors] = useState({
-    loginId: '',
+    username: '',
     password: '',
     confirmPassword: '',
   });
+
   const [showProfileSetup, setShowProfileSetup] = useState(false);
 
   const handleChange = (
@@ -46,15 +51,15 @@ const Signup = () => {
 
   const validateForm = () => {
     const newErrors = {
-      loginId: '',
+      username: '',
       password: '',
       confirmPassword: '',
     };
 
-    if (!formData.loginId) {
-      newErrors.loginId = '아이디는 필수 입력 사항입니다.';
-    } else if (!canUsername(formData.loginId)) {
-      newErrors.loginId = '아이디는 6-12자의 영문, 숫자, 기호( - _ )만 사용이 가능합니다.';
+    if (!formData.username) {
+      newErrors.username = '아이디는 필수 입력 사항입니다.';
+    } else if (!canUsername(formData.username)) {
+      newErrors.username = '아이디는 6-12자의 영문, 숫자, 기호( - _ )만 사용이 가능합니다.';
     }
 
     if (!formData.password) {
@@ -70,7 +75,7 @@ const Signup = () => {
     }
 
     setErrors(newErrors);
-    return !newErrors.loginId && !newErrors.password && !newErrors.confirmPassword
+    return !newErrors.username && !newErrors.password && !newErrors.confirmPassword
   }
 
   // 아이디 검증: 6-12자의 영문으로 시작하고, 영문/숫자/-/_ 조합
@@ -103,13 +108,25 @@ const Signup = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    const form = new FormData();
-    form.append('info', JSON.stringify(formData));
-
     try {
-      const response = await register.mutateAsync(form);
-      const userData = response.data.data;
-      setUser(userData);
+      const response = await register.mutateAsync({
+        username: formData.username,
+        password: formData.password,
+      });
+
+      const { data } = response.data;
+      setUser(
+        {
+          username: data.username,
+          isProfileComplete: false,
+          nickname: null,
+        },
+        {
+          accessToken: '',
+          refreshToken: '',
+        }
+      );
+
       setShowProfileSetup(true);
       toast.success('회원가입이 완료되었습니다!', {
         duration: 3000,
@@ -121,15 +138,15 @@ const Signup = () => {
         icon: '🤚',
       });
     } catch (error) {
-      toast.error('회원가입 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
-        duration: 3000,
-        position: 'top-center',
-        style: {
-          width: 1000,
-          fontSize: '16px'
-        }
-      });
-      console.error('Error during signup:', error);
+        toast.error('회원가입 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
+          duration: 3000,
+          position: 'top-center',
+          style: {
+            width: 1000,
+            fontSize: '16px'
+          }
+        });
+        console.error('회원가입 에러:', error);
     }
   };
 
@@ -160,12 +177,12 @@ const Signup = () => {
                   <InputWithIcon icon={PersonIcon}>
                     <TextInput
                       type="text"
-                      name="loginId"
+                      name="username"
                       placeholder="아이디를 입력해주세요"
-                      value={formData.loginId}
+                      value={formData.username}
                       fullWidth
                       onChange={handleChange}
-                      error={errors.loginId}
+                      error={errors.username}
                       className="pl-12"
                     />
                   </InputWithIcon>

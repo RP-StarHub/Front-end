@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { LoginUserRequest } from '../types/api/user';
 import { useLogin } from '../hooks/api/useUser';
 import { useAuthStore } from '../store';
+import ProfileSetupFlow from '../components/profile/ProfileSetupFlow';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import Button from '../components/common/ui/Button';
@@ -12,14 +13,15 @@ import InputWithIcon from '../components/common/ui/InputWithIcon';
 const Login = () => {
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
 
   const [loginData, setLoginData] = useState<LoginUserRequest>({
-    loginId: '',
+    username: '',
     password: '',
   });
   
   const [errors, setErrors] = useState({
-    loginId: '',
+    username: '',
     password: ''
   });
   
@@ -27,12 +29,12 @@ const Login = () => {
   
   const validateForm = () => {
     const newErrors = {
-      loginId: '',
+      username: '',
       password: ''
     };
     
-    if (!loginData.loginId) {
-      newErrors.loginId = '아이디를 입력해주세요';
+    if (!loginData.username) {
+      newErrors.username = '아이디를 입력해주세요';
     }
     
     if (!loginData.password) {
@@ -40,7 +42,7 @@ const Login = () => {
     }
     
     setErrors(newErrors);
-    return !newErrors.loginId && !newErrors.password;
+    return !newErrors.username && !newErrors.password;
   };
   
   const handleLogin = async () => {
@@ -48,9 +50,26 @@ const Login = () => {
     
     try {
       const response = await login.mutateAsync(loginData);
-      const userData = response.data.data;
-      setUser(userData);
-      navigate('/');
+      const { data } = response.data;
+
+      setUser(
+        {
+          username: data.username,
+          nickname: data.nickname,
+          isProfileComplete: data.isProfileComplete
+        },
+        {
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        }
+      )
+
+      if (!data.isProfileComplete) {
+        setShowProfileSetup(true);
+        return;
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -85,13 +104,13 @@ const Login = () => {
           <TextInput
             inputSize="medium"
             type="text"
-            name="loginId"
+            name="username"
             placeholder="아이디"
-            value={loginData.loginId}
+            value={loginData.username}
             onChange={handleChange}
             fullWidth
             bordered
-            error={errors.loginId}
+            error={errors.username}
             className="pl-12"
           />
         </InputWithIcon>
@@ -133,6 +152,15 @@ const Login = () => {
           회원가입
         </Link>
       </div>
+
+      {showProfileSetup && (
+        <ProfileSetupFlow
+          onComplete={() => {
+            setShowProfileSetup(false);
+            navigate('/');
+          }}
+        />
+      )}
     </div>
   );
 };
