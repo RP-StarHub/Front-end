@@ -105,41 +105,52 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
-  
+
     try {
       const response = await register.mutateAsync({
         username: formData.username,
         password: formData.password,
       });
-  
+
       // 회원가입 성공 시, pendingCredentials에 저장 후 프로필 설정 페이지로 이동
       if (response.data.status === 201) {
         setPendingCredentials({
           username: formData.username,
           password: formData.password
         });
-        
+
         setShowProfileSetup(true);
         toast.success('회원가입이 완료되었습니다!', {
           duration: 3000,
           position: 'top-center',
-        style: {
-          width: 1000,
-          fontSize: '16px'
-        },
-        icon: '🤚',
+          style: {
+            width: 1000,
+            fontSize: '16px'
+          },
+          icon: '🤚',
         });
       }
-    } catch (error) {
-        toast.error('회원가입 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
-        duration: 3000,
-        position: 'top-center',
+    } catch (error : any) {
+      console.error('회원가입 에러:', error);
+      if (error.response?.status === 400) {
+        toast.error('잘못된 요청입니다. 입력한 정보를 다시 확인해주세요.', {
+          duration: 3000,
+          position: 'top-center',
           style: {
             width: 1000,
             fontSize: '16px'
           }
-      });
-      console.error('회원가입 에러:', error);
+        });
+      } else {
+        toast.error('회원가입 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
+          duration: 3000,
+          position: 'top-center',
+          style: {
+            width: 1000,
+            fontSize: '16px'
+          }
+        });
+      }
     }
   };
 

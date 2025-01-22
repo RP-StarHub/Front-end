@@ -16,45 +16,45 @@ const Login = () => {
   const navigate = useNavigate();
   const { setUser, setPendingCredentials } = useAuthStore();
   const [showProfileSetup, setShowProfileSetup] = useState(false);
-  
+
   const [loginData, setLoginData] = useState<LoginUserRequest>({
     username: '',
     password: '',
   });
-  
+
   const [errors, setErrors] = useState({
     username: '',
     password: ''
   });
-  
+
   const login = useLogin();
-  
+
   const validateForm = () => {
     const newErrors = {
       username: '',
       password: ''
     };
-    
+
     if (!loginData.username) {
       newErrors.username = '아이디를 입력해주세요';
     }
-    
+
     if (!loginData.password) {
       newErrors.password = '비밀번호를 입력해주세요';
     }
-    
+
     setErrors(newErrors);
     return !newErrors.username && !newErrors.password;
   };
-  
+
   const handleLogin = async () => {
     if (!validateForm()) return;
-    
+
     try {
       const response = await login.mutateAsync(loginData);
       const { data } = response.data;
       const accessToken = getTokensFromResponse(response);
-  
+
       if (!data.isProfileComplete) {
         // 프로필 설정이 필요한 경우, credentials 저장
         setPendingCredentials({
@@ -74,19 +74,30 @@ const Login = () => {
         );
         navigate('/');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
+      if (error.response?.status === 401) {
+        toast.error('아이디 또는 비밀번호가 일치하지 않습니다.', {
+          duration: 3000,
+          position: 'top-center',
+          style: {
+            width: 1000,
+            fontSize: '16px'
+          }
+        });
+      } else {
         toast.error('로그인 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
           duration: 3000,
           position: 'top-center',
-            style: {
-              width: 1000,
-              fontSize: '16px'
-            }
+          style: {
+            width: 1000,
+            fontSize: '16px'
+          }
         });
+      }
     }
   };
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginData({
@@ -100,13 +111,13 @@ const Login = () => {
       });
     }
   };
-  
+
   return (
     <div className='flex p-12 justify-center items-center bg-background flex-col w-full'>
       <div className='mb-16 text-6xl font-gmarket-bold text-sub'>
         Sign In
       </div>
-      
+
       <div className='flex flex-col justify-center items-center w-[500px]'>
         <InputWithIcon icon={PersonIcon}>
           <TextInput
@@ -122,9 +133,9 @@ const Login = () => {
             className="pl-12"
           />
         </InputWithIcon>
-        
+
         <div className='mb-8' />
-        
+
         <InputWithIcon icon={LockIcon}>
           <TextInput
             inputSize="medium"
@@ -139,7 +150,7 @@ const Login = () => {
             className="pl-12"
           />
         </InputWithIcon>
-        
+
         <Button
           variant="primary"
           size="medium"
@@ -149,9 +160,9 @@ const Login = () => {
           로그인
         </Button>
       </div>
-      
+
       <div className='w-1/3 h-px bg-sub mt-16 mb-10' />
-      
+
       <div className='flex'>
         <p className='text-regular text-bold mr-4'>
           StarHub와 함께 빛나는 별이 되고 싶다면
