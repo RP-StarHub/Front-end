@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../../common/ui/Button';
 import TextInput from '../../common/ui/TextInput';
+import { profileStore } from '../../../store/profile';
 import toast from 'react-hot-toast';
 
 interface ContactStepProps {
@@ -9,14 +10,18 @@ interface ContactStepProps {
 }
 
 export default function ContactStep({ onPreview, onComplete }: ContactStepProps) {
+  const updateFormData = profileStore(state => state.updateFormData);
+  const storedFormData = profileStore(state => state.formData);
+  
   const [formData, setFormData] = useState({
-    email: '',
-    phoneNum: ''
+    email: storedFormData.email || '',
+    phoneNum: storedFormData.phoneNumber || ''
   });
+
   const [errors, setErrors] = useState({
     email: '',
     phoneNum: ''
-  })
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -69,12 +74,17 @@ export default function ContactStep({ onPreview, onComplete }: ContactStepProps)
 
     setErrors(newErrors);
     return !newErrors.email && !newErrors.phoneNum;
-  }
+  };
 
   const handleComplete = () => {
     if (!validateForm()) return;
 
-    toast.success('회원가입이 완료되었습니다!', {
+    updateFormData({
+      email: formData.email,
+      phoneNumber: formData.phoneNum
+    });
+
+    toast.success('프로필 작성이 완료되었습니다!', {
       duration: 3000,
       position: 'top-center',
       style: {
@@ -83,8 +93,16 @@ export default function ContactStep({ onPreview, onComplete }: ContactStepProps)
       },
       icon: '✨',
     });
+
     onComplete();
-  }
+  };
+
+  useEffect(() => {
+    setFormData({
+      email: storedFormData.email || '',
+      phoneNum: storedFormData.phoneNumber || ''
+    });
+  }, [storedFormData]);
 
   return (
     <div className="p-8">

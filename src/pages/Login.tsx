@@ -10,12 +10,13 @@ import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 import InputWithIcon from '../components/common/ui/InputWithIcon';
 import { getTokensFromResponse } from '../services/api/axios';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
-  const setUser = useAuthStore((state) => state.setUser);
+  const { setUser, setPendingCredentials } = useAuthStore();
   const [showProfileSetup, setShowProfileSetup] = useState(false);
-
+  
   const [loginData, setLoginData] = useState<LoginUserRequest>({
     username: '',
     password: '',
@@ -54,23 +55,35 @@ const Login = () => {
       const { data } = response.data;
       const accessToken = getTokensFromResponse(response);
   
-      setUser(
-        {
-          username: data.username,
-          nickname: data.nickname,
-          isProfileComplete: data.isProfileComplete
-        },
-        accessToken
-      );
-  
       if (!data.isProfileComplete) {
+        // 프로필 설정이 필요한 경우, credentials 저장
+        setPendingCredentials({
+          username: loginData.username,
+          password: loginData.password
+        });
         setShowProfileSetup(true);
       } else {
+        // 프로필이 이미 완료된 경우, 바로 유저 정보 설정
+        setUser(
+          {
+            username: data.username,
+            nickname: data.nickname,
+            isProfileComplete: true
+          },
+          accessToken
+        );
         navigate('/');
       }
     } catch (error) {
       console.error('Login error:', error);
-      alert('로그인에 실패했습니다.');
+        toast.error('로그인 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
+          duration: 3000,
+          position: 'top-center',
+            style: {
+              width: 1000,
+              fontSize: '16px'
+            }
+        });
     }
   };
   
@@ -80,7 +93,6 @@ const Login = () => {
       ...loginData,
       [name]: value,
     });
-    // 입력 시 해당 필드의 에러 메시지 제거
     if (errors[name as keyof typeof errors]) {
       setErrors({
         ...errors,

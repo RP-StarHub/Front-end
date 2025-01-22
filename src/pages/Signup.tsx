@@ -105,13 +105,13 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+  
     try {
       const response = await register.mutateAsync({
         username: formData.username,
         password: formData.password,
       });
-
+  
       // 회원가입 성공 시, pendingCredentials에 저장 후 프로필 설정 페이지로 이동
       if (response.data.status === 201) {
         setPendingCredentials({

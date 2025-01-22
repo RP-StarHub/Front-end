@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import StarHubIconNavbar from "../../../assets/icons/StarHubIconNavbar.png";
 import { useLogout } from '../../../hooks/api/useUser';
@@ -13,6 +13,10 @@ const Navbar = () => {
 
   const logoutMutation = useLogout();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // user 상태 변경 감지용 effect
+  }, [user]);
 
   const handleLogout = async () => {
     try {
