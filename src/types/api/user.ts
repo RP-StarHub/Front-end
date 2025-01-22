@@ -11,13 +11,13 @@ export interface CheckUsernameRequest {
 }
 
 export interface CreateProfileRequest {
-  profileImage?: File;
+  profileImage?: string;
   nickname: string;
   name: string;
   age: number;
   bio: string;
   email: string;
-  phoneNum: string;
+  phoneNumber: string;
 }
 
 export interface LoginUserRequest {
