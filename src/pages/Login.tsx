@@ -76,23 +76,11 @@ const Login = () => {
       }
     } catch (error: any) {
       console.error('Login error:', error);
-      if (error.response?.status === 401) {
-        toast.error('아이디 또는 비밀번호가 일치하지 않습니다.', {
+      if (error.response?.status === 401 && 
+          error.response.data.code === 'BAD_CREDENTIALS') {
+        toast.error('아이디 또는 비밀번호를 확인해주세요', {
           duration: 3000,
-          position: 'top-center',
-          style: {
-            width: 1000,
-            fontSize: '16px'
-          }
-        });
-      } else {
-        toast.error('로그인 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
-          duration: 3000,
-          position: 'top-center',
-          style: {
-            width: 1000,
-            fontSize: '16px'
-          }
+          position: 'top-center'
         });
       }
     }

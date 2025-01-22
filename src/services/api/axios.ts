@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from '../../store';
+import { toast } from 'react-hot-toast';
 
 export const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -22,6 +23,35 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// 공통 에러 처리
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          // 로그인은 따로 처리
+          if (error.response.data.code !== 'BAD_CREDENTIALS') {
+            toast.error('인증이 만료되었습니다. 다시 로그인해주세요.', {
+              duration: 3000,
+              position: 'top-center'
+            });
+            window.location.href = '/login';
+          }
+          break;
+
+        case 404:
+          if (error.response.data.code === 'USER_NOT_FOUND') {
+            toast.error('유저 정보를 찾을 수 없습니다. 다시 로그인해주세요.');
+            window.location.href = '/login';
+          }
+          break;
+      }
+    }
     return Promise.reject(error);
   }
 );

@@ -98,12 +98,18 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
       onComplete();
     } catch (error: any) {
       console.error('프로필 설정 실패:', error);
-
       if (error.response) {
-        switch (error.response.status) {
-          case 401:
-            // 인증 실패 (토큰 관련)
-            toast.error('인증이 만료되었습니다. 다시 로그인해주세요.', {
+        if (error.response?.status === 400) {
+          toast.error(error.response.data.message || '입력하신 정보를 다시 확인해주세요', {
+            duration: 3000,
+            position: 'top-center',
+            style: {
+              width: 1000,
+              fontSize: '16px'
+            }
+          });
+        } else if (error.response?.status === 409) {
+          toast.error('이미 프로필이 존재합니다. 메인 페이지로 이동합니다.', {
               duration: 3000,
               position: 'top-center',
               style: {
@@ -111,59 +117,8 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
                 fontSize: '16px'
               }
             });
-            navigate('/login');
-            break;
-
-          case 404:
-            // USER_NOT_FOUND - 토큰 문제
-            toast.error('유저 정보를 찾을 수 없습니다. 다시 로그인해주세요.', {
-              duration: 3000,
-              position: 'top-center',
-              style: {
-                width: 1000,
-                fontSize: '16px'
-              }
-            });
-            navigate('/login');
-            break;
-
-          case 409:
-            // USER_PROFILE_ALREADY_EXISTS
-            toast.error('이미 프로필이 존재합니다. 메인 페이지로 이동합니다.', {
-              duration: 3000,
-              position: 'top-center',
-              style: {
-                width: 1000,
-                fontSize: '16px'
-              }
-            });
-            navigate('/');
-            break;
-
-          default:
-            toast.error('프로필 설정 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
-              duration: 3000,
-              position: 'top-center',
-              style: {
-                width: 1000,
-                fontSize: '16px'
-              }
-            });
+          navigate('/');
         }
-      } else {
-        toast.error('네트워크 오류가 발생했습니다. 잠시 뒤 다시 시도해주세요.', {
-          duration: 3000,
-          position: 'top-center',
-          style: {
-            width: 1000,
-            fontSize: '16px'
-          }
-        });
-      }
-
-      // 401, 404 에러의 경우 로그인 페이지로 이동
-      if (error.response?.status === 401 || error.response?.status === 404) {
-        clearPendingCredentials();
       }
     }
   };
