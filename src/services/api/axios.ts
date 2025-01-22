@@ -28,6 +28,7 @@ axiosInstance.interceptors.request.use(
 
 // 로그인 응답에서 토큰을 처리하는 함수
 export const getTokensFromResponse = (response: any) => {
-  const accessToken = response.headers.authorization?.replace('Bearer ', '') || '';
+  const authHeader = response.headers.Authorization || response.headers.authorization;
+  const accessToken = authHeader?.replace('Bearer ', '') || '';
   return accessToken;
 };

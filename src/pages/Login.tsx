@@ -52,28 +52,25 @@ const Login = () => {
     try {
       const response = await login.mutateAsync(loginData);
       const { data } = response.data;
-      const tokens = getTokensFromResponse(response);
-
+      const accessToken = getTokensFromResponse(response);
+  
       setUser(
         {
           username: data.username,
           nickname: data.nickname,
           isProfileComplete: data.isProfileComplete
         },
-        tokens.accessToken
-      )
-
+        accessToken
+      );
+  
       if (!data.isProfileComplete) {
         setShowProfileSetup(true);
-        return;
       } else {
         navigate('/');
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-        alert('로그인에 실패했습니다.');
-      }
+      console.error('Login error:', error);
+      alert('로그인에 실패했습니다.');
     }
   };
   
