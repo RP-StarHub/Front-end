@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '../store';
-import { useRegister } from '../hooks/api/useUser';
+import { useCheckUsername, useLogin, useRegister } from '../hooks/api/useUser';
 import ProfileSetupFlow from '../components/profile/ProfileSetupFlow';
 import toast, { Toaster } from 'react-hot-toast';
 import PersonIcon from '@mui/icons-material/Person';
@@ -10,126 +10,123 @@ import LockIcon from '@mui/icons-material/Lock';
 import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 import InputWithIcon from '../components/common/ui/InputWithIcon';
+import { getTokensFromResponse } from '../services/api/axios';
+import { useSignupForm } from '../hooks/common/useSignupForm';
 
 const Signup = () => {
   const navigate = useNavigate();
   const register = useRegister();
-  const setUser = useAuthStore((state) => state.setUser);
-
-  const [formData, setFormData] = useState({
-    loginId: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [errors, setErrors] = useState({
-    loginId: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const login = useLogin();
+  const checkUsername = useCheckUsername();
+  const { setUser } = useAuthStore();
   const [showProfileSetup, setShowProfileSetup] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: name === 'age' ? parseInt(value) : value,
-    });
-    if (errors[name as keyof typeof errors]) {
-      setErrors({
-        ...errors,
-        [name]: ''
+  const {
+    formData,
+    errors,
+    setErrors,
+    setIsUsernameChecked,
+    handleChange,
+    validateForm,
+  } = useSignupForm();
+
+  const handleCheckUsername = async () => {
+    if (!formData.username) {
+      setErrors(prev => ({
+        ...prev,
+        username: '아이디는 필수 입력 사항입니다.'
+      }));
+      return;
+    }
+
+    try {
+      const response = await checkUsername.mutateAsync({
+        username: formData.username
       });
+
+      const { available } = response.data.data;
+
+      if (available) {
+        toast.success('사용 가능한 아이디입니다.');
+        setIsUsernameChecked(true);
+      } else {
+        toast.error('이미 사용 중인 아이디입니다.');
+        setIsUsernameChecked(false);
+      }
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        toast.error('올바른 아이디 형식이 아닙니다.');
+      } else {
+        toast.error('중복 확인 중 오류가 발생했습니다.');
+      }
+      setIsUsernameChecked(false);
     }
   };
 
-  const validateForm = () => {
-    const newErrors = {
-      loginId: '',
-      password: '',
-      confirmPassword: '',
-    };
-
-    if (!formData.loginId) {
-      newErrors.loginId = '아이디는 필수 입력 사항입니다.';
-    } else if (!canUsername(formData.loginId)) {
-      newErrors.loginId = '아이디는 6-12자의 영문, 숫자, 기호( - _ )만 사용이 가능합니다.';
-    }
-
-    if (!formData.password) {
-      newErrors.password = '비밀번호는 필수 입력 사항입니다.';
-    } else if (!canPassword(formData.password)) {
-      newErrors.password = '비밀번호는 반드시 8-20자 이내 숫자, 특수문자, 영문자 중 2가지 이상을 조합해야합니다.';
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = '비밀번호를 재입력해 입력 사항을 확인해주세요.'
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = '비밀번호가 일치하지 않습니다. 내용을 확인해주세요.'
-    }
-
-    setErrors(newErrors);
-    return !newErrors.loginId && !newErrors.password && !newErrors.confirmPassword
-  }
-
-  // 아이디 검증: 6-12자의 영문으로 시작하고, 영문/숫자/-/_ 조합
-  function canUsername(username: string) {
-    const regExp = /^[a-zA-Z][a-zA-Z0-9-_]{5,11}$/;
-    return regExp.test(username);
-  }
-
-  // 비밀번호 검증: 8-20자, 영문/숫자/특수문자 중 2가지 이상 조합
-  function canPassword(password: string) {
-    // 길이 체크
-    if (password.length < 8 || password.length > 20) return false;
-
-    let containsLetter = /[a-zA-Z]/.test(password);
-    let containsNumber = /[0-9]/.test(password);
-    let containsSpecial = /[!@#$%^&*]/.test(password);
-
-    // 2가지 이상 조합 체크
-    let combinationCount = 0;
-    if (containsLetter) combinationCount++;
-    if (containsNumber) combinationCount++;
-    if (containsSpecial) combinationCount++;
-
-    return combinationCount >= 2;
-  }
-
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    const form = new FormData();
-    form.append('info', JSON.stringify(formData));
-
     try {
-      const response = await register.mutateAsync(form);
-      const userData = response.data.data;
-      setUser(userData);
-      setShowProfileSetup(true);
-      toast.success('회원가입이 완료되었습니다!', {
-        duration: 3000,
-        position: 'top-center',
-        style: {
-          width: 1000,
-          fontSize: '16px'
-        },
-        icon: '🤚',
+      // 먼저 회원가입
+      const response = await register.mutateAsync({
+        username: formData.username,
+        password: formData.password,
       });
-    } catch (error) {
-      toast.error('회원가입 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
-        duration: 3000,
-        position: 'top-center',
-        style: {
-          width: 1000,
-          fontSize: '16px'
-        }
-      });
-      console.error('Error during signup:', error);
+
+      // 회원가입 성공 시, 로그인으로 토큰 받아옴
+      // 이후 프로필 설정 모달 띄움
+      if (response.data.status === 201) {
+        const loginResponse = await login.mutateAsync({
+          username: formData.username,
+          password: formData.password
+        });
+
+        const { data: loginData } = loginResponse.data;
+        const accessToken = getTokensFromResponse(loginResponse);
+
+        // 로그인 정보 저장 
+        setUser(
+          {
+            username: loginData.username,
+            nickname: null,
+            isProfileComplete: false
+          },
+          accessToken
+        );
+
+        setShowProfileSetup(true);
+        toast.success('회원가입이 완료되었습니다!', {
+          duration: 3000,
+          position: 'top-center',
+          style: {
+            width: 1000,
+            fontSize: '16px'
+          },
+          icon: '🤚',
+        });
+      }
+    } catch (error: any) {
+      console.error('회원가입 에러:', error);
+      if (error.response?.status === 400) {
+        toast.error('잘못된 요청입니다. 입력한 정보를 다시 확인해주세요.', {
+          duration: 3000,
+          position: 'top-center',
+          style: {
+            width: 1000,
+            fontSize: '16px'
+          }
+        });
+      } else {
+        toast.error('회원가입 중 오류가 발생하였습니다. 잠시 뒤 다시 시도해주세요.', {
+          duration: 3000,
+          position: 'top-center',
+          style: {
+            width: 1000,
+            fontSize: '16px'
+          }
+        });
+      }
     }
   };
 
@@ -160,12 +157,12 @@ const Signup = () => {
                   <InputWithIcon icon={PersonIcon}>
                     <TextInput
                       type="text"
-                      name="loginId"
+                      name="username"
                       placeholder="아이디를 입력해주세요"
-                      value={formData.loginId}
+                      value={formData.username}
                       fullWidth
                       onChange={handleChange}
-                      error={errors.loginId}
+                      error={errors.username}
                       className="pl-12"
                     />
                   </InputWithIcon>
@@ -174,6 +171,7 @@ const Signup = () => {
                   type="button"
                   variant="secondary"
                   className="shrink-0"
+                  onClick={handleCheckUsername}
                 >
                   중복확인
                 </Button>

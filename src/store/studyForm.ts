@@ -22,7 +22,8 @@ interface StudyFormState {
 }
 
 const initialFormData: PostRequest = {
-  userId: useAuthStore.getState().user?.userId || 0,
+  // userId: useAuthStore.getState().user?.userId || 0,
+  userId: 0,
   skill: "",
   place: "",
   latitude: 0,

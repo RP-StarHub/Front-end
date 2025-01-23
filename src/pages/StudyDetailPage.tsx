@@ -26,7 +26,8 @@ const StudyDetailPage: React.FC = () => {
   }
 
   // user와 studyDetail의 userName이 같은지 확인
-  const isCurrentUser = user && user.name === studyDetail.userName;
+  // const isCurrentUser = user && user.name === studyDetail.userName;
+  const isCurrentUser = true;
   
   const detailArray: [PostInfo, number, CommentInfo[]] = [studyDetail, numericPostId, comments];
 

@@ -1,31 +1,62 @@
-import { LoginUserRequest, PostUserLogin, PostUserRegister } from "../../types/api/user";
+import { 
+  LoginUserRequest, 
+  RegisterUserRequest,
+  CreateProfileRequest,
+  CheckUsernameRequest,
+  UserRegisterResponse,
+  UserCheckUsernameResponse,
+  UserProfileCreateResponse,
+  UserLoginResponse,
+  UserLogoutResponse,
+  TokenReissueResponse,
+} from "../../types/api/user";
 import { axiosInstance } from "./axios"
 
 export const userServices = {
-  postLogin: (data: LoginUserRequest) => {
-    return axiosInstance.post<PostUserLogin>(
-      '/api/user/login',
+  // 회원가입
+  postRegister: (data: RegisterUserRequest) => {
+    return axiosInstance.post<UserRegisterResponse>(
+      '/api/v1/register',
       data
     );
   },
-  postRegister: (form: FormData) => {
-    return axiosInstance.post<PostUserRegister>(
-      '/api/user/register',
-      form,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    )
+
+  // 사용자 이름 중복 확인
+  postCheckUsername: (data: CheckUsernameRequest) => {
+    return axiosInstance.post<UserCheckUsernameResponse>(
+      '/api/v1/users/check',
+      data
+    );
   },
-  getLogout: (userId: number) => {
-    return axiosInstance.get(
-      `/api/user/logout`,
-      {
-        params: { loginId: userId },
-      }
-    )
+
+  // 프로필 생성
+  postCreateProfile: (data: CreateProfileRequest) => {
+    return axiosInstance.post<UserProfileCreateResponse>(
+      '/api/v1/users/profile',
+      data
+    );
+  },
+
+  // 로그인
+  postLogin: (data: LoginUserRequest) => {
+    return axiosInstance.post<UserLoginResponse>(
+      '/api/v1/login',
+      data
+    );
+  },
+
+  // 로그아웃
+  postLogout: () => {
+    return axiosInstance.post<UserLogoutResponse>(
+      '/api/v1/logout'
+    );
+  },
+
+  // 토큰 재발급
+  postTokenReissue: () => {
+    return axiosInstance.post<TokenReissueResponse>(
+      '/api/v1/reissue'
+    );
   }
 }
 

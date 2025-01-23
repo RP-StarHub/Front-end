@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '../../common/ui/Button';
 import TextInput from '../../common/ui/TextInput';
 import TextArea from '../../common/ui/TextArea';
+import { profileStore } from '../../../store/profile';
 
 interface BioStepProps {
   onPreview: () => void;
@@ -9,25 +10,25 @@ interface BioStepProps {
 }
 
 export default function BioStep({ onPreview, onNext }: BioStepProps) {
-  const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    bio: ''
-  });
+  const { formData, updateFormData } = profileStore();
+  
   const [errors, setErrors] = useState({
     name: '',
     age: '',
     bio: ''
-  })
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    if (name === 'age') {
+      updateFormData({ [name]: value ? parseInt(value) : 0 });
+    } else {
+      updateFormData({ [name]: value });
+    }
+
     if (errors[name as keyof typeof errors]) {
       setErrors({
         ...errors,
@@ -43,29 +44,33 @@ export default function BioStep({ onPreview, onNext }: BioStepProps) {
       bio: ''
     };
 
-    if (!formData.name.trim()) {
+    if (!formData.name?.trim()) {
       newErrors.name = '이름은 필수 입력 사항입니다.';
+    } else if (formData.name.length < 2 || formData.name.length > 20) {
+      newErrors.name = '이름은 2자 이상 20자 이하로 입력해주세요.';
     }
 
-    if (!formData.age.trim()) {
+    if (!formData.age) {
       newErrors.age = '나이는 필수 입력 사항입니다.';
-    } else if (!Number.isInteger(Number(formData.age))) {
-      newErrors.age = '숫자만 입력 가능합니다.'
+    } else if (!Number.isInteger(formData.age)) {
+      newErrors.age = '숫자만 입력 가능합니다.';
+    } else if (formData.age < 1 || formData.age > 100) {
+      newErrors.age = '유효한 나이를 입력해주세요.';
     }
 
-    if (!formData.bio.trim()) {
+    if (!formData.bio?.trim()) {
       newErrors.bio = '한 줄 소개는 필수 입력 사항입니다.';
     }
 
     setErrors(newErrors);
     return !newErrors.name && !newErrors.age && !newErrors.bio;
-  }
+  };
 
   const handleNext = () => {
     if (validateForm()) {
       onNext();
     }
-  }
+  };
 
   return (
     <div className="p-8">
@@ -90,7 +95,7 @@ export default function BioStep({ onPreview, onNext }: BioStepProps) {
         <TextInput
           name="name"
           placeholder="여러분들의 이름을 입력해주세요"
-          value={formData.name}
+          value={formData.name || ''}
           onChange={handleChange}
           error={errors.name}
           fullWidth
@@ -104,7 +109,7 @@ export default function BioStep({ onPreview, onNext }: BioStepProps) {
         <TextInput
           name="age"
           placeholder="여러분들의 나이를 입력해주세요"
-          value={formData.age}
+          value={formData.age ? formData.age.toString() : ''}
           onChange={handleChange}
           error={errors.age}
           fullWidth
@@ -118,7 +123,7 @@ export default function BioStep({ onPreview, onNext }: BioStepProps) {
         <TextArea
           name="bio"
           placeholder="여러분들을 간단히 소개해주세요"
-          value={formData.bio}
+          value={formData.bio || ''}
           onChange={handleChange}
           error={errors.bio}
           fullWidth
