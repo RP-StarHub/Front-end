@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '../store';
-import { useCheckUsername, useRegister } from '../hooks/api/useUser';
+import { useCheckUsername, useLogin, useRegister } from '../hooks/api/useUser';
 import ProfileSetupFlow from '../components/profile/ProfileSetupFlow';
 import toast, { Toaster } from 'react-hot-toast';
 import PersonIcon from '@mui/icons-material/Person';
@@ -11,12 +11,14 @@ import Button from '../components/common/ui/Button';
 import TextInput from '../components/common/ui/TextInput';
 import InputWithIcon from '../components/common/ui/InputWithIcon';
 import { RegisterUserRequest } from '../types/api/user';
+import { getTokensFromResponse } from '../services/api/axios';
 
 const Signup = () => {
   const navigate = useNavigate();
   const register = useRegister();
+  const login = useLogin();
   const checkUsername = useCheckUsername();
-  const { setPendingCredentials } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const [formData, setFormData] = useState<
     RegisterUserRequest & { confirmPassword: string }
@@ -158,17 +160,32 @@ const Signup = () => {
     if (!validateForm()) return;
 
     try {
+      // 먼저 회원가입
       const response = await register.mutateAsync({
         username: formData.username,
         password: formData.password,
       });
 
-      // 회원가입 성공 시, pendingCredentials에 저장 후 프로필 설정 페이지로 이동
+      // 회원가입 성공 시, 로그인으로 토큰 받아옴
+      // 이후 프로필 설정 모달 띄움
       if (response.data.status === 201) {
-        setPendingCredentials({
+        const loginResponse = await login.mutateAsync({
           username: formData.username,
           password: formData.password
         });
+
+        const { data: loginData } = loginResponse.data;
+        const accessToken = getTokensFromResponse(loginResponse);
+
+        // 로그인 정보 저장 
+        setUser(
+          {
+            username: loginData.username,
+            nickname: null,
+            isProfileComplete: false
+          },
+          accessToken
+        );
 
         setShowProfileSetup(true);
         toast.success('회원가입이 완료되었습니다!', {

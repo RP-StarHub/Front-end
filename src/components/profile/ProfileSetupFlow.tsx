@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { profileStore, ProfileStep } from '../../store/profile';
 import { useAuthStore } from '../../store/auth';
-import { useLogin, useCreateProfile } from '../../hooks/api/useUser';
-import { getTokensFromResponse } from '../../services/api/axios';
+import { useCreateProfile } from '../../hooks/api/useUser';
 import toast from 'react-hot-toast';
 import StepIndicator from '../common/ui/StepIndicator';
 import WelcomeStep from './steps/WelcomeStep';
@@ -17,11 +16,10 @@ interface ProfileSetupFlowProps {
 
 export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) {
   const navigate = useNavigate();
-  const login = useLogin();
   const createProfile = useCreateProfile();
 
   const { currentStep, setStep, closeModal } = profileStore();
-  const { pendingCredentials, setUser, clearPendingCredentials } = useAuthStore();
+  const { user, setUser, accessToken } = useAuthStore();
 
   const steps = [
     { title: '기본 정보' },
@@ -43,36 +41,25 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
     }
   };
 
-  const handleComplete = async () => {
-    // 펜딩 데이터가 없는 경우 로그인 페이지로 연결
-    if (!pendingCredentials) {
-      console.error('Pending credentials 없음');
+  useEffect(() => {
+    if (!user) {
+      toast.error('로그인이 필요합니다. 로그인 페이지로 이동합니다.', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          width: 1000,
+          fontSize: '16px'
+        }
+      });
       navigate('/login');
-      return;
     }
+  }, [user, navigate]);
 
+  const handleComplete = async () => {
     try {
-      // 로그인해서 토큰 받기
-      const loginResponse = await login.mutateAsync(pendingCredentials);
-      const { data: loginData } = loginResponse.data;
-      const accessToken = getTokensFromResponse(loginResponse);
-
-      // 토큰 저장 먼저 수행
-      setUser(
-        {
-          username: loginData.username,
-          nickname: null,
-          isProfileComplete: false
-        },
-        accessToken
-      );
-
       // 전화번호에서 하이픈 제거
       const profileData = profileStore.getState().formData;
       const phoneNumberWithoutHyphen = profileData.phoneNumber.replace(/-/g, '');
-
-      // 잠시 대기하여 토큰이 저장되고 인터셉터에 적용되도록 함
-      await new Promise(resolve => setTimeout(resolve, 100));
 
       // 받은 토큰으로 프로필 생성 API 호출
       const createProfileData = {
@@ -80,20 +67,17 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
         phoneNumber: phoneNumberWithoutHyphen
       };
 
-      console.log('AccessToken:', accessToken);
       const profileResponse = await createProfile.mutateAsync(createProfileData);
 
-      // 프로필 생성 성공 후 최종 유저 정보 업데이트
       setUser(
         {
-          username: loginData.username,
+          username: user!.username,
           nickname: profileResponse.data.data.nickname,
           isProfileComplete: true
         },
-        accessToken
+        accessToken!
       );
 
-      clearPendingCredentials();
       closeModal();
       onComplete();
     } catch (error: any) {

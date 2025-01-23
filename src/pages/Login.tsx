@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setUser, setPendingCredentials } = useAuthStore();
+  const { setUser } = useAuthStore();
   const [showProfileSetup, setShowProfileSetup] = useState(false);
 
   const [loginData, setLoginData] = useState<LoginUserRequest>({
@@ -55,23 +55,21 @@ const Login = () => {
       const { data } = response.data;
       const accessToken = getTokensFromResponse(response);
 
+      // 로그인 후 항상 유저 정보 설정
+      setUser(
+        {
+          username: data.username,
+          nickname: data.nickname,
+          isProfileComplete: data.isProfileComplete,
+        },
+        accessToken
+      );
+
       if (!data.isProfileComplete) {
-        // 프로필 설정이 필요한 경우, credentials 저장
-        setPendingCredentials({
-          username: loginData.username,
-          password: loginData.password
-        });
+        // 프로필 설정이 필요한 경우, 프로필 설정 모달 띄우기
         setShowProfileSetup(true);
       } else {
-        // 프로필이 이미 완료된 경우, 바로 유저 정보 설정
-        setUser(
-          {
-            username: data.username,
-            nickname: data.nickname,
-            isProfileComplete: true
-          },
-          accessToken
-        );
+        // 프로필이 이미 완료된 경우, 메인 페이지로 이동
         navigate('/');
       }
     } catch (error: any) {
