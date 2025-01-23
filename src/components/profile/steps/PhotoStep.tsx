@@ -19,7 +19,8 @@ export default function PhotoStep({ onPreview, onNext }: PhotoStepProps) {
   const handleNext = () => {
     if (!formData.nickname.trim()) {
       setError('닉네임은 필수 입력 사항입니다.');
-      return;
+    } else if (formData.nickname.length < 2 || formData.nickname.length > 20) {
+      setError('닉네임은 2자 이상 20자 이하로 입력해주세요.');
     }
     onNext();
   };

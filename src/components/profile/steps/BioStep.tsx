@@ -46,12 +46,16 @@ export default function BioStep({ onPreview, onNext }: BioStepProps) {
 
     if (!formData.name?.trim()) {
       newErrors.name = '이름은 필수 입력 사항입니다.';
+    } else if (formData.name.length < 2 || formData.name.length > 20) {
+      newErrors.name = '이름은 2자 이상 20자 이하로 입력해주세요.';
     }
 
     if (!formData.age) {
       newErrors.age = '나이는 필수 입력 사항입니다.';
     } else if (!Number.isInteger(formData.age)) {
       newErrors.age = '숫자만 입력 가능합니다.';
+    } else if (formData.age < 1 || formData.age > 100) {
+      newErrors.age = '유효한 나이를 입력해주세요.';
     }
 
     if (!formData.bio?.trim()) {
