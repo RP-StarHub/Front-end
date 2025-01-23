@@ -24,7 +24,7 @@ export const useSignupForm = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === 'age' ? parseInt(value) : value,
+      [name]: value,
     });
 
     // 아이디 변경 시 중복 확인 초기화
