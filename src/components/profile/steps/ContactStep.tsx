@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../common/ui/Button';
 import TextInput from '../../common/ui/TextInput';
 import { profileStore } from '../../../store/profile';
-import toast from 'react-hot-toast';
 
 interface ContactStepProps {
   onPreview: () => void;
@@ -82,16 +81,6 @@ export default function ContactStep({ onPreview, onComplete }: ContactStepProps)
     updateFormData({
       email: formData.email,
       phoneNumber: formData.phoneNum
-    });
-
-    toast.success('프로필 작성이 완료되었습니다!', {
-      duration: 3000,
-      position: 'top-center',
-      style: {
-        width: 1000,
-        fontSize: '16px'
-      },
-      icon: '✨',
     });
 
     onComplete();

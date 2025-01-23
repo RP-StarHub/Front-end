@@ -79,6 +79,17 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
       );
 
       closeModal();
+
+      toast.success('프로필 작성이 완료되었습니다!', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          width: 1000,
+          fontSize: '16px'
+        },
+        icon: '✨',
+      });
+
       onComplete();
     } catch (error: any) {
       console.error('프로필 설정 실패:', error);
@@ -94,13 +105,13 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
           });
         } else if (error.response?.status === 409) {
           toast.error('이미 프로필이 존재합니다. 메인 페이지로 이동합니다.', {
-              duration: 3000,
-              position: 'top-center',
-              style: {
-                width: 1000,
-                fontSize: '16px'
-              }
-            });
+            duration: 3000,
+            position: 'top-center',
+            style: {
+              width: 1000,
+              fontSize: '16px'
+            }
+          });
           navigate('/');
         }
       }
