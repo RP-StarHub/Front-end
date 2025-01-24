@@ -6,7 +6,7 @@ import PeopleIcon from "../../assets/icons/PeopleIcon.png";
 import DuringIcon from "../../assets/icons/DuringIcon.png";
 import { useNavigate } from "react-router-dom";
 import { IconType, IconStyle } from "../../types/models/common"
-import { InformCardProps } from "../../types/models/study"
+import { Meeting } from "../../types/models/meeting";
 
 const iconStyles: Record<IconType, IconStyle> = {
   '스택': {
@@ -69,20 +69,28 @@ const shotInform = ({ image, title, content, unit }: ShotInformProps) => {
   );
 }
 
-function InformCard({
-  type,
-  postId,
-  title,
-  skill,
-  deadline,
-  progress,
-  peopleNum,
-  place,
-}: InformCardProps) {
+interface Props {
+  meeting: Meeting;
+}
+
+function InformCard({ meeting }: Props) {
   const navigate = useNavigate();
+  const {
+    id,
+    title,
+    recruitmentType,
+    maxParticipants,
+    duration,
+    endDate,
+    techStacks,
+    location,
+    latitude,
+    longitude,
+    likeDto
+  } = meeting;
 
   function moveDetail() {
-    navigate(`/study/detail/${postId}`);
+    navigate(`/study/detail/${id}`);
   }
 
   return (
@@ -91,13 +99,13 @@ function InformCard({
       onClick={moveDetail}
     >
       <div className="w-full grid grid-cols-2 gap-1">
-        <p className="col-span-2 text-bold mb-2 text-label font-gmarket-bold w-full">[{type}] {title}</p>
-        {shotInform({ image: StackIcon, title: '스택', content: skill, unit: "" })}
-        {shotInform({ image: FinishIcon, title: '마감', content: deadline, unit: "" })}
-        {shotInform({ image: DuringIcon, title: '기간', content: progress, unit: "개월" })}
-        {shotInform({ image: PeopleIcon, title: '인원', content: peopleNum.toString(), unit: "명" })}
+        <p className="col-span-2 text-bold mb-2 text-label font-gmarket-bold w-full">[{recruitmentType}] {title}</p>
+        {shotInform({ image: StackIcon, title: '스택', content: techStacks.join(", "), unit: "" })}
+        {shotInform({ image: FinishIcon, title: '마감', content: endDate, unit: "" })}
+        {shotInform({ image: DuringIcon, title: '기간', content: duration.toString(), unit: "" })}
+        {shotInform({ image: PeopleIcon, title: '인원', content: maxParticipants.toString(), unit: "명" })}
         <div className="col-span-2">
-          {shotInform({ image: PlaceIcon, title: '장소', content: place, unit: "" })}
+          {shotInform({ image: PlaceIcon, title: '장소', content: location, unit: "" })}
         </div>
       </div>
     </div>

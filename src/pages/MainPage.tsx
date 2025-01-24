@@ -4,11 +4,12 @@ import { usePostList } from "../hooks/api/usePost";
 import EventMarker from "../components/main/EventMarker";
 import StudyList from "../components/main/StudyList";
 import { useGeolocation } from '../hooks/common/useGeolocation';
+import { useMeetingList } from "../hooks/api/useMeeting";
 
 const MainPage: React.FC = () => {
   const { location, loaded } = useGeolocation();
-  const { data, isLoading } = usePostList();
-  const studies = data?.data || [];
+  const { data, isLoading } = useMeetingList();
+  const meetings = data?.data.content || [];
 
   const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
 
@@ -16,14 +17,19 @@ const MainPage: React.FC = () => {
 
   return (
     <div className="w-full flex h-[90vh]">
-      <StudyList studies={studies} />
-      {canShowMap && (
+      <StudyList
+        meetings={meetings}
+        currentPage={data?.data.pageable.pageNumber || 0}
+        totalPages={data?.data.totalPages || 0}
+        onPageChange={() => { }}
+      />
+      {/* {canShowMap && (
         <KakaoMap
           center={{ lat: location.latitude, lng: location.longitude }}
           style={{ width: "66%", height: "100%" }}
           level={3}
         >
-          {studies.map((study) => (
+          {studies.content.map((study) => (
             <EventMarker
               key={`EventMarker-${study.postId}`}
               position={{ latitude: study.latitude, longitude: study.longitude }}
@@ -38,7 +44,7 @@ const MainPage: React.FC = () => {
             />
           ))}
         </KakaoMap>
-      )}
+      )} */}
     </div>
   );
 };
