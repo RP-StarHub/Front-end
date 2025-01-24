@@ -1,3 +1,5 @@
+import { DURATION, RecruitmentType } from "../../types/models/meeting";
+
 export const mainData = {
     "status": 200,
     "code": "SUCCESS_GET_MEETING_LIST",
@@ -7,9 +9,9 @@ export const mainData = {
             {
                 "id": 5,
                 "title": "ㅎㅇ",
-                "recruitmentType": "STUDY",
+                "recruitmentType": RecruitmentType.STUDY,
                 "maxParticipants": 3,
-                "duration": "ONE_WEEK",
+                "duration": DURATION.ONE_WEEK,
                 "endDate": "2025-01-31",
                 "techStacks": [
                     "GraphQL",
@@ -28,9 +30,9 @@ export const mainData = {
             {
                 "id": 4,
                 "title": "ㅎㅇ",
-                "recruitmentType": "STUDY",
+                "recruitmentType": RecruitmentType.STUDY,
                 "maxParticipants": 3,
-                "duration": "ONE_WEEK",
+                "duration": DURATION.ONE_WEEK,
                 "endDate": "2025-01-31",
                 "techStacks": [
                     "GraphQL",
@@ -49,9 +51,9 @@ export const mainData = {
             {
                 "id": 3,
                 "title": "ㅎㅇ",
-                "recruitmentType": "STUDY",
+                "recruitmentType": RecruitmentType.STUDY,
                 "maxParticipants": 3,
-                "duration": "ONE_WEEK",
+                "duration": DURATION.ONE_WEEK,
                 "endDate": "2025-01-31",
                 "techStacks": [
                     "GraphQL",
@@ -70,9 +72,9 @@ export const mainData = {
             {
                 "id": 2,
                 "title": "ㅎㅇ",
-                "recruitmentType": "STUDY",
+                "recruitmentType": RecruitmentType.STUDY,
                 "maxParticipants": 3,
-                "duration": "ONE_WEEK",
+                "duration": DURATION.ONE_WEEK,
                 "endDate": "2025-01-31",
                 "techStacks": [
                     "GraphQL",
