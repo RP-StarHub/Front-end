@@ -6,7 +6,7 @@ export const useMeetingList = () => {
   return useQuery<GetMeetingListResponse>({
     queryKey: ['meetings'],
     queryFn: async () => {
-      const response = await meetingService.getMeetingList(1);
+      const response = await meetingService.getMeetingList(0);
       return response.data
     }
   });

@@ -4,14 +4,14 @@ export enum RecruitmentType {
 }
 
 export enum DURATION {
-  ONE_WEEK = "1주",
-  TWO_WEEKS = "2주",
-  ONE_MONTH = "1개월",
-  TWO_MONTHS = "2개월",
-  THREE_MONTHS = "3개월",
-  SIX_MONTHS = "6개월",
-  ONE_YEAR = "1년",
-  MORE_THAN_ONE_YEAR = "1년 이상",
+  ONE_WEEK = "ONE_WEEK",
+  TWO_WEEKS = "TWO_WEEKS",
+  ONE_MONTH = "ONE_MONTH",
+  TWO_MONTHS = "TWO_MONTHS",
+  THREE_MONTHS = "THREE_MONTHS",
+  SIX_MONTHS = "SIX_MONTHS",
+  ONE_YEAR = "ONE_YEAR",
+  MORE_THAN_ONE_YEAR = "MORE_THAN_ONE_YEAR",
 }
 
 export interface Meeting {
@@ -30,7 +30,7 @@ export interface Meeting {
 
 export interface LikeDto {
   likeCount: number;
-  isLike: boolean;
+  isLike: boolean | null;
 }
 
 export interface Sort {
