@@ -13,7 +13,7 @@ type ApiMeeting = {
   longitude: number;
   likeDto: {
     likeCount: number;
-    isLike: boolean;
+    isLiked: boolean;
   };
 }
 

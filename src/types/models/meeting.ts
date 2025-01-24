@@ -30,7 +30,7 @@ export interface Meeting {
 
 export interface LikeDto {
   likeCount: number;
-  isLike: boolean | null;
+  isLiked: boolean | null;
 }
 
 export interface Sort {
