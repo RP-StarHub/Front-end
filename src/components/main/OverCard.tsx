@@ -9,6 +9,7 @@ import {
   RocketLaunch,
   LocationOn
 } from "@mui/icons-material";
+import { toKoreanDuration } from "../../util/transformKorean";
 
 type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
 
@@ -36,7 +37,7 @@ const IconComponent = ({ title }: { title: IconTitleType }) => {
 interface ShotInformProps {
   title: IconTitleType;
   content: string;
-  unit: string;
+  unit?: string;
 }
 
 const ShotInform = ({ title, content, unit }: ShotInformProps) => {
@@ -100,15 +101,15 @@ function OverCard({ meeting, onClose }: OverCardProps) {
               [{recruitmentType}] {title}
             </p>
           </div>
-          <ShotInform title="관심" content={likeCount.toString()} unit="" />
+          <ShotInform title="관심" content={likeCount.toString()} />
           <ShotInform title="인원" content={maxParticipants.toString()} unit="명" />
-          <ShotInform title="기간" content={duration.toString()} unit="개월" />
-          <ShotInform title="마감" content={endDate} unit="" />
+          <ShotInform title="기간" content={toKoreanDuration(duration)} />
+          <ShotInform title="마감" content={endDate} />
           <div className="col-span-2">
-            <ShotInform title="스택" content={techStacks.join(", ")} unit="" />
+            <ShotInform title="스택" content={techStacks.join(", ")} />
           </div>
           <div className="col-span-2">
-            <ShotInform title="장소" content={location} unit="" />
+            <ShotInform title="장소" content={location} />
           </div>
         </div>
         <button
