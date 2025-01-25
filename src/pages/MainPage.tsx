@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Map as KakaoMap } from "react-kakao-maps-sdk";
 import EventMarker from "../components/main/EventMarker";
 import StudyList from "../components/main/StudyList";
@@ -6,12 +6,12 @@ import { useGeolocation } from '../hooks/common/useGeolocation';
 import { useMeetingList } from "../hooks/api/useMeeting";
 
 const MainPage: React.FC = () => {
+  const [page, setPage] = useState(1); 
   const { location, loaded } = useGeolocation();
-  const { data, isLoading } = useMeetingList();
+  const { data, isLoading } = useMeetingList(page);
+
   const meetings = data?.data.content || [];
-  const currentPage = (data?.data?.pageable?.pageNumber ?? 0) + 1;
   const totalPages = data?.data?.totalPages ?? 0;
-  const [page, setPage] = React.useState(1); 
 
   const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
 
