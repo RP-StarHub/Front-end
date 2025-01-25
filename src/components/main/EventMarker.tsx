@@ -7,6 +7,7 @@ import { Meeting } from '../../types/models/meeting';
 interface EventMarkerProps {
   meeting: Meeting;
   position: MapPosition;
+  key: number;
 }
 
 const EventMarker = React.memo<EventMarkerProps>(({
@@ -48,6 +49,7 @@ const EventMarker = React.memo<EventMarkerProps>(({
 
   return (
     <MapMarker
+      key={meeting.id}
       position={kakaoPosition}
       onClick={handleMarkerClick}
       onMouseOver={handleMarkerMouseOver}
