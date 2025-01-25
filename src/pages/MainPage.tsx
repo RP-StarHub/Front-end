@@ -1,6 +1,5 @@
 import React from "react";
 import { Map as KakaoMap } from "react-kakao-maps-sdk";
-import { usePostList } from "../hooks/api/usePost";
 import EventMarker from "../components/main/EventMarker";
 import StudyList from "../components/main/StudyList";
 import { useGeolocation } from '../hooks/common/useGeolocation';
@@ -23,28 +22,24 @@ const MainPage: React.FC = () => {
         totalPages={data?.data.totalPages || 0}
         onPageChange={() => { }}
       />
-      {/* {canShowMap && (
+      {canShowMap && (
         <KakaoMap
           center={{ lat: location.latitude, lng: location.longitude }}
           style={{ width: "66%", height: "100%" }}
           level={3}
         >
-          {studies.content.map((study) => (
+          {meetings.map((meeting) => (
             <EventMarker
-              key={`EventMarker-${study.postId}`}
-              position={{ latitude: study.latitude, longitude: study.longitude }}
-              postId={study.postId}
-              skill={study.skill}
-              place={study.place}
-              progress={study.progress}
-              peopleNum={study.peopleNum}
-              deadline={study.deadline}
-              type={study.type}
-              title={study.title}
+              key={meeting.id}
+              meeting={meeting}
+              position={{ 
+                latitude: meeting.latitude, 
+                longitude: meeting.longitude 
+              }}
             />
           ))}
         </KakaoMap>
-      )} */}
+      )}
     </div>
   );
 };
