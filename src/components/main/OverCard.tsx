@@ -9,7 +9,7 @@ import {
   RocketLaunch,
   LocationOn
 } from "@mui/icons-material";
-import { toKoreanDuration } from "../../util/transformKorean";
+import { toKoreanDuration, toKoreanRecruitmentType } from "../../util/transformKorean";
 
 type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
 
@@ -98,7 +98,7 @@ function OverCard({ meeting, onClose }: OverCardProps) {
         <div className="w-full grid grid-cols-2 gap-1">
           <div className="col-span-2 flex justify-between items-start">
             <p className="text-bold mb-2 text-label font-gmarket-bold truncate max-w-[80%]">
-              [{recruitmentType}] {title}
+              [{toKoreanRecruitmentType(recruitmentType)}] {title}
             </p>
           </div>
           <ShotInform title="관심" content={likeCount.toString()} />
