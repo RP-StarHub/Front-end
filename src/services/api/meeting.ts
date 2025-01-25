@@ -5,7 +5,7 @@ import { mainData } from "../../assets/data/mainData";
 export const meetingService = {
   getMeetingList: (page: number) => {
     return axiosInstance.get<GetMeetingListResponse>(
-      '/api/meetings/list',
+      '/api/v1/meetings',
       {
         params: { page }
       }
