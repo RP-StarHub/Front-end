@@ -11,6 +11,7 @@ import {
   LocationOn
 } from "@mui/icons-material";
 import { toKoreanDuration, toKoreanRecruitmentType } from "../../util/transformKorean";
+import { useLike } from "../../hooks/api/useLike";
 
 type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
 
@@ -79,6 +80,7 @@ function InformCard({ meeting, onLikeToggle }: Props) {
     location,
     likeDto: { isLiked, likeCount }
   } = meeting;
+  const { toggleLike } = useLike(meeting.id);
 
   const moveDetail = () => {
     navigate(`/study/detail/${id}`);
@@ -86,7 +88,7 @@ function InformCard({ meeting, onLikeToggle }: Props) {
 
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onLikeToggle(id);
+    toggleLike.mutate(meeting.likeDto.isLiked);
   };
 
   return (
