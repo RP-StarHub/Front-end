@@ -5,7 +5,6 @@ import OverCard from './OverCard';
 import { Meeting } from '../../types/models/meeting';
 
 interface EventMarkerProps {
-  key: number;
   meeting: Meeting;
   position: MapPosition;
 }

@@ -37,7 +37,6 @@ const MainPage: React.FC = () => {
         >
           {meetings.map((meeting) => (
             <EventMarker
-              key={meeting.id}
               meeting={meeting}
               position={{ 
                 latitude: meeting.latitude, 
