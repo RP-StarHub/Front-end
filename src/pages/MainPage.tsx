@@ -9,8 +9,15 @@ const MainPage: React.FC = () => {
   const { location, loaded } = useGeolocation();
   const { data, isLoading } = useMeetingList();
   const meetings = data?.data.content || [];
+  const currentPage = (data?.data?.pageable?.pageNumber ?? 0) + 1;
+  const totalPages = data?.data?.totalPages ?? 0;
+  const [page, setPage] = React.useState(1); 
 
   const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -18,9 +25,9 @@ const MainPage: React.FC = () => {
     <div className="w-full flex min-h-[90vh]">
       <StudyList
         meetings={meetings}
-        currentPage={data?.data.pageable.pageNumber || 0}
-        totalPages={data?.data.totalPages || 0}
-        onPageChange={() => { }}
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
       />
       {canShowMap && (
         <KakaoMap
