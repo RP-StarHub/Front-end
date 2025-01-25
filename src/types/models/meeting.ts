@@ -21,11 +21,20 @@ export interface Meeting {
   maxParticipants: number;
   duration: DURATION;
   endDate: string;
-  techStacks: string[];
+  techStacks: number[];
   location: string;
   latitude: number;
   longitude: number;
   likeDto: LikeDto;
+}
+
+export interface MeetingDetail extends Meeting {
+  description: string;
+  goal: string;
+  otherInfo: string;
+  creator: {
+    username: string;
+  }
 }
 
 export interface LikeDto {
