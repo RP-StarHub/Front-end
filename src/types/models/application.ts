@@ -3,6 +3,6 @@ export interface Application {
   content: string;
   updatedAt: string;
   applicant : {
-    username: string;
+    nickname: string;
   }
 }
