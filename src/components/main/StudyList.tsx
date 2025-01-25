@@ -17,8 +17,8 @@ const StudyList = React.memo<StudyListProps>(({
   onPageChange
 }) => {
   return (
-    <div className='flex flex-col bg-background w-1/3 px-4 py-6 h-full'>
-      <div className="grid grid-rows-4 gap-4 flex-1 w-full items-center">
+    <div className='flex flex-col bg-background w-1/3 px-4 py-10 h-full'>
+      <div className="grid grid-rows-4 gap-8 flex-1 w-full items-center">
         {meetings.map((meeting) => (
           <div key={meeting.id} className="w-full min-h-0 justify-center flex">
             <InformCard

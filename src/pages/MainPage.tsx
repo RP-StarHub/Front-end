@@ -15,7 +15,7 @@ const MainPage: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="w-full flex h-[90vh]">
+    <div className="w-full flex min-h-[90vh]">
       <StudyList
         meetings={meetings}
         currentPage={data?.data.pageable.pageNumber || 0}
