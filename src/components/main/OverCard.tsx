@@ -1,60 +1,46 @@
 import React from "react";
-import StackIcon from "../../assets/icons/StackIcon.png";
-import FinishIcon from "../../assets/icons/FinishIcon.png";
-import PlaceIcon from "../../assets/icons/PlaceIcon.png";
-import PeopleIcon from "../../assets/icons/PeopleIcon.png";
-import DuringIcon from "../../assets/icons/DuringIcon.png";
 import { useNavigate } from "react-router-dom";
-import { IconType, IconStyle } from "../../types/models/common";
+import { Meeting } from "../../types/models/meeting";
+import {
+  Favorite,
+  PeopleAlt,
+  Timer,
+  CalendarToday,
+  RocketLaunch,
+  LocationOn
+} from "@mui/icons-material";
+import { toKoreanDuration, toKoreanRecruitmentType } from "../../util/transformKorean";
 
-interface OverCardProps {
-  type: string;
-  title: string;
-  skill: string;
-  deadline: string;
-  progress: string;
-  peopleNum: number;
-  place: string;
-  onClose: () => void;
-  postId: number;
-}
+type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
 
-const iconStyles: Record<IconType, IconStyle> = {
-  '스택': {
-    width: "14px",
-    height: "14px",
-    margin: "4px"
-  },
-  '마감': {
-    width: "14px",
-    height: "16px",
-    margin: "3px 4px"
-  },
-  '장소': {
-    width: "10px",
-    height: "16px",
-    margin: "3px 6px"
-  },
-  '인원': {
-    width: "16px",
-    height: "14px",
-    margin: "4px 3px"
-  },
-  '기간': {
-    width: "14px",
-    height: "14px",
-    margin: "4px"
+const IconComponent = ({ title }: { title: IconTitleType }) => {
+  const iconStyle = { fontSize: 18, color: "#7C8BBE" };
+
+  switch (title) {
+    case '관심':
+      return <Favorite sx={iconStyle} />;
+    case '스택':
+      return <RocketLaunch sx={iconStyle} />;
+    case '마감':
+      return <CalendarToday sx={iconStyle} />;
+    case '장소':
+      return <LocationOn sx={iconStyle} />;
+    case '인원':
+      return <PeopleAlt sx={iconStyle} />;
+    case '기간':
+      return <Timer sx={iconStyle} />;
+    default:
+      return null;
   }
 };
 
 interface ShotInformProps {
-  image: string;
-  title: IconType;
+  title: IconTitleType;
   content: string;
-  unit: string;
+  unit?: string;
 }
 
-const ShotInform = ({ image, title, content, unit }: ShotInformProps) => {
+const ShotInform = ({ title, content, unit }: ShotInformProps) => {
   const isPlace = title === "장소";
   let displayContent = content;
 
@@ -64,13 +50,9 @@ const ShotInform = ({ image, title, content, unit }: ShotInformProps) => {
   }
 
   return (
-    <div className="flex flex-row items-center">
-      <img
-        src={image}
-        alt={title}
-        style={iconStyles[title]}
-      />
-      <p className="text-regular text-sub font-scdream4 mx-2">{title}</p>
+    <div className="flex flex-row items-center mb-2">
+      <IconComponent title={title} />
+      <p className="text-center text-regular text-sub font-scdream4 mx-2">{title}</p>
       <div className="text-bold text-regular font-scdream4">
         {displayContent}{unit}
       </div>
@@ -78,21 +60,27 @@ const ShotInform = ({ image, title, content, unit }: ShotInformProps) => {
   );
 };
 
-function OverCard({
-  type,
-  postId,
-  title,
-  skill,
-  deadline,
-  progress,
-  peopleNum,
-  place,
-  onClose
-}: OverCardProps) {
+interface OverCardProps {
+  meeting: Meeting;
+  onClose: () => void;
+}
+
+function OverCard({ meeting, onClose }: OverCardProps) {
   const navigate = useNavigate();
+  const {
+    id,
+    title,
+    recruitmentType,
+    maxParticipants,
+    duration,
+    endDate,
+    techStacks,
+    location,
+    likeDto: { likeCount }
+  } = meeting;
 
   const handleClick = () => {
-    navigate(`/study/detail/${postId}`);
+    navigate(`/study/detail/${id}`);
   };
 
   const handleClose = (e: React.MouseEvent) => {
@@ -107,45 +95,21 @@ function OverCard({
       onClick={handleClick}
     >
       <div className="flex flex-row justify-between p-5">
-        <div className="flex flex-col gap-2">
-          <p className="text-label text-bold font-gmarket-bold">
-            [{type}] {title}
-          </p>
-          <div className="flex items-center gap-12">
-            <ShotInform
-              image={StackIcon}
-              title="스택"
-              content={skill}
-              unit=""
-            />
-            <ShotInform
-              image={FinishIcon}
-              title="마감"
-              content={deadline}
-              unit=""
-            />
+        <div className="w-full grid grid-cols-2 gap-1">
+          <div className="col-span-2 flex justify-between items-start">
+            <p className="text-bold mb-2 text-label font-gmarket-bold truncate max-w-[80%]">
+              [{toKoreanRecruitmentType(recruitmentType)}] {title}
+            </p>
           </div>
-          <div className="flex items-center gap-12">
-            <ShotInform
-              image={DuringIcon}
-              title="기간"
-              content={progress}
-              unit="개월"
-            />
-            <ShotInform
-              image={PeopleIcon}
-              title="인원"
-              content={peopleNum.toString()}
-              unit="명"
-            />
+          <ShotInform title="관심" content={likeCount.toString()} />
+          <ShotInform title="인원" content={maxParticipants.toString()} unit="명" />
+          <ShotInform title="기간" content={toKoreanDuration(duration)} />
+          <ShotInform title="마감" content={endDate} />
+          <div className="col-span-2">
+            <ShotInform title="스택" content={techStacks.join(", ")} />
           </div>
-          <div>
-            <ShotInform
-              image={PlaceIcon}
-              title="장소"
-              content={place}
-              unit=""
-            />
+          <div className="col-span-2">
+            <ShotInform title="장소" content={location} />
           </div>
         </div>
         <button

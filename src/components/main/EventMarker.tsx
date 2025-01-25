@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { MapMarker } from "react-kakao-maps-sdk";
 import { MapPosition, KakaoLatLng, MarkerState } from '../../types/models/common'
 import OverCard from './OverCard';
-import { StudyCardInfo } from '../../types/models/study';
+import { Meeting } from '../../types/models/meeting';
 
-interface EventMarkerProps extends StudyCardInfo {
+interface EventMarkerProps {
+  meeting: Meeting;
   position: MapPosition;
 }
 
 const EventMarker = React.memo<EventMarkerProps>(({
   position,
-  ...cardProps
+  meeting,
 }) => {
   const [markerState, setMarkerState] = useState<MarkerState>({
     isVisible: false,
@@ -54,7 +55,7 @@ const EventMarker = React.memo<EventMarkerProps>(({
     >
       {markerState.isVisible && (
         <OverCard
-          {...cardProps}
+          meeting={meeting}
           onClose={handleClose}
         />
       )}

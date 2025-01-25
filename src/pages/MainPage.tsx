@@ -1,40 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import { Map as KakaoMap } from "react-kakao-maps-sdk";
-import { usePostList } from "../hooks/api/usePost";
 import EventMarker from "../components/main/EventMarker";
 import StudyList from "../components/main/StudyList";
 import { useGeolocation } from '../hooks/common/useGeolocation';
+import { useMeetingList } from "../hooks/api/useMeeting";
 
 const MainPage: React.FC = () => {
+  const [page, setPage] = useState(1); 
   const { location, loaded } = useGeolocation();
-  const { data, isLoading } = usePostList();
-  const studies = data?.data || [];
+  const { data, isLoading } = useMeetingList(page);
+
+  const meetings = data?.data.content || [];
+  const totalPages = data?.data?.totalPages ?? 0;
 
   const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="w-full flex h-[90vh]">
-      <StudyList studies={studies} />
+    <div className="w-full flex min-h-[90vh]">
+      <StudyList
+        meetings={meetings}
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
       {canShowMap && (
         <KakaoMap
           center={{ lat: location.latitude, lng: location.longitude }}
           style={{ width: "66%", height: "100%" }}
           level={3}
         >
-          {studies.map((study) => (
+          {meetings.map((meeting) => (
             <EventMarker
-              key={`EventMarker-${study.postId}`}
-              position={{ latitude: study.latitude, longitude: study.longitude }}
-              postId={study.postId}
-              skill={study.skill}
-              place={study.place}
-              progress={study.progress}
-              peopleNum={study.peopleNum}
-              deadline={study.deadline}
-              type={study.type}
-              title={study.title}
+              meeting={meeting}
+              position={{ 
+                latitude: meeting.latitude, 
+                longitude: meeting.longitude 
+              }}
             />
           ))}
         </KakaoMap>
