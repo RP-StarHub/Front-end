@@ -48,9 +48,6 @@ const MyApplication: React.FC<MyApplicationProps> = ({ meetingId }) => {
     await deleteApplication.mutateAsync(meetingId);
     setShowDeleteModal(false);
     toast.success('지원서가 삭제되었습니다');
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
   };
 
   const confirmDelete = () => {

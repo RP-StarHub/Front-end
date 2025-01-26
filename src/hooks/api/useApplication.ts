@@ -11,8 +11,9 @@ export const useApplicationCreate = () => {
   return useMutation({
     mutationFn: ({ meetingId, data }: { meetingId: number, data: PostApplicationRequest }) =>
       applicationService.postApplication(meetingId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['applications'] });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['meeting', variables.meetingId] });
+      queryClient.invalidateQueries({ queryKey: ['applications', variables.meetingId] });
     },
     onError: (error: any) => {
       const { status, message } = error?.response ?? {};
@@ -132,8 +133,9 @@ export const useApplicationDelete = () => {
 
   return useMutation({
     mutationFn: (meetingId: number) => applicationService.deleteApplication(meetingId),
-    onSuccess: () => {
+    onSuccess: (_, meetingId) => {
       queryClient.setQueryData(['application'], null);
+      queryClient.invalidateQueries({ queryKey: ['meeting', meetingId] });
     },
     onError: (error: any) => {
       const { status, message } = error?.response ?? {};
