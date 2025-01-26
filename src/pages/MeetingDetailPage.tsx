@@ -18,7 +18,7 @@ const MeetingDetailPage = () => {
 
   return (
     <div className={
-      `flex flex-col w-full px-60 py-24 ${isApplicant ? 'bg-white' : 'bg-background'}`}
+      `flex flex-col w-full px-60 py-24 ${isApplicant ? 'bg-gray-100' : 'bg-background'}`}
     >
       <MeetingHeader
         meetingDetail={data.data}
@@ -39,7 +39,9 @@ const MeetingDetailPage = () => {
             />
           ) : (
             applicationStatus ? (
-              <MyApplication />
+              <MyApplication
+                meetingId={postInfo.id}
+              />
             ) : (
               <ApplicationForm />
             )
