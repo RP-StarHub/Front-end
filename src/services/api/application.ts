@@ -10,26 +10,26 @@ import { axiosInstance } from "./axios";
 export const applicationService = {
   postApplication: (meetingId: number, data: PostApplicationRequest) => {
     return axiosInstance.post<PostApplicationResponse>(
-      `/api/v1/applications/${meetingId}/applications`,
+      `/api/v1/meetings/${meetingId}/applications`,
       data
     );
   },
 
   getApplicationList: (meetingId: number) => {
     return axiosInstance.get<GetApplicationListResponse>(
-      `/api/v1/applications/${meetingId}/applications`
+      `/api/v1/meetings/${meetingId}/applications`
     );
   },
 
   getApplicationMe: (meetingId: number) => {
     return axiosInstance.get<GetApplicationMeResponse>(
-      `/api/v1/applications/${meetingId}/me`
+      `/api/v1/meetings/${meetingId}/me`
     );
   },
 
   patchApplication: (meetingId: number, data: PostApplicationRequest) => {
     return axiosInstance.patch<PatchApplicationResponse>(
-      `/api/v1/applications/${meetingId}/applications`,
+      `/api/v1/meetings/${meetingId}/applications`,
       data
     );
   },
