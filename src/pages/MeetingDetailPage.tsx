@@ -27,7 +27,9 @@ const MeetingDetailPage = () => {
       <MeetingInfo 
         postInfo={postInfo}
       />
-      <MeetingContent />
+      <MeetingContent 
+        postInfo={postInfo}
+      />
 
       {
         !postInfo.isConfirmed ? (
