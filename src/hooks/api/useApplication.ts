@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import {
   PostApplicationRequest,
 } from "../../types/api/application";
-import { mockApplicationService } from "../../services/api/application";
+import { applicationService, mockApplicationService } from "../../services/api/application";
 
 export const useApplicationCreate = () => {
   // 목업
@@ -13,14 +13,24 @@ export const useApplicationCreate = () => {
 };
 
 export const useApplicationList = (meetingId: number) => {
-  // 목업용
   return useQuery({
     queryKey: ['applications', meetingId],
     queryFn: async () => {
-      const response = await mockApplicationService.getApplicationList(meetingId);
-      return response.data
-    }
+      const response = await applicationService.getApplicationList(meetingId);
+      return response.data;
+    },
+    staleTime: 0,
+    placeholderData: (previousData) => previousData,
   });
+
+  // 목업용
+  // return useQuery({
+  //   queryKey: ['applications', meetingId],
+  //   queryFn: async () => {
+  //     const response = await mockApplicationService.getApplicationList(meetingId);
+  //     return response.data
+  //   }
+  // });
 };
 
 export const useApplicationMe = (meetingId: number) => {
