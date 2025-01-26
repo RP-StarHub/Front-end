@@ -51,7 +51,6 @@ const MeetingDetailPage = () => {
         ) : (
           <div className='flex justify-end'>
             <Button
-              variant='secondary'
               size='small'
               className='mt-8'
             >
