@@ -1,15 +1,29 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   PostApplicationRequest,
 } from "../../types/api/application";
 import { applicationService, mockApplicationService } from "../../services/api/application";
+import toast from "react-hot-toast";
 
 export const useApplicationCreate = () => {
-  // 목업
+  const queryClient = useQueryClient();
+  
   return useMutation({
     mutationFn: ({ meetingId, data }: { meetingId: number, data: PostApplicationRequest }) =>
-      mockApplicationService.postApplication(meetingId, data),
+      applicationService.postApplication(meetingId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+    },
+    onError: () => {
+      toast.error('지원서 작성에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    }
   });
+  
+  // 목업
+  // return useMutation({
+  //   mutationFn: ({ meetingId, data }: { meetingId: number, data: PostApplicationRequest }) =>
+  //     mockApplicationService.postApplication(meetingId, data),
+  // });
 };
 
 export const useApplicationList = (meetingId: number) => {
