@@ -34,7 +34,9 @@ const MeetingDetailPage = () => {
       {
         !postInfo.isConfirmed ? (
           !isApplicant ? (
-            <ApplicationList />
+            <ApplicationList 
+              meetingId={postInfo.id}
+            />
           ) : (
             applicationStatus ? (
               <MyApplication />
