@@ -23,20 +23,20 @@ export const applicationService = {
 
   getApplicationMe: (meetingId: number) => {
     return axiosInstance.get<GetApplicationMeResponse>(
-      `/api/v1/meetings/${meetingId}/me`
+      `/api/v1/meetings/${meetingId}/applications/me`
     );
   },
 
   patchApplication: (meetingId: number, data: PostApplicationRequest) => {
     return axiosInstance.patch<PatchApplicationResponse>(
-      `/api/v1/meetings/${meetingId}/applications`,
+      `/api/v1/meetings/${meetingId}/applications/me`,
       data
     );
   },
 
   deleteApplication: (meetingId: number) => {
     return axiosInstance.delete<void>(
-      `/api/v1/applications/${meetingId}/applications`
+      `/api/v1/meetings/${meetingId}/applications/me`
     );
   },
 };
