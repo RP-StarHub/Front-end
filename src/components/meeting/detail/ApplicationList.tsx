@@ -35,7 +35,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
           className={`
             px-6 py-4 my-4 
             border-4 border-sub rounded-2xl 
-            font-scdream4 text-lg text-bold cursor-pointer
+            font-scdream4 text-regular text-bold cursor-pointer
             ${selectedApplication.includes(application.id)
               ? 'bg-sub text-white'
               : 'bg-none'
@@ -44,7 +44,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
           `}
           onClick={() => handleApplicationClick(application.id)}
         >
-          <p>{application.applicant.nickname}</p>
+          <p className='mb-4'>{application.applicant.nickname}</p>
           <p>{application.content}</p>
         </div>
       ))}
