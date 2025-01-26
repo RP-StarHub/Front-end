@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import ApplicantListPage from "./pages/ApplicantListPage";
 import StudyDetailPage from "./pages/StudyDetailPage";
 import StudyRecruitPage from "./pages/StudyRecruitPage";
+import MeetingDetailPage from "./pages/MeetingDetailPage";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/applicant/list/:postId" element={<ApplicantListPage />} />
+          <Route path="/meeting/detail/:postId" element={<MeetingDetailPage />} />
           <Route path="/study/detail/:postId" element={<StudyDetailPage />} />
           <Route path="/study/recruit" element={<StudyRecruitPage />} />
         </Routes>

@@ -83,7 +83,7 @@ function InformCard({ meeting, onLikeToggle }: Props) {
   const { toggleLike } = useLike(meeting.id);
 
   const moveDetail = () => {
-    navigate(`/study/detail/${id}`);
+    navigate(`/meeting/detail/${id}`);
   }
 
   const handleLikeClick = (e: React.MouseEvent) => {
