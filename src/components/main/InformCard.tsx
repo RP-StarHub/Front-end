@@ -64,10 +64,9 @@ const ShotInform = ({ title, content, unit }: ShotInformProps) => {
 
 interface Props {
   meeting: Meeting;
-  onLikeToggle: (id: number) => void;
 }
 
-function InformCard({ meeting, onLikeToggle }: Props) {
+function InformCard({ meeting }: Props) {
   const navigate = useNavigate();
   const {
     id,
