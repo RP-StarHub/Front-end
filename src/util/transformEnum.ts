@@ -1,4 +1,4 @@
-import { DURATION, Meeting, RecruitmentType } from "../types/models/meeting";
+import { BaseMeeting, DURATION, RecruitmentType } from "../types/models/meeting";
 
 type ApiMeeting = {
   id: number;
@@ -11,13 +11,9 @@ type ApiMeeting = {
   location: string;
   latitude: number;
   longitude: number;
-  likeDto: {
-    likeCount: number;
-    isLiked: boolean;
-  };
-}
+};
 
-const transformEnumMeeting = (data: ApiMeeting): Meeting => ({
+const transformEnumMeeting = (data: ApiMeeting): BaseMeeting => ({
   ...data,
   recruitmentType: RecruitmentType[data.recruitmentType as keyof typeof RecruitmentType],
   duration: DURATION[data.duration as keyof typeof DURATION]

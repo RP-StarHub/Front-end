@@ -42,7 +42,7 @@ export interface MeetingList {
 
 export interface MeetingDetailInfo {
   isApplicant: boolean;
-  applicantStatus: boolean;
+  applicationStatus: boolean;
   postInfo: MeetingDetail;
   likeDto: LikeDto;
 }
