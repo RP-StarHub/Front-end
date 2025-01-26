@@ -34,9 +34,9 @@ const MyApplication: React.FC<MyApplicationProps> = ({ meetingId }) => {
           data: { content }
         });
         setIsEditing(false);
-        toast.success('수정되었습니다');
+        toast.success('지원서가 수정되었습니다');
       } catch (error) {
-        toast.error('수정에 실패했습니다');
+        console.error('Error:', error);
       }
     } else {
       setContent(application.content);
@@ -46,7 +46,11 @@ const MyApplication: React.FC<MyApplicationProps> = ({ meetingId }) => {
 
   const handleDelete = async () => {
     await deleteApplication.mutateAsync(meetingId);
+    setShowDeleteModal(false);
     toast.success('지원서가 삭제되었습니다');
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
 
   const confirmDelete = () => {

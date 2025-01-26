@@ -23,8 +23,10 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ meetingId }) => {
         meetingId,
         data: { content }
       });
-      window.location.reload();
       toast.success('지원서가 등록되었습니다');
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (error) {
       console.error('Error:', error);
     }
