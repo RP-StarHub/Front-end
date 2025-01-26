@@ -26,14 +26,24 @@ export const useMeetingList = (page: number) => {
 };
 
 export const useMeetingDetail = (id: number) => {
-  // 목업용
   return useQuery({
     queryKey: ['meeting', id],
     queryFn: async () => {
-      const response = await mockMeetingService.getMeetingDetail(id);
-      return response.data
-    }
-  })
+      const response = await meetingService.getMeetingDetail(id);
+      return response.data;
+    },
+    staleTime: 0,
+    placeholderData: (previousData) => previousData,
+  });
+
+  // 목업용
+  // return useQuery({
+  //   queryKey: ['meeting', id],
+  //   queryFn: async () => {
+  //     const response = await mockMeetingService.getMeetingDetail(id);
+  //     return response.data
+  //   }
+  // })
 };
 
 export const useMeetingPatch = () => {

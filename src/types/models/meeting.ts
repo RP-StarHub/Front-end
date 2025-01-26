@@ -35,6 +35,7 @@ export interface MeetingDetail extends BaseMeeting {
   description: string;
   goal: string;
   otherInfo: string;
+  isConfirmed: boolean;
   creator: {
     username: string;
   }
