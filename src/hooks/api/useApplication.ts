@@ -51,7 +51,7 @@ export const useApplicationList = (meetingId: number) => {
       const response = await applicationService.getApplicationList(meetingId);
       return response.data;
     },
-    staleTime: 0,
+    staleTime: 1000 * 60 * 5,
     placeholderData: (previousData) => previousData,
   });
 
@@ -133,7 +133,7 @@ export const useApplicationDelete = () => {
   return useMutation({
     mutationFn: (meetingId: number) => applicationService.deleteApplication(meetingId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['application'] });
+      queryClient.setQueryData(['application'], null);
     },
     onError: (error: any) => {
       const { status, message } = error?.response ?? {};
