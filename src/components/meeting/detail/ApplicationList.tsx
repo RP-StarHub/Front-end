@@ -28,12 +28,12 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
   }
 
   return (
-    <div className='w-full'>
+    <div className='w-full mt-8'>
       {applications.map((application) => (
         <div
           key={application.id}
           className={`
-            px-6 py-4 my-4 
+            px-6 py-4 my-8
             border-4 border-sub rounded-2xl 
             font-scdream4 text-regular text-bold cursor-pointer
             ${selectedApplication.includes(application.id)
