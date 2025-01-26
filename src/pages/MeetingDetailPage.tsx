@@ -16,6 +16,31 @@ const MeetingDetailPage = () => {
 
   const { isApplicant, applicationStatus, postInfo } = data.data;
 
+  const renderApplicationSection = () => {
+    // 모임이 확정된 경우
+    if (postInfo.isConfirmed) {
+      return (
+        <div className='flex justify-end'>
+          <Button size='small' className='mt-8'>
+            스터디원 보기
+          </Button>
+        </div>
+      );
+    }
+
+    // 모임 개설자인 경우
+    if (!isApplicant) {
+      return <ApplicationList meetingId={postInfo.id} />;
+    }
+
+    // 지원자인 경우
+    return applicationStatus ? (
+      <MyApplication meetingId={postInfo.id} />
+    ) : (
+      <ApplicationForm meetingId={postInfo.id} />
+    );
+  };
+
   return (
     <div className={
       `flex flex-col w-full px-60 py-24 ${isApplicant ? 'bg-gray-100' : 'bg-background'}`}
@@ -30,35 +55,8 @@ const MeetingDetailPage = () => {
       <MeetingContent 
         postInfo={postInfo}
       />
-
-      {
-        !postInfo.isConfirmed ? (
-          !isApplicant ? (
-            <ApplicationList 
-              meetingId={postInfo.id}
-            />
-          ) : (
-            applicationStatus ? (
-              <MyApplication
-                meetingId={postInfo.id}
-              />
-            ) : (
-              <ApplicationForm 
-                meetingId={postInfo.id}
-              />
-            )
-          )
-        ) : (
-          <div className='flex justify-end'>
-            <Button
-              size='small'
-              className='mt-8'
-            >
-              스터디원 보기
-            </Button>
-          </div>
-        )
-      }
+      
+      {renderApplicationSection()}
     </div>
   );
 };
