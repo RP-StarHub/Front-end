@@ -43,7 +43,9 @@ const MeetingDetailPage = () => {
                 meetingId={postInfo.id}
               />
             ) : (
-              <ApplicationForm />
+              <ApplicationForm 
+                meetingId={postInfo.id}
+              />
             )
           )
         ) : (
