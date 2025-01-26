@@ -128,9 +128,9 @@ export const mockDetailData = {
         "applicationStatus": false,
         "postInfo": {
             "id": 2,
-            "recruitmentType": "STUDY",
+            "recruitmentType": RecruitmentType.STUDY,
             "maxParticipants": 3,
-            "duration": "ONE_WEEK",
+            "duration": DURATION.ONE_WEEK,
             "endDate": "2025-01-31",
             "location": "서울 노원구 동일로207길 186(하계동, 학여울청구아파트)",
             "latitude": 37.6379556162713,

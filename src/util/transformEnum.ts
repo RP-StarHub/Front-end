@@ -7,7 +7,7 @@ type ApiMeeting = {
   maxParticipants: number;
   duration: string;
   endDate: string;
-  techStacks: number[];
+  techStacks: string[];
   location: string;
   latitude: number;
   longitude: number;

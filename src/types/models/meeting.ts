@@ -21,7 +21,7 @@ export interface BaseMeeting {
   maxParticipants: number;
   duration: DURATION;
   endDate: string;
-  techStacks: number[];
+  techStacks: string[];
   location: string;
   latitude: number;
   longitude: number;
