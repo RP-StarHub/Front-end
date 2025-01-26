@@ -24,7 +24,9 @@ const MeetingDetailPage = () => {
         meetingDetail={data.data}
         isApplicant={isApplicant}
       />
-      <MeetingInfo />
+      <MeetingInfo 
+        postInfo={postInfo}
+      />
       <MeetingContent />
 
       {
