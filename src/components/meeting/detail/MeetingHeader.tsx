@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Star,
   Favorite,
@@ -9,6 +9,8 @@ import {
 import { MeetingDetailInfo } from '../../../types/api/meeting';
 import { toKoreanRecruitmentType } from '../../../util/transformKorean';
 import { useLike } from '../../../hooks/api/useLike';
+import { useMeetingDelete } from '../../../hooks/api/useMeeting';
+import Button from '../../common/ui/Button';
 
 interface MeetingHeaderProps {
   meetingDetail: MeetingDetailInfo;
@@ -22,10 +24,19 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
   const { postInfo, likeDto } = meetingDetail;
   const { toggleLike } = useLike(postInfo.id);
   const isLiked = likeDto.isLiked;
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const deleteMeeting = useMeetingDelete();
 
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     toggleLike.mutate(likeDto.isLiked);
+  };
+
+  const handleDelete = () => setShowDeleteModal(true);
+
+  const confirmDelete = () => {
+    deleteMeeting.mutate(postInfo.id);
+    setShowDeleteModal(false);
   };
 
   return (
@@ -44,7 +55,7 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
               <button>
                 <Edit sx={{ fontSize: 40, color: "#7C8BBE" }} />
               </button>
-              <button>
+              <button onClick={handleDelete}>
                 <Delete sx={{ fontSize: 40, color: "#7C8BBE" }} />
               </button>
             </>
@@ -69,6 +80,32 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
           </span>
         </div>
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+          <div className="fixed inset-0 bg-black/50" onClick={() => setShowDeleteModal(false)} />
+          <div className="relative bg-white p-8 rounded-xl shadow-lg min-w-[400px] text-center">
+            <h3 className="font-scdream6 text-xl mb-6">
+              정말 삭제하시겠습니까? <br />
+              삭제한 게시글은 복원할 수 없습니다.
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button
+                size="small"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                취소
+              </Button>
+              <Button
+                size="small"
+                onClick={confirmDelete}
+              >
+                삭제
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
