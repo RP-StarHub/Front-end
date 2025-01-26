@@ -10,19 +10,20 @@ import Button from '../components/common/ui/Button';
 
 const MeetingDetailPage = () => {
   const { meetingId } = useParams();
-  const { data: meetingDetail, isLoading } = useMeetingDetail(Number(meetingId));
+  const { data, isLoading } = useMeetingDetail(Number(meetingId));
 
-  console.log(meetingDetail);
+  if (isLoading || !data) return <div>Loading...</div>;
 
-  if (isLoading || !meetingDetail) {
-    return <div>Loading...</div>;
-  }
-
-  const { isApplicant, applicationStatus, postInfo } = meetingDetail.data;
+  const { isApplicant, applicationStatus, postInfo } = data.data;
 
   return (
-    <div className={`flex flex-col w-full ${isApplicant ? 'bg-white' : 'bg-background'}`}>
-      <MeetingHeader />
+    <div className={
+      `flex flex-col w-full px-60 py-24 ${isApplicant ? 'bg-white' : 'bg-background'}`}
+    >
+      <MeetingHeader
+        meetingDetail={data.data}
+        isApplicant={isApplicant}
+      />
       <MeetingInfo />
       <MeetingContent />
 
