@@ -14,7 +14,7 @@ export enum DURATION {
   MORE_THAN_ONE_YEAR = "MORE_THAN_ONE_YEAR",
 }
 
-export interface Meeting {
+export interface BaseMeeting {
   id: number;
   title: string;
   recruitmentType: RecruitmentType;
@@ -25,7 +25,20 @@ export interface Meeting {
   location: string;
   latitude: number;
   longitude: number;
+}
+
+export interface Meeting extends BaseMeeting {
   likeDto: LikeDto;
+}
+
+export interface MeetingDetail extends BaseMeeting {
+  description: string;
+  goal: string;
+  otherInfo: string;
+  isConfirmed: boolean;
+  creator: {
+    username: string;
+  }
 }
 
 export interface LikeDto {

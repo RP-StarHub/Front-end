@@ -118,3 +118,42 @@ export const mainData = {
         "empty": false
     }
 };
+
+export const mockDetailData = {
+    "status": 200,
+    "code": "SUCCESS_GET_MEETING_DETAIL",
+    "message": "모임 상세 정보를 성공적으로 불러왔습니다.",
+    "data": {
+        "isApplicant": false,
+        "applicationStatus": false,
+        "postInfo": {
+            "id": 2,
+            "recruitmentType": RecruitmentType.STUDY,
+            "maxParticipants": 3,
+            "duration": DURATION.ONE_WEEK,
+            "endDate": "2025-01-31",
+            "location": "서울 노원구 동일로207길 186(하계동, 학여울청구아파트)",
+            "latitude": 37.6379556162713,
+            "longitude": 127.059802173858,
+            "title": "ㅎㅇ",
+            "description": "ㅇㅇㅇㅇㅇ",
+            "goal": "ㅇㅇㅇㅇ",
+            "otherInfo": "ㅇㅇㅇㅇㅇㅇ",
+            "isConfirmed": false,
+            "creator": {
+                "username": "dara12"
+            },
+            "techStacks": [
+                "React",
+                "Vue",
+                "HTML/CSS",
+                "Spring",
+                "Docker"
+            ]
+        },
+        "likeDto": {
+            "likeCount": 1,
+            "isLiked": true
+        }
+    }
+}

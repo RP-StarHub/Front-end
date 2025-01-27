@@ -17,7 +17,8 @@ export const useLike = (meetingId: number) => {
     },
     onSuccess: (_, isLiked) => {
       queryClient.invalidateQueries({ queryKey: ['meetings'] });
-      toast.success(isLiked ? '좋아요가 취소되었습니다.' : '좋아요를 눌렀습니다.');
+      queryClient.invalidateQueries({ queryKey: ['meeting'] });
+      toast.success(isLiked ? '관심 모임글이 취소되었습니다.' : '관심 모임글로 등록했습니다.');
     },
     onError: (error: any) => {
       if (error?.response?.status === 401) {

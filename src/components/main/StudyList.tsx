@@ -23,7 +23,6 @@ const StudyList = React.memo<StudyListProps>(({
           <div key={meeting.id} className="w-full min-h-0 justify-center flex">
             <InformCard
               meeting={meeting}
-              onLikeToggle={() => { }}
             />
           </div>
         ))}

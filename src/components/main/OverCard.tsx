@@ -80,7 +80,7 @@ function OverCard({ meeting, onClose }: OverCardProps) {
   } = meeting;
 
   const handleClick = () => {
-    navigate(`/study/detail/${id}`);
+    navigate(`/meeting/detail/${id}`);
   };
 
   const handleClose = (e: React.MouseEvent) => {

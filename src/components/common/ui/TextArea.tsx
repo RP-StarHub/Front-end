@@ -25,6 +25,11 @@ interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
   bordered?: boolean;
 
   /**
+   * 테두리 색상을 설정합니다.
+   */
+  borderColor?: string;
+
+  /**
    * 입력 필드의 너비를 부모 요소의 100%로 설정할지 여부
    */
   fullWidth?: boolean;
@@ -35,6 +40,7 @@ const TextArea = ({
   inputSize = 'medium',
   error,
   bordered = true,
+  borderColor='border-main',
   fullWidth = false,
   className = '',
   ...props
@@ -43,7 +49,7 @@ const TextArea = ({
   const baseStyle = "rounded-lg font-scdream4 transition-colors focus:outline-none resize-none";
   
   // border 스타일 조건부 적용
-  const borderStyle = bordered ? "border-4 border-solid border-main" : "border-0";
+  const borderStyle = bordered ? `border-4 border-solid ${borderColor}` : "border-0";
   
   // 입력 필드 크기별 패딩
   const sizeStyles = {
