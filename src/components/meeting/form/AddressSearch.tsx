@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 import DaumPostcode from "react-daum-postcode";
-import TextInput from "../../common/ui/TextInput";
 import Button from "../../common/ui/Button";
 import { PostRequest } from "../../../types/api/post";
 import { AddressObj } from "../../../types/models/study";
@@ -103,20 +102,23 @@ export const AddressSearch = ({
   }, [handleComplete]);
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex-1">
-        <TextInput
-          type="text"
-          id="addressInput"
-          name="place"
-          placeholder="주소를 입력해주세요."
-          value={addressValue}
-          error={error}
-          fullWidth
-          inputSize="medium"
-          onChange={handleInputChange}
-        />
-      </div>
+    <div className="flex gap-2">
+      <input
+        type="text"
+        id="addressInput"
+        name="place"
+        placeholder="주소를 입력해주세요"
+        value={addressValue}
+        onChange={handleInputChange}
+        readOnly
+        className={`
+          flex-1 px-6 py-3 border border-gray-300 rounded-lg
+          font-scdream4 text-placeholder bg-white
+          focus:outline-none focus:border-main
+          placeholder-gray-400
+          ${error ? 'border-red-500' : ''}
+        `}
+      />
       <Button
         type="button"
         variant="secondary"
@@ -128,3 +130,5 @@ export const AddressSearch = ({
     </div>
   );
 };
+
+export default AddressSearch;
