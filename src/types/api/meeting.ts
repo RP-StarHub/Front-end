@@ -2,6 +2,22 @@ import { DURATION, LikeDto, Meeting, MeetingDetail, RecruitmentType, Sort } from
 import { ApiResponse } from "./response";
 
 // Request
+export interface CreateMeetingRequest {
+  recruitmentType: RecruitmentType;
+  maxParticipants: number;
+  duration: DURATION;
+  endDate: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  title: string;
+  description: string;
+  goal: string;
+  otherInfo: string;
+  techStacks: number[];
+  otherTechStack: string[];
+}
+
 export interface PatchMeetingRequest {
   recruitmentType?: RecruitmentType;
   maxParticipants?: number;
@@ -19,6 +35,25 @@ export interface PatchMeetingRequest {
 }
 
 // Response
+export interface MeetingInfo {
+  id: number;
+  recruitmentType: RecruitmentType;
+  maxParticipants: number;
+  duration: DURATION;
+  endDate: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  title: string;
+  description: string;
+  goal: string;
+  otherInfo: string;
+  techStacks: string[];
+  creator : {
+    nickname: string;
+  }
+}
+
 export interface MeetingList {
   content: Meeting[];
   pageable: {
@@ -47,6 +82,7 @@ export interface MeetingDetailInfo {
   likeDto: LikeDto;
 }
 
+export type CreateMeetingResponse = ApiResponse<MeetingInfo>;
 export type GetMeetingListResponse = ApiResponse<MeetingList>;
 export type GetMeetingDetailResponse = ApiResponse<MeetingDetailInfo>;
 export type PatchMeetingResponse = ApiResponse<MeetingDetail>;
