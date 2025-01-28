@@ -3,7 +3,7 @@ import { Map as KakaoMap, MapMarker } from "react-kakao-maps-sdk";
 import { Star } from "@mui/icons-material";
 import { AddressSearch } from "../../components/meeting/form/AddressSearch";
 import Button from "../../components/common/ui/Button";
-import StepIndicator from "../../components/common/ui/StepIndicator";
+import LargeStepIndicator from "../../components/common/ui/LagreStepIndicator";
 import { DURATION, RecruitmentType } from "../../types/models/meeting";
 import { toKoreanDuration } from "../../util/transformKorean";
 import DurationModal from "../../components/meeting/modals/DurationModal";
@@ -65,10 +65,10 @@ const CreateMeetingBasicPage = () => {
   const dropdownStyle = "w-full px-6 py-3 border border-gray-300 rounded-lg font-scdream4 bg-white focus:outline-none";
 
   return (
-    <div className="flex flex-col w-full bg-background px-48 py-24">
-      <StepIndicator currentStep={0} steps={steps} />
+    <div className="flex flex-col w-full bg-background px-48 py-20">
+      <LargeStepIndicator currentStep={0} steps={steps} />
 
-      <div className="flex items-center mt-12 mb-6">
+      <div className="flex items-center mt-20 mb-6">
         <Star className="text-yellow" sx={{ fontSize: 40 }} />
         <p className="font-gmarket-bold text-page-title text-bold">기본 정보 설정</p>
       </div>
