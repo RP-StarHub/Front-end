@@ -68,7 +68,7 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
       <div className='flex justify-between items-center'>
         <p className="text-label font-scdream6 text-sub mt-2 mb-6">
           {/* {postInfo.creator.username} | {postInfo.createdAt} */}
-          {postInfo.creator.username}
+          {postInfo.creator.nickname}
         </p>
         <div onClick={handleLikeClick} className='flex items-center gap-4'>
           {isLiked ?
