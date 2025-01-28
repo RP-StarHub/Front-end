@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import StarIcon from "../assets/icons/StarIcon.png";
-import { AddressSearch } from "../components/study/form/AddressSearch";
+import { AddressSearch } from "../components/meeting/form/AddressSearch";
 import { useStudyFormStore } from "../store/studyForm";
 import { usePostCreate } from "../hooks/api/usePost";
 import { useQueryClient } from "@tanstack/react-query";
