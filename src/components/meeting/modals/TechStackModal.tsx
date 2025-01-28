@@ -108,7 +108,7 @@ const TechStackModal = ({
           ))}
 
           <div>
-            <h4 className="font-scdream6 text-regular text-main mb-3">기타</h4>
+            <h4 className="font-scdream6 text-regular text-bold mb-3">기타</h4>
             <input
               type="text"
               value={customStack}
