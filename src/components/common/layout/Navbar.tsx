@@ -41,7 +41,7 @@ const Navbar = () => {
               className='cursor-pointer h-[70px] w-auto mr-5'
             />
           </Link>
-          <Link to="/study/recruit">
+          <Link to="/meeting/create/basic">
             <span className='text-white font-scdream4 cursor-pointer mx-4 text-label'>
               모집하기
             </span>
