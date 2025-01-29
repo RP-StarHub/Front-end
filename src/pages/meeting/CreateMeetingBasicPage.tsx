@@ -33,6 +33,7 @@ const CreateMeetingBasicPage = () => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const recruitmentDropdownRef = useRef<HTMLDivElement>(null);
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
@@ -57,9 +58,9 @@ const CreateMeetingBasicPage = () => {
   }, [loaded, userLocation]);
 
   const steps = [
-    { title: "기본 정보 설정" },
-    { title: "상세 정보 설정" },
-    { title: "미리보기" }
+    { title: "기본 정보" },
+    { title: "모임 소개" },
+    { title: "완료" }
   ];
 
   const dropdownStyle = "w-full px-6 py-3 border border-gray-300 rounded-lg font-scdream4 bg-white focus:outline-none";
@@ -135,19 +136,6 @@ const CreateMeetingBasicPage = () => {
           </div>
         </div>
 
-        {/* 모집 마감일 */}
-        <div>
-          <p className="font-scdream6 text-label text-bold mb-4">모집 마감일</p>
-          <div className={`${dropdownStyle} flex justify-between items-center cursor-pointer`}>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full bg-transparent outline-none cursor-pointer text-placeholder"
-            />
-          </div>
-        </div>
-
         {/* 진행 기간 */}
         <div>
           <p className="font-scdream6 text-label text-bold mb-4">진행 기간</p>
@@ -159,6 +147,23 @@ const CreateMeetingBasicPage = () => {
               {selectedDuration ? toKoreanDuration(selectedDuration) : "진행 기간을 선택해주세요"}
             </span>
             <span className="border-l pl-6 text-s">▼</span>
+          </div>
+        </div>
+
+        {/* 모집 마감일 */}
+        <div>
+          <p className="font-scdream6 text-label text-bold mb-4">모집 마감일</p>
+          <div
+            className={`${dropdownStyle} flex justify-between items-center cursor-pointer`}
+            onClick={() => dateInputRef.current?.showPicker()}
+          >
+            <input
+              ref={dateInputRef}
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full bg-transparent outline-none cursor-pointer text-placeholder"
+            />
           </div>
         </div>
 
@@ -176,7 +181,7 @@ const CreateMeetingBasicPage = () => {
             error=""
           />
           {location.latitude && location.longitude && (
-            <div className="mt-4 h-[800px] rounded-lg overflow-hidden relative">
+            <div className="mt-10 h-[800px] rounded-lg overflow-hidden relative">
               <KakaoMap
                 center={{
                   lat: location.latitude,
@@ -220,9 +225,9 @@ const CreateMeetingBasicPage = () => {
       />
 
       <div className="flex justify-end mt-8">
-        <Button 
+        <Button
           variant="secondary"
-          onClick={() => {navigation('/meeting/create/detail')}}
+          onClick={() => { navigation('/meeting/create/detail') }}
         >
           다음
         </Button>
