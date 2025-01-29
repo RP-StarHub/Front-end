@@ -1,52 +1,66 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Map as KakaoMap, MapMarker } from "react-kakao-maps-sdk";
 import { Star, KeyboardArrowDown } from "@mui/icons-material";
 import { AddressSearch } from "../../components/meeting/form/AddressSearch";
 import Button from "../../components/common/ui/Button";
 import TextInput from "../../components/common/ui/TextInput";
 import LargeStepIndicator from "../../components/common/ui/LagreStepIndicator";
-import { DURATION, RecruitmentType } from "../../types/models/meeting";
+import { RecruitmentType } from "../../types/models/meeting";
 import { toKoreanDuration } from "../../util/transformKorean";
 import DurationModal from "../../components/meeting/modals/DurationModal";
 import ParticipantsModal from "../../components/meeting/modals/ParticipantsModal";
 import TechStackModal from "../../components/meeting/modals/TechStackModal";
 import { useGeolocation } from "../../hooks/common/useGeolocation";
 import { useNavigate } from "react-router-dom";
-import { TechStackState } from "../../types/models/techstack";
+import { useMeetingFormStore } from "../../store/meetingForm";
 import { useGetTechStack } from "../../hooks/api/useTechstack";
+import toast from "react-hot-toast";
 
 const CreateMeetingBasicPage = () => {
   const navigation = useNavigate();
   const { location: userLocation, loaded } = useGeolocation();
-  const [recruitmentType, setRecruitmentType] = useState<RecruitmentType>(RecruitmentType.STUDY);
-  const [selectedDuration, setSelectedDuration] = useState<DURATION>();
-  const [selectedParticipants, setSelectedParticipants] = useState<number>(1);
-  const [selectedTechStacks, setSelectedTechStacks] = useState<TechStackState>({
-    selectedIds: [],
-    customStacks: []
-  });
-  const [endDate, setEndDate] = useState<string>("");
-  const [addressInfo, setAddressInfo] = useState({ areaAddress: "", townAddress: "" });
-  const [location, setLocation] = useState<{ latitude: number | null; longitude: number | null }>({
-    latitude: null,
-    longitude: null
-  });
-  const [isRecruitmentDropdownOpen, setIsRecruitmentDropdownOpen] = useState(false);
-  const [isDurationModalOpen, setIsDurationModalOpen] = useState(false);
-  const [isParticipantsModalOpen, setIsParticipantsModalOpen] = useState(false);
-  const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
+  const { data: techStacksData } = useGetTechStack();
+
+  const {
+    recruitmentType,
+    maxParticipants,
+    duration,
+    endDate,
+    location,
+    addressInfo,
+    techStacks,
+    errors,
+    setBasicInfo,
+    setLocation,
+    setAddressInfo,
+    setTechStacks,
+    handleInputChange,
+  } = useMeetingFormStore();
+
+  const [isRecruitmentDropdownOpen, setIsRecruitmentDropdownOpen] = React.useState(false);
+  const [isDurationModalOpen, setIsDurationModalOpen] = React.useState(false);
+  const [isParticipantsModalOpen, setIsParticipantsModalOpen] = React.useState(false);
+  const [isTechStackModalOpen, setIsTechStackModalOpen] = React.useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const recruitmentDropdownRef = useRef<HTMLDivElement>(null);
 
-  const { data: techStacksData } = useGetTechStack();
-
+  // 기술 스택 표시 텍스트 생성
   const getDisplayTechStacks = () => {
-    const selectedNames = techStacksData?.data
-      ?.filter(stack => selectedTechStacks.selectedIds.includes(stack.id))
-      .map(stack => stack.name) || [];
+    if (!techStacksData?.data) return "";
+    
+    const selectedNames = techStacksData.data
+      .filter(stack => techStacks.selectedIds.includes(stack.id))
+      .map(stack => stack.name);
 
-    return [...selectedNames, ...selectedTechStacks.customStacks].join(", ");
+    return [...selectedNames, ...techStacks.customStacks].join(", ");
+  };
+
+  // 모집 인원 표시 텍스트 생성
+  const getDisplayParticipants = () => {
+    if (!maxParticipants) return "1명";
+    if (maxParticipants === 10) return "10명 이상";
+    return `${maxParticipants}명`;
   };
 
   // 드롭다운 외부 클릭 감지
@@ -69,7 +83,34 @@ const CreateMeetingBasicPage = () => {
         longitude: userLocation.longitude
       });
     }
-  }, [loaded, userLocation]);
+  }, [loaded, userLocation, setLocation]);
+
+  const handleNext = () => {
+    // 필수 필드 검사
+    if (!duration) {
+      toast.error('진행 기간을 선택해주세요.');
+      return;
+    }
+    if (!maxParticipants || maxParticipants <= 0) {
+      toast.error('모집 인원을 선택해주세요.');
+      return;
+    }
+    if (!endDate) {
+      toast.error('모집 마감일을 선택해주세요.');
+      return;
+    }
+    if (!addressInfo.townAddress) {
+      toast.error('진행 장소를 선택해주세요.');
+      return;
+    }
+    if (techStacks.selectedIds.length === 0 && techStacks.customStacks.length === 0) {
+      toast.error('기술 스택을 1개 이상 선택해주세요.');
+      return;
+    }
+
+    // 모든 검증을 통과하면 다음 페이지로 이동
+    navigation('/meeting/create/detail');
+  };
 
   const steps = [
     { title: "기본 정보" },
@@ -100,13 +141,14 @@ const CreateMeetingBasicPage = () => {
             fullWidth
             inputSize="medium"
             endIcon={<KeyboardArrowDown />}
+            error={errors.recruitmentType}
           />
           {isRecruitmentDropdownOpen && (
             <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
               <div
                 className="p-3 hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
-                  setRecruitmentType(RecruitmentType.STUDY);
+                  setBasicInfo({ recruitmentType: RecruitmentType.STUDY });
                   setIsRecruitmentDropdownOpen(false);
                 }}
               >
@@ -115,7 +157,7 @@ const CreateMeetingBasicPage = () => {
               <div
                 className="p-3 hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
-                  setRecruitmentType(RecruitmentType.PROJECT);
+                  setBasicInfo({ recruitmentType: RecruitmentType.PROJECT });
                   setIsRecruitmentDropdownOpen(false);
                 }}
               >
@@ -130,7 +172,7 @@ const CreateMeetingBasicPage = () => {
           <p className="font-scdream6 text-label text-bold mb-4">기술 스택</p>
           <TextInput
             value={
-              selectedTechStacks.selectedIds.length > 0 || selectedTechStacks.customStacks.length > 0
+              techStacks.selectedIds.length > 0 || techStacks.customStacks.length > 0
                 ? getDisplayTechStacks()
                 : "기술 스택을 선택해주세요"
             }
@@ -139,6 +181,7 @@ const CreateMeetingBasicPage = () => {
             fullWidth
             inputSize="medium"
             endIcon={<KeyboardArrowDown />}
+            error={errors.techStacks}
           />
         </div>
 
@@ -146,12 +189,13 @@ const CreateMeetingBasicPage = () => {
         <div className="relative">
           <p className="font-scdream6 text-label text-bold mb-4">모집 인원</p>
           <TextInput
-            value={selectedParticipants ? `${selectedParticipants}명` : "1명"}
+            value={getDisplayParticipants()}
             onClick={() => setIsParticipantsModalOpen(true)}
             readOnly
             fullWidth
             inputSize="medium"
             endIcon={<KeyboardArrowDown />}
+            error={errors.maxParticipants}
           />
         </div>
 
@@ -159,12 +203,13 @@ const CreateMeetingBasicPage = () => {
         <div>
           <p className="font-scdream6 text-label text-bold mb-4">진행 기간</p>
           <TextInput
-            value={selectedDuration ? toKoreanDuration(selectedDuration) : "진행 기간을 선택해주세요"}
+            value={duration ? toKoreanDuration(duration) : "진행 기간을 선택해주세요"}
             onClick={() => setIsDurationModalOpen(true)}
             readOnly
             fullWidth
             inputSize="medium"
             endIcon={<KeyboardArrowDown />}
+            error={errors.duration}
           />
         </div>
 
@@ -173,10 +218,12 @@ const CreateMeetingBasicPage = () => {
           <p className="font-scdream6 text-label text-bold mb-4">모집 마감일</p>
           <TextInput
             type="date"
+            name="endDate"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={handleInputChange}
             fullWidth
             inputSize="medium"
+            error={errors.endDate}
           />
         </div>
 
@@ -189,9 +236,9 @@ const CreateMeetingBasicPage = () => {
             addressValue={addressInfo.townAddress}
             setAddressInfo={setAddressInfo}
             setLocation={setLocation}
-            setFormData={() => { }}
-            handleInputChange={() => { }}
-            error=""
+            setFormData={() => {}}
+            handleInputChange={() => {}}
+            error={errors.location}
           />
           {location.latitude && location.longitude && (
             <div className="mt-10 h-[800px] rounded-lg overflow-hidden relative">
@@ -219,28 +266,28 @@ const CreateMeetingBasicPage = () => {
       <DurationModal
         isOpen={isDurationModalOpen}
         onClose={() => setIsDurationModalOpen(false)}
-        onSelect={setSelectedDuration}
-        selectedDuration={selectedDuration}
+        onSelect={(duration) => setBasicInfo({ duration })}
+        selectedDuration={duration}
       />
 
       <ParticipantsModal
         isOpen={isParticipantsModalOpen}
         onClose={() => setIsParticipantsModalOpen(false)}
-        onSelect={setSelectedParticipants}
-        selectedParticipants={selectedParticipants}
+        onSelect={(participants) => setBasicInfo({ maxParticipants: participants })}
+        selectedParticipants={maxParticipants}
       />
 
       <TechStackModal
         isOpen={isTechStackModalOpen}
         onClose={() => setIsTechStackModalOpen(false)}
-        onSelect={setSelectedTechStacks}
-        selectedTechStacks={selectedTechStacks}
+        onSelect={setTechStacks}
+        selectedTechStacks={techStacks}
       />
 
       <div className="flex justify-end mt-8">
         <Button
           variant="secondary"
-          onClick={() => { navigation('/meeting/create/detail') }}
+          onClick={handleNext}
         >
           다음
         </Button>
