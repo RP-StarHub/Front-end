@@ -9,8 +9,8 @@ import { useMeetingDetail } from '../../hooks/api/useMeeting';
 import Button from '../../components/common/ui/Button';
 
 const CreateMeetingPreviewPage = () => {
-  const { id } = useParams();
-  const { data, isLoading } = useMeetingDetail(Number(id));
+  const { meetingId } = useParams();
+  const { data, isLoading } = useMeetingDetail(Number(meetingId));
   const navigation = useNavigate();
 
   const steps = [

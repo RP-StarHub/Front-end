@@ -25,7 +25,7 @@ function App() {
           <Route path="/meeting/detail/:meetingId" element={<MeetingDetailPage />} />
           <Route path="/meeting/create/basic" element={<CreateMeetingBasicPage />} />
           <Route path="/meeting/create/detail" element={<CreateMeetingDetailPage />} />
-          <Route path="/meeting/create/preview" element={<CreateMeetingPreviewPage />} />
+          <Route path="/meeting/create/preview/:meetingId" element={<CreateMeetingPreviewPage />} />
           <Route path="/study/recruit" element={<StudyRecruitPage />} />
         </Routes>
       </main>

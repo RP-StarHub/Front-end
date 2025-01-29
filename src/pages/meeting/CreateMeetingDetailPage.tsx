@@ -51,9 +51,14 @@ const CreateMeetingDetailPage = () => {
     // 모든 검증을 통과하면 요청 진행
     try {
       const requestData = getCreateMeetingRequest();
-      await createMeeting.mutateAsync(requestData);
+      const response = await createMeeting.mutateAsync(requestData);
+      
+      // 응답에서 생성된 모임의 ID를 추출
+      const meetingId = response.data.data.id;
+      
       toast.success('모임이 성공적으로 생성되었습니다.');
-      navigation('/meeting/create/preview');
+      // ID를 포함하여 preview 페이지로 이동
+      navigation(`/meeting/create/preview/${meetingId}`);
     } catch (error) {
       console.error('모임생성 에러:', error);
       toast.error('모임 생성에 실패했습니다. 다시 시도해주세요.');
