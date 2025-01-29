@@ -17,61 +17,42 @@ const MeetingDetailPage = () => {
 
   const { userType, isApplication, applicationStatus, postInfo } = data.data;
 
+  // 확정된 모임 상태 메시지 컴포넌트
+  const ConfirmedMessage = () => (
+    <div className='flex flex-col items-center justify-center w-full py-20'>
+      <p className='font-scdream6 text-sub text-lg mb-2'>
+        {userType === UserType.Applicant && applicationStatus === ApplicationStatus.REJECTED
+          ? '아쉽게도 최종 모임원으로 선정되지 못했습니다.'
+          : '해당 모임글은 모집이 마감되었습니다.'}
+      </p>
+      <p className='font-scdream4 text-sub'>StarHub와 함께 다른 모임을 찾아봐요!</p>
+    </div>
+  );
+
   const renderApplicationSection = () => {
-    // 모임이 확정된 경우
+    // 모임원이 확정된 경우
     if (postInfo.isConfirmed) {
-      // 개설자이거나 승인된 지원자만 스터디원 보기 가능
-      if (
-        userType === UserType.Creator ||
-        (userType === UserType.Applicant && applicationStatus === ApplicationStatus.APPROVED)
-      ) {
-        return (
-          <div className="flex justify-end">
-            <Button size="small" className="mt-8">
-              스터디원 보기
-            </Button>
-          </div>
-        );
-      }
-      else if (userType === UserType.Applicant && applicationStatus === ApplicationStatus.REJECTED) {
-        return (
-          <div className='flex flex-col items-center justify-center w-full py-20'>
-            <p className='font-scdream6 text-sub text-lg mb-2'>아쉽게도 최종 모임원으로 선정되지 못했습니다.</p>
-            <p className='font-scdream4 text-sub'>StarHub와 함께 다른 모임을 찾아봐요!</p>
-          </div>
-        );
-      }
-      // 익명 사용자
-      else {
-        return (
-          <div className='flex flex-col items-center justify-center w-full py-20'>
-            <p className='font-scdream6 text-sub text-lg mb-2'>해당 모임글은 모집이 마감되었습니다.</p>
-            <p className='font-scdream4 text-sub'>StarHub와 함께 다른 모임을 찾아봐요!</p>
-          </div>
-        );
-      }
-    } else {
-      // 모임이 확정되지 않은 경우
-      if (userType === UserType.Creator) {
-        return <ApplicationList meetingId={postInfo.id} />
-      };
-
-      // 지원자인 경우
-      if (userType === UserType.Applicant) {
-        return isApplication ? (
-          <MyApplication meetingId={postInfo.id} />
-        ) : (
-          <ApplicationForm meetingId={postInfo.id} />
-        );
-      }
-
-      // 익명 사용자 
-      if (userType === UserType.Anonymous) {
-        return (
-          <ApplicationForm meetingId={postInfo.id} userType={userType} />
-        );
-      }
+      // 최종 모임원은 개설자와 승인된 사용자
+      const canViewMembers = userType === UserType.Creator || 
+        (userType === UserType.Applicant && applicationStatus === ApplicationStatus.APPROVED);
+      
+      return canViewMembers ? (
+        <div className="flex justify-end">
+          <Button size="small" className="mt-8">스터디원 보기</Button>
+        </div>
+      ) : <ConfirmedMessage />;
     }
+
+    // 모집중인 모임 게시글 보이기
+    const applicationComponents = {
+      [UserType.Creator]: <ApplicationList meetingId={postInfo.id} />,
+      [UserType.Applicant]: isApplication 
+        ? <MyApplication meetingId={postInfo.id} />
+        : <ApplicationForm meetingId={postInfo.id} />,
+      [UserType.Anonymous]: <ApplicationForm meetingId={postInfo.id} userType={userType} />
+    };
+
+    return applicationComponents[userType];
   };
 
   return (
