@@ -12,6 +12,8 @@ import ParticipantsModal from "../../components/meeting/modals/ParticipantsModal
 import TechStackModal from "../../components/meeting/modals/TechStackModal";
 import { useGeolocation } from "../../hooks/common/useGeolocation";
 import { useNavigate } from "react-router-dom";
+import { TechStackState } from "../../types/models/techstack";
+import { useGetTechStack } from "../../hooks/api/useTechstack";
 
 const CreateMeetingBasicPage = () => {
   const navigation = useNavigate();
@@ -19,14 +21,16 @@ const CreateMeetingBasicPage = () => {
   const [recruitmentType, setRecruitmentType] = useState<RecruitmentType>(RecruitmentType.STUDY);
   const [selectedDuration, setSelectedDuration] = useState<DURATION>();
   const [selectedParticipants, setSelectedParticipants] = useState<number>(1);
-  const [selectedTechStacks, setSelectedTechStacks] = useState<string[]>([]);
+  const [selectedTechStacks, setSelectedTechStacks] = useState<TechStackState>({
+    selectedIds: [],
+    customStacks: []
+  });
   const [endDate, setEndDate] = useState<string>("");
   const [addressInfo, setAddressInfo] = useState({ areaAddress: "", townAddress: "" });
   const [location, setLocation] = useState<{ latitude: number | null; longitude: number | null }>({
     latitude: null,
     longitude: null
   });
-
   const [isRecruitmentDropdownOpen, setIsRecruitmentDropdownOpen] = useState(false);
   const [isDurationModalOpen, setIsDurationModalOpen] = useState(false);
   const [isParticipantsModalOpen, setIsParticipantsModalOpen] = useState(false);
@@ -34,6 +38,16 @@ const CreateMeetingBasicPage = () => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const recruitmentDropdownRef = useRef<HTMLDivElement>(null);
+
+  const { data: techStacksData } = useGetTechStack();
+
+  const getDisplayTechStacks = () => {
+    const selectedNames = techStacksData?.data
+      ?.filter(stack => selectedTechStacks.selectedIds.includes(stack.id))
+      .map(stack => stack.name) || [];
+
+    return [...selectedNames, ...selectedTechStacks.customStacks].join(", ");
+  };
 
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
@@ -115,7 +129,11 @@ const CreateMeetingBasicPage = () => {
         <div className="relative">
           <p className="font-scdream6 text-label text-bold mb-4">기술 스택</p>
           <TextInput
-            value={selectedTechStacks.length > 0 ? selectedTechStacks.join(", ") : "기술 스택을 선택해주세요"}
+            value={
+              selectedTechStacks.selectedIds.length > 0 || selectedTechStacks.customStacks.length > 0
+                ? getDisplayTechStacks()
+                : "기술 스택을 선택해주세요"
+            }
             onClick={() => setIsTechStackModalOpen(true)}
             readOnly
             fullWidth

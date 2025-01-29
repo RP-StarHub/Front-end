@@ -1,41 +1,65 @@
 import React, { useState, KeyboardEvent, ChangeEvent } from 'react';
 import Button from '../../common/ui/Button';
+import { useGetTechStack } from '../../../hooks/api/useTechstack';
+import { TechCategory } from '../../../types/models/techstack';
 
 interface TechStackModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (techStacks: string[]) => void;
-  selectedTechStacks?: string[];
+  onSelect: (techStacks: {
+    selectedIds: number[],
+    customStacks: string[]
+  }) => void;
+  selectedTechStacks?: {
+    selectedIds: number[],
+    customStacks: string[]
+  };
 }
 
 const TechStackModal = ({
   isOpen,
   onClose,
   onSelect,
-  selectedTechStacks = []
+  selectedTechStacks = { selectedIds: [], customStacks: [] }
 }: TechStackModalProps) => {
-  const [selectedStacks, setSelectedStacks] = useState<string[]>(selectedTechStacks);
+  // API 데이터 페칭
+  const { data: techStacksData, isLoading } = useGetTechStack();
+  
+  // 상태 관리
+  const [selectedIds, setSelectedIds] = useState<number[]>(selectedTechStacks.selectedIds);
   const [customStack, setCustomStack] = useState<string>('');
-  const [customStacks, setCustomStacks] = useState<string[]>([]);
+  const [customStacks, setCustomStacks] = useState<string[]>(selectedTechStacks.customStacks);
 
   if (!isOpen) return null;
+  if (isLoading) return <div>Loading...</div>;
+  if (!techStacksData?.data) return null;
 
-  const techStacks = {
-    프론트엔드: ['React', 'Vue', 'Angular', 'HTML/CSS'],
-    백엔드: ['Spring', 'Spring Boot', 'Node.js', 'Django'],
-    모바일: ['Swift', 'Kotlin', 'Flutter', 'ReactNative']
+  // 카테고리별로 기술스택 그룹화
+  const groupedTechStacks = techStacksData.data.reduce((acc, stack) => {
+    const category = stack.category.toLowerCase();
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(stack);
+    return acc;
+  }, {} as Record<string, typeof techStacksData.data>);
+
+  // 카테고리 한글 매핑
+  const categoryMapping: Record<string, string> = {
+    [TechCategory.FRONTEND.toLowerCase()]: '프론트엔드',
+    [TechCategory.BACKEND.toLowerCase()]: '백엔드',
+    [TechCategory.MOBILE.toLowerCase()]: '모바일'
   };
 
-  const handleToggleStack = (stack: string) => {
-    setSelectedStacks(prev => 
-      prev.includes(stack)
-        ? prev.filter(s => s !== stack)
-        : [...prev, stack]
+  const handleToggleStack = (id: number) => {
+    setSelectedIds(prev => 
+      prev.includes(id)
+        ? prev.filter(selectedId => selectedId !== id)
+        : [...prev, id]
     );
   };
 
   const handleCustomStackInput = (e: ChangeEvent<HTMLInputElement>) => {
-    // 스페이스바 입력을 무시
     if (!e.target.value.includes(' ')) {
       setCustomStack(e.target.value);
     }
@@ -43,27 +67,26 @@ const TechStackModal = ({
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === ' ') {
-      e.preventDefault(); // 스페이스바의 기본 동작 방지
+      e.preventDefault();
       
       const trimmedValue = customStack.trim();
-      if (trimmedValue) {
-        if (!customStacks.includes(trimmedValue)) {
-          setCustomStacks(prev => [...prev, trimmedValue]);
-        }
-        setCustomStack(''); // 입력 필드를 즉시 비움
+      if (trimmedValue && !customStacks.includes(trimmedValue)) {
+        setCustomStacks(prev => [...prev, trimmedValue]);
+        setCustomStack('');
       }
     }
   };
 
   const handleConfirm = () => {
-    const finalStacks = [...selectedStacks];
-    if (customStacks.length > 0) {
-      finalStacks.push(...customStacks);
-    }
+    const finalCustomStacks = [...customStacks];
     if (customStack.trim() && !customStacks.includes(customStack.trim())) {
-      finalStacks.push(customStack.trim());
+      finalCustomStacks.push(customStack.trim());
     }
-    onSelect(finalStacks);
+    
+    onSelect({
+      selectedIds,
+      customStacks: finalCustomStacks
+    });
     onClose();
   };
 
@@ -84,23 +107,27 @@ const TechStackModal = ({
         </div>
 
         <div className="mb-8 space-y-6">
-          {Object.entries(techStacks).map(([category, stacks]) => (
+          {Object.entries(groupedTechStacks).map(([category, stacks]) => (
             <div key={category}>
-              <h4 className="font-scdream6 text-regular text-bold mb-3">{category}</h4>
+              <h4 className="font-scdream6 text-regular text-bold mb-3">
+                {categoryMapping[category]}
+              </h4>
               <div className="grid grid-cols-2 gap-4">
                 {stacks.map(stack => (
                   <label 
-                    key={stack}
+                    key={stack.id}
                     className="flex items-center space-x-2 cursor-pointer"
-                    onClick={() => handleToggleStack(stack)}
+                    onClick={() => handleToggleStack(stack.id)}
                   >
                     <div
                       className={`
                         w-4 h-4 border border-sub
-                        ${selectedStacks.includes(stack) ? 'bg-main' : 'bg-white'}
+                        ${selectedIds.includes(stack.id) ? 'bg-main' : 'bg-white'}
                       `}
                     />
-                    <span className="font-scdream4 text-regular text-sub">{stack}</span>
+                    <span className="font-scdream4 text-regular text-sub">
+                      {stack.name}
+                    </span>
                   </label>
                 ))}
               </div>

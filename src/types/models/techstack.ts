@@ -10,3 +10,8 @@ export interface TechStack {
   name: string;
   category: TechCategory;
 }
+
+export interface TechStackState {
+  selectedIds: number[];
+  customStacks: string[];
+}
