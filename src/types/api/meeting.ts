@@ -14,8 +14,8 @@ export interface CreateMeetingRequest {
   description: string;
   goal: string;
   otherInfo: string;
-  techStacks: number[];
-  otherTechStack: string[];
+  techStackIds: number[];
+  otherTechStacks: string[];
 }
 
 export interface PatchMeetingRequest {

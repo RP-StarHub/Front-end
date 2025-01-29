@@ -252,8 +252,8 @@ export const useMeetingFormStore = create<MeetingFormState>((set, get) => ({
       description: state.description,
       goal: state.goal,
       otherInfo: state.otherInfo,
-      techStacks: state.techStacks.selectedIds,
-      otherTechStack: state.techStacks.customStacks,
+      techStackIds: state.techStacks.selectedIds,
+      otherTechStacks: state.techStacks.customStacks
     };
   },
 
