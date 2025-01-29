@@ -35,6 +35,7 @@ const CreateMeetingBasicPage = () => {
     setAddressInfo,
     setTechStacks,
     handleInputChange,
+    validateBasicInfo
   } = useMeetingFormStore();
 
   const [isRecruitmentDropdownOpen, setIsRecruitmentDropdownOpen] = React.useState(false);
@@ -86,29 +87,13 @@ const CreateMeetingBasicPage = () => {
   }, [loaded, userLocation, setLocation]);
 
   const handleNext = () => {
-    // 필수 필드 검사
-    if (!duration) {
-      toast.error('진행 기간을 선택해주세요.');
-      return;
-    }
-    if (!maxParticipants || maxParticipants <= 0) {
-      toast.error('모집 인원을 선택해주세요.');
-      return;
-    }
-    if (!endDate) {
-      toast.error('모집 마감일을 선택해주세요.');
-      return;
-    }
-    if (!addressInfo.townAddress) {
-      toast.error('진행 장소를 선택해주세요.');
-      return;
-    }
-    if (techStacks.selectedIds.length === 0 && techStacks.customStacks.length === 0) {
-      toast.error('기술 스택을 1개 이상 선택해주세요.');
+    const isValid = validateBasicInfo();
+
+    if (!isValid) {
+      toast.error('필수 정보를 모두 입력해주세요.');
       return;
     }
 
-    // 모든 검증을 통과하면 다음 페이지로 이동
     navigation('/meeting/create/detail');
   };
 

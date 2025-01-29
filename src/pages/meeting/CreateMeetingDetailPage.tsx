@@ -20,7 +20,7 @@ const CreateMeetingDetailPage = () => {
     otherInfo,
     errors,
     handleInputChange,
-    setDetailInfo,
+    validateDetailInfo,
     validateForm,
     getCreateMeetingRequest,
   } = useMeetingFormStore();
@@ -31,34 +31,34 @@ const CreateMeetingDetailPage = () => {
   };
 
   // 글 등록 처리
-const handleSubmit = async () => {
-  console.log('Current form state:', {
-    title,
-    description,
-    goal,
-    otherInfo,
-  });
+  const handleSubmit = async () => {
+    // 먼저 현재 페이지의 상세 정보만 검증
+    const isDetailValid = validateDetailInfo();
 
-  const isValid = validateForm();
-  console.log('Form validation result:', isValid);
+    if (!isDetailValid) {
+      toast.error('모임 소개 정보를 모두 입력해주세요.');
+      return;
+    }
 
-  if (!isValid) {
-    console.log('Form validation failed with errors:', errors);
-    toast.error('필수 정보를 모두 입력해주세요.');
-    return;
-  }
+    // 상세 정보가 유효하면 전체 폼 검증
+    const isAllValid = validateForm();
+    if (!isAllValid) {
+      toast.error('이전 단계의 정보를 확인해주세요.');
+      navigation('/meeting/create/basic');
+      return;
+    }
 
-  try {
-    const requestData = getCreateMeetingRequest();
-    console.log('Submitting request data:', requestData);
-    await createMeeting.mutateAsync(requestData);
-    toast.success('모임이 성공적으로 생성되었습니다.');
-    navigation('/meeting/create/preview');
-  } catch (error) {
-    console.error('Meeting creation error:', error);
-    toast.error('모임 생성에 실패했습니다. 다시 시도해주세요.');
-  }
-};
+    // 모든 검증을 통과하면 요청 진행
+    try {
+      const requestData = getCreateMeetingRequest();
+      await createMeeting.mutateAsync(requestData);
+      toast.success('모임이 성공적으로 생성되었습니다.');
+      navigation('/meeting/create/preview');
+    } catch (error) {
+      console.error('모임생성 에러:', error);
+      toast.error('모임 생성에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
 
   const steps = [
     { title: "기본 정보" },

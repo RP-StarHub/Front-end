@@ -54,6 +54,8 @@ interface MeetingFormState {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   setError: (field: keyof MeetingFormErrors, message: string) => void;
   clearErrors: () => void;
+  validateBasicInfo: () => boolean;
+  validateDetailInfo: () => boolean;
   validateForm: () => boolean;
   getCreateMeetingRequest: () => CreateMeetingRequest;
   reset: () => void;
@@ -109,9 +111,9 @@ export const useMeetingFormStore = create<MeetingFormState>((set, get) => ({
       location
     }));
   },
-  
+
   setAddressInfo: (addressInfo) => {
-    set((state) => ({ 
+    set((state) => ({
       ...state,
       addressInfo,
       errors: {
@@ -166,13 +168,13 @@ export const useMeetingFormStore = create<MeetingFormState>((set, get) => ({
   },
 
   clearErrors: () => {
-    set((state) => ({ 
-      ...state, 
-      errors: {} 
+    set((state) => ({
+      ...state,
+      errors: {}
     }));
   },
 
-  validateForm: () => {
+  validateBasicInfo: () => {
     const state = get();
     const newErrors: MeetingFormErrors = {};
 
@@ -202,23 +204,34 @@ export const useMeetingFormStore = create<MeetingFormState>((set, get) => ({
       newErrors.location = '진행 장소를 선택해주세요.';
     }
 
+    set((state) => ({ ...state, errors: newErrors }));
+    return Object.keys(newErrors).length === 0;
+  },
+
+  validateDetailInfo: () => {
+    const state = get();
+    const newErrors: MeetingFormErrors = {};
+
     if (!state.title) {
-      console.log('Title validation failed');
       newErrors.title = '제목을 입력해주세요.';
     }
 
     if (!state.description) {
-      console.log('Description validation failed');
       newErrors.description = '스터디/프로젝트 소개를 입력해주세요.';
     }
 
     if (!state.goal) {
-      console.log('Goal validation failed');
       newErrors.goal = '목표를 입력해주세요.';
     }
 
     set((state) => ({ ...state, errors: newErrors }));
     return Object.keys(newErrors).length === 0;
+  },
+
+  validateForm: () => {
+    const isBasicValid = get().validateBasicInfo();
+    const isDetailValid = get().validateDetailInfo();
+    return isBasicValid && isDetailValid;
   },
 
   getCreateMeetingRequest: () => {
