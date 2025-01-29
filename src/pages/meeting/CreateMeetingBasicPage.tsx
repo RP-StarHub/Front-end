@@ -229,7 +229,7 @@ const CreateMeetingBasicPage = () => {
             error={errors.location}
           />
           {location.latitude && location.longitude && (
-            <div className="mt-10 h-[400px] rounded-lg overflow-hidden relative">
+            <div className="mt-10 h-[600px] rounded-lg overflow-hidden relative">
               <KakaoMap
                 center={{
                   lat: location.latitude,
