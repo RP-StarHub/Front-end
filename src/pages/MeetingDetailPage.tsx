@@ -22,7 +22,7 @@ const MeetingDetailPage = () => {
     if (postInfo.isConfirmed) {
       // 개설자이거나 승인된 지원자만 스터디원 보기 가능
       if (
-        userType === UserType.Creator || 
+        userType === UserType.Creator ||
         (userType === UserType.Applicant && applicationStatus === ApplicationStatus.APPROVED)
       ) {
         return (
@@ -35,56 +35,58 @@ const MeetingDetailPage = () => {
       }
       else if (userType === UserType.Applicant && applicationStatus === ApplicationStatus.REJECTED) {
         return (
-          <p className="text-sub text-label font-scdream4">
-            아쉽게도 최종 모임원으로 선정되지 못했습니다. <br />
-            StarHub와 함께 다른 모임을 찾아봐요!
-          </p>
+          <div className='flex flex-col items-center justify-center w-full py-20'>
+            <p className='font-scdream6 text-sub text-lg mb-2'>아쉽게도 최종 모임원으로 선정되지 못했습니다.</p>
+            <p className='font-scdream4 text-sub'>StarHub와 함께 다른 모임을 찾아봐요!</p>
+          </div>
         );
       }
       // 익명 사용자
       else {
         return (
-          <p className="text-sub text-label font-scdream4">
-            해당 모임글은 모집이 마감되었습니다. <br />
-            StarHub와 함께 다른 모임을 찾아봐요!
-          </p>
+          <div className='flex flex-col items-center justify-center w-full py-20'>
+            <p className='font-scdream6 text-sub text-lg mb-2'>해당 모임글은 모집이 마감되었습니다.</p>
+            <p className='font-scdream4 text-sub'>StarHub와 함께 다른 모임을 찾아봐요!</p>
+          </div>
         );
       }
-    }
+    } else {
+      // 모임이 확정되지 않은 경우
+      if (userType === UserType.Creator) {
+        return <ApplicationList meetingId={postInfo.id} />
+      };
 
-    // 모임이 확정되지 않은 경우
-    if (userType === UserType.Creator) {
-      return <ApplicationList meetingId={postInfo.id} />;
-    }
+      // 지원자인 경우
+      if (userType === UserType.Applicant) {
+        return isApplication ? (
+          <MyApplication meetingId={postInfo.id} />
+        ) : (
+          <ApplicationForm meetingId={postInfo.id} />
+        );
+      }
 
-    // 지원자인 경우
-    if (userType === UserType.Applicant) {
-      return isApplication ? (
-        <MyApplication meetingId={postInfo.id} />
-      ) : (
-        <ApplicationForm meetingId={postInfo.id} />
-      );
-    }
-
-    if (userType === UserType.Anonymous) {
-      <ApplicationForm meetingId={postInfo.id} />
+      // 익명 사용자 
+      if (userType === UserType.Anonymous) {
+        return (
+          <ApplicationForm meetingId={postInfo.id} userType={userType} />
+        );
+      }
     }
   };
 
   return (
-    <div 
-      className={`flex flex-col w-full px-60 py-24 ${
-        userType === UserType.Creator ? 'bg-background' : 'bg-gray-100'
-      }`}
+    <div
+      className={`flex flex-col w-full px-60 py-24 ${userType === UserType.Creator ? 'bg-background' : 'bg-gray-100'
+        }`}
     >
-      <MeetingHeader 
-        meetingDetail={data.data} 
+      <MeetingHeader
+        meetingDetail={data.data}
         userType={userType}
       />
-      <MeetingInfo 
+      <MeetingInfo
         postInfo={postInfo}
       />
-      <MeetingContent 
+      <MeetingContent
         postInfo={postInfo}
       />
       {renderApplicationSection()}

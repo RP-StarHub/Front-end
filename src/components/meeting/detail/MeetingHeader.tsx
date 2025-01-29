@@ -12,6 +12,8 @@ import { useLike } from '../../../hooks/api/useLike';
 import { useMeetingDelete } from '../../../hooks/api/useMeeting';
 import Button from '../../common/ui/Button';
 import { UserType } from '../../../types/models/meeting';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 interface MeetingHeaderProps {
   meetingDetail: MeetingDetailInfo;
@@ -22,6 +24,7 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
   meetingDetail,
   userType
 }) => {
+  const navigate = useNavigate();
   const { postInfo, likeDto } = meetingDetail;
   const { toggleLike } = useLike(postInfo.id);
   const isLiked = likeDto.isLiked;
@@ -29,6 +32,13 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
   const deleteMeeting = useMeetingDelete();
 
   const handleLikeClick = (e: React.MouseEvent) => {
+    // 익명 사용자 처리
+    if (userType === UserType.Anonymous) {
+      toast.error('관심 모임 등록하기는 로그인이 필요합니다');
+      navigate('/login');
+      return;
+    }
+    
     e.stopPropagation();
     toggleLike.mutate(likeDto.isLiked || false);
   };
