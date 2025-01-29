@@ -87,7 +87,7 @@ function InformCard({ meeting }: Props) {
 
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toggleLike.mutate(meeting.likeDto.isLiked);
+    toggleLike.mutate(meeting.likeDto.isLiked || false);
   };
 
   return (

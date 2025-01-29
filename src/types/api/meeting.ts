@@ -1,4 +1,4 @@
-import { DURATION, LikeDto, Meeting, MeetingDetail, RecruitmentType, Sort } from "../models/meeting";
+import { ApplicationStatus, DURATION, LikeDto, Meeting, MeetingDetail, RecruitmentType, Sort, UserType } from "../models/meeting";
 import { ApiResponse } from "./response";
 
 // Request
@@ -76,8 +76,9 @@ export interface MeetingList {
 }
 
 export interface MeetingDetailInfo {
-  isApplicant: boolean;
-  applicationStatus: boolean;
+  userType: UserType;
+  isApplication?: boolean;
+  applicationStatus?: ApplicationStatus;
   postInfo: MeetingDetail;
   likeDto: LikeDto;
 }

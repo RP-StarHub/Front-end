@@ -11,15 +11,16 @@ import { toKoreanRecruitmentType } from '../../../util/transformKorean';
 import { useLike } from '../../../hooks/api/useLike';
 import { useMeetingDelete } from '../../../hooks/api/useMeeting';
 import Button from '../../common/ui/Button';
+import { UserType } from '../../../types/models/meeting';
 
 interface MeetingHeaderProps {
   meetingDetail: MeetingDetailInfo;
-  isApplicant: boolean;
+  userType: UserType
 }
 
 const MeetingHeader: React.FC<MeetingHeaderProps> = ({
   meetingDetail,
-  isApplicant
+  userType
 }) => {
   const { postInfo, likeDto } = meetingDetail;
   const { toggleLike } = useLike(postInfo.id);
@@ -29,7 +30,7 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
 
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toggleLike.mutate(likeDto.isLiked);
+    toggleLike.mutate(likeDto.isLiked || false);
   };
 
   const handleDelete = () => setShowDeleteModal(true);
@@ -50,7 +51,7 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
         </div>
 
         <div className="flex items-center gap-4">
-          {!isApplicant ? (
+          {userType === UserType.Creator ? (
             <>
               <button>
                 <Edit sx={{ fontSize: 40, color: "#7C8BBE" }} />
