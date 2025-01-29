@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Map as KakaoMap, MapMarker } from "react-kakao-maps-sdk";
-import { Star } from "@mui/icons-material";
+import { Star, KeyboardArrowDown } from "@mui/icons-material";
 import { AddressSearch } from "../../components/meeting/form/AddressSearch";
 import Button from "../../components/common/ui/Button";
+import TextInput from "../../components/common/ui/TextInput";
 import LargeStepIndicator from "../../components/common/ui/LagreStepIndicator";
 import { DURATION, RecruitmentType } from "../../types/models/meeting";
 import { toKoreanDuration } from "../../util/transformKorean";
@@ -33,7 +34,6 @@ const CreateMeetingBasicPage = () => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const recruitmentDropdownRef = useRef<HTMLDivElement>(null);
-  const dateInputRef = useRef<HTMLInputElement>(null);
 
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
@@ -63,8 +63,6 @@ const CreateMeetingBasicPage = () => {
     { title: "완료" }
   ];
 
-  const dropdownStyle = "w-full px-6 py-3 border border-gray-300 rounded-lg font-scdream4 bg-white focus:outline-none";
-
   return (
     <div className="flex flex-col w-full bg-background px-48 py-20">
       <LargeStepIndicator currentStep={0} steps={steps} />
@@ -81,13 +79,14 @@ const CreateMeetingBasicPage = () => {
         {/* 모집 구분 */}
         <div ref={recruitmentDropdownRef} className="relative">
           <p className="font-scdream6 text-label text-bold mb-4">모집 구분</p>
-          <div
-            className={`${dropdownStyle} flex justify-between items-center cursor-pointer`}
+          <TextInput
+            value={recruitmentType === RecruitmentType.STUDY ? "스터디" : "프로젝트"}
             onClick={() => setIsRecruitmentDropdownOpen(!isRecruitmentDropdownOpen)}
-          >
-            <span className="text-placeholder">{recruitmentType === RecruitmentType.STUDY ? "스터디" : "프로젝트"}</span>
-            <span className="border-l pl-6 text-s">▼</span>
-          </div>
+            readOnly
+            fullWidth
+            inputSize="medium"
+            endIcon={<KeyboardArrowDown />}
+          />
           {isRecruitmentDropdownOpen && (
             <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
               <div
@@ -115,56 +114,52 @@ const CreateMeetingBasicPage = () => {
         {/* 기술 스택 */}
         <div className="relative">
           <p className="font-scdream6 text-label text-bold mb-4">기술 스택</p>
-          <div
-            className={`${dropdownStyle} flex justify-between items-center cursor-pointer`}
+          <TextInput
+            value={selectedTechStacks.length > 0 ? selectedTechStacks.join(", ") : "기술 스택을 선택해주세요"}
             onClick={() => setIsTechStackModalOpen(true)}
-          >
-            <span className="text-placeholder">{selectedTechStacks.length > 0 ? selectedTechStacks.join(", ") : "기술 스택을 선택해주세요"}</span>
-            <span className="border-l pl-6 text-s">▼</span>
-          </div>
+            readOnly
+            fullWidth
+            inputSize="medium"
+            endIcon={<KeyboardArrowDown />}
+          />
         </div>
 
         {/* 모집 인원 */}
         <div className="relative">
           <p className="font-scdream6 text-label text-bold mb-4">모집 인원</p>
-          <div
-            className={`${dropdownStyle} flex justify-between items-center cursor-pointer`}
+          <TextInput
+            value={selectedParticipants ? `${selectedParticipants}명` : "1명"}
             onClick={() => setIsParticipantsModalOpen(true)}
-          >
-            <span className="text-placeholder">{selectedParticipants ? `${selectedParticipants}명` : "1명"}</span>
-            <span className="border-l pl-6 text-s">▼</span>
-          </div>
+            readOnly
+            fullWidth
+            inputSize="medium"
+            endIcon={<KeyboardArrowDown />}
+          />
         </div>
 
         {/* 진행 기간 */}
         <div>
           <p className="font-scdream6 text-label text-bold mb-4">진행 기간</p>
-          <div
-            className={`${dropdownStyle} flex justify-between items-center cursor-pointer`}
+          <TextInput
+            value={selectedDuration ? toKoreanDuration(selectedDuration) : "진행 기간을 선택해주세요"}
             onClick={() => setIsDurationModalOpen(true)}
-          >
-            <span className="text-placeholder">
-              {selectedDuration ? toKoreanDuration(selectedDuration) : "진행 기간을 선택해주세요"}
-            </span>
-            <span className="border-l pl-6 text-s">▼</span>
-          </div>
+            readOnly
+            fullWidth
+            inputSize="medium"
+            endIcon={<KeyboardArrowDown />}
+          />
         </div>
 
         {/* 모집 마감일 */}
         <div>
           <p className="font-scdream6 text-label text-bold mb-4">모집 마감일</p>
-          <div
-            className={`${dropdownStyle} flex justify-between items-center cursor-pointer`}
-            onClick={() => dateInputRef.current?.showPicker()}
-          >
-            <input
-              ref={dateInputRef}
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full bg-transparent outline-none cursor-pointer text-placeholder"
-            />
-          </div>
+          <TextInput
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            fullWidth
+            inputSize="medium"
+          />
         </div>
 
         <div className="col-span-2 h-px bg-sub my-4" />
