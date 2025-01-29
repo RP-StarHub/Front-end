@@ -15,6 +15,12 @@ const MeetingInfo: React.FC<MeetingInfoProps> = ({ postInfo }) => {
     endDate,
   } = postInfo;
 
+  const getDisplayParticipants = () => {
+    if (!maxParticipants) return "1명";
+    if (maxParticipants === 10) return "10명 이상";
+    return `${maxParticipants}명`;
+  };
+
   return (
     <div className='flex flex-col bg-white rounded-xl box-border px-16 py-10 
     shadow-md my-4'>
@@ -51,7 +57,7 @@ const MeetingInfo: React.FC<MeetingInfoProps> = ({ postInfo }) => {
             모집 인원
           </p>
           <p className="font-scdream4 text-regular text-bold ml-4">
-            {maxParticipants.toString()}명
+            {getDisplayParticipants()}
           </p>
         </div>
 
