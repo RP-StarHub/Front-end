@@ -5,8 +5,10 @@ import MainPage from "./pages/MainPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ApplicantListPage from "./pages/ApplicantListPage";
-import StudyRecruitPage from "./pages/StudyRecruitPage";
 import MeetingDetailPage from "./pages/MeetingDetailPage";
+import CreateMeetingBasicPage from "./pages/meeting/CreateMeetingBasicPage";
+import CreateMeetingDetailPage from "./pages/meeting/CreateMeetingDetailPage";
+import CreateMeetingPreviewPage from "./pages/meeting/CreateMeetingPreviewPage";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -20,7 +22,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/applicant/list/:postId" element={<ApplicantListPage />} />
           <Route path="/meeting/detail/:meetingId" element={<MeetingDetailPage />} />
-          <Route path="/study/recruit" element={<StudyRecruitPage />} />
+          <Route path="/meeting/create/basic" element={<CreateMeetingBasicPage />} />
+          <Route path="/meeting/create/detail" element={<CreateMeetingDetailPage />} />
+          <Route path="/meeting/create/preview/:meetingId" element={<CreateMeetingPreviewPage />} />
         </Routes>
       </main>
       <Footer />

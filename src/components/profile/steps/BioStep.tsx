@@ -98,6 +98,7 @@ export default function BioStep({ onPreview, onNext }: BioStepProps) {
           value={formData.name || ''}
           onChange={handleChange}
           error={errors.name}
+          bordered
           fullWidth
         />
       </div>
@@ -113,6 +114,7 @@ export default function BioStep({ onPreview, onNext }: BioStepProps) {
           onChange={handleChange}
           error={errors.age}
           fullWidth
+          bordered
         />
       </div>
 
@@ -127,6 +129,7 @@ export default function BioStep({ onPreview, onNext }: BioStepProps) {
           onChange={handleChange}
           error={errors.bio}
           fullWidth
+          bordered
         />
       </div>
 

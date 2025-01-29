@@ -1,8 +1,38 @@
 import { useMutation, useQuery, useQueryClient, UseQueryOptions } from "@tanstack/react-query"
-import { GetMeetingListResponse, PatchMeetingRequest } from "../../types/api/meeting"
+import { CreateMeetingRequest, GetMeetingListResponse, PatchMeetingRequest } from "../../types/api/meeting"
 import { meetingService, mockMeetingService } from "../../services/api/meeting";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+
+export const useCreateMeeting = () => {
+  const queryClient = useQueryClient();
+  const createMeeting = useMutation({
+    mutationFn: (data: CreateMeetingRequest) => 
+      meetingService.createMeeting(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['meetings'] });
+    },
+    onError: (error: any) => {
+      if (error?.response?.status === 400) {
+        toast.error('입력하신 정보를 다시 확인해주세요.');
+      } else if (error?.response?.status === 401) {
+        toast.error('로그인이 필요합니다.');
+      } else {
+        toast.error('모임 생성에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      }
+    }
+  });
+  return createMeeting
+
+  // 목업용
+  // return useMutation({
+  //   mutationFn: (data: CreateMeetingRequest) =>
+  //     mockMeetingService.createMeeting(data),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['meetings'] });
+  //   }
+  // });
+}
 
 export const useMeetingList = (page: number) => {
   const queryOptions: UseQueryOptions<GetMeetingListResponse> = {

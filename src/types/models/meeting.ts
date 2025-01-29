@@ -37,7 +37,7 @@ export interface MeetingDetail extends BaseMeeting {
   otherInfo: string;
   isConfirmed: boolean;
   creator: {
-    username: string;
+    nickname: string;
   }
 }
 
@@ -50,4 +50,9 @@ export interface Sort {
   empty: boolean;
   unsorted: boolean;
   sorted: boolean;
+}
+
+export interface AddressObj {
+  areaAddress: string;
+  townAddress: string;
 }

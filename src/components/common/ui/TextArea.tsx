@@ -39,7 +39,7 @@ const TextArea = ({
   label,
   inputSize = 'medium',
   error,
-  bordered = true,
+  bordered = false,
   borderColor='border-main',
   fullWidth = false,
   className = '',

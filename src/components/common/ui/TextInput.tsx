@@ -28,35 +28,46 @@ interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
    * 입력 필드의 너비를 부모 요소의 100%로 설정할지 여부
    */
   fullWidth?: boolean;
+
+  /**
+   * 입력 필드의 오른쪽에 표시될 아이콘
+   */
+  endIcon?: React.ReactNode;
 }
 
 const TextInput = ({
   label,
   inputSize = 'medium',
   error,
-  bordered = true,
+  bordered = false,
   fullWidth = false,
   className = '',
+  endIcon,
   ...props
 }: TextInputProps) => {
-  // 기본 스타일에서 border 관련 스타일 분리
+  // 기본 스타일
   const baseStyle = "rounded-lg font-scdream4 transition-colors focus:outline-none";
-  
+
   // border 스타일 조건부 적용
   const borderStyle = bordered ? "border-4 border-solid border-main" : "border-0";
-  
+
   // 입력 필드 크기별 패딩
   const sizeStyles = {
     small: "px-4 py-2 text-base",
     medium: "px-6 py-3 text-placeholder",
     large: "px-8 py-4 text-placeholder"
   };
-  
+
   // 너비 스타일
   const widthStyle = fullWidth ? "w-full" : "";
 
   // 에러 스타일
   const errorStyle = error ? "border-red-500" : "";
+
+  // 아이콘이 있는 경우 패딩 조정
+  const iconPadding = {
+    end: endIcon ? "pr-12" : ""
+  };
 
   return (
     <div className={`${fullWidth ? 'w-full' : ''}`}>
@@ -65,10 +76,17 @@ const TextInput = ({
           {label}
         </label>
       )}
-      <input
-        className={`${baseStyle} ${borderStyle} ${sizeStyles[inputSize]} ${widthStyle} ${errorStyle} ${className}`}
-        {...props}
-      />
+      <div className="relative">
+        <input
+          className={`${baseStyle} ${borderStyle} ${sizeStyles[inputSize]} ${widthStyle} ${errorStyle} ${iconPadding.end} ${className}`}
+          {...props}
+        />
+        {endIcon && (
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+            {endIcon}
+          </div>
+        )}
+      </div>
       {error && (
         <p className="mt-2 text-regular text-red-500 font-scdream4">
           {error}
