@@ -47,7 +47,7 @@ const CreateMeetingPreviewPage = () => {
       <div className="flex flex-col w-full">
         <MeetingHeader 
           meetingDetail={data.data}
-          isApplicant={true}
+          userType={data.data.userType}
         />
         <MeetingInfo 
           postInfo={data.data.postInfo}

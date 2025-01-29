@@ -39,10 +39,9 @@ const IconComponent = ({ title }: { title: IconTitleType }) => {
 interface ShotInformProps {
   title: IconTitleType;
   content: string;
-  unit?: string;
 }
 
-const ShotInform = ({ title, content, unit }: ShotInformProps) => {
+const ShotInform = ({ title, content }: ShotInformProps) => {
   const isPlace = title === "장소";
   let displayContent = content;
 
@@ -56,7 +55,7 @@ const ShotInform = ({ title, content, unit }: ShotInformProps) => {
       <IconComponent title={title} />
       <p className="text-center text-regular text-sub font-scdream4 mx-2">{title}</p>
       <div className="text-bold text-regular font-scdream4">
-        {displayContent}{unit}
+        {displayContent}
       </div>
     </div>
   );
@@ -87,7 +86,13 @@ function InformCard({ meeting }: Props) {
 
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toggleLike.mutate(meeting.likeDto.isLiked);
+    toggleLike.mutate(meeting.likeDto.isLiked || false);
+  };
+
+  const getDisplayParticipants = () => {
+    if (!maxParticipants) return "1명";
+    if (maxParticipants === 10) return "10명 이상";
+    return `${maxParticipants}명`;
   };
 
   return (
@@ -108,7 +113,7 @@ function InformCard({ meeting }: Props) {
           </div>
         </div>
         <ShotInform title="관심" content={likeCount.toString()}/>
-        <ShotInform title="인원" content={maxParticipants.toString()} unit="명" />
+        <ShotInform title="인원" content={getDisplayParticipants()} />
         <ShotInform title="기간" content={toKoreanDuration(duration)}/>
         <ShotInform title="마감" content={endDate}/>
         <div className="col-span-2">

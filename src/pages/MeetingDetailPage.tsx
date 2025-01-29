@@ -7,6 +7,7 @@ import ApplicationList from '../components/meeting/detail/ApplicationList';
 import ApplicationForm from '../components/meeting/detail/ApplicationForm';
 import MyApplication from '../components/meeting/detail/MyApplication';
 import Button from '../components/common/ui/Button';
+import { ApplicationStatus, UserType } from '../types/models/meeting';
 
 const MeetingDetailPage = () => {
   const { meetingId } = useParams();
@@ -14,48 +15,61 @@ const MeetingDetailPage = () => {
 
   if (isLoading || !data) return <div>Loading...</div>;
 
-  const { isApplicant, applicationStatus, postInfo } = data.data;
+  const { userType, isApplication, applicationStatus, postInfo } = data.data;
+
+  // 확정된 모임 상태 메시지 컴포넌트
+  const ConfirmedMessage = () => (
+    <div className='flex flex-col items-center justify-center w-full py-20'>
+      <p className='font-scdream6 text-sub text-lg mb-2'>
+        {userType === UserType.Applicant && applicationStatus === ApplicationStatus.REJECTED
+          ? '아쉽게도 최종 모임원으로 선정되지 못했습니다.'
+          : '해당 모임글은 모집이 마감되었습니다.'}
+      </p>
+      <p className='font-scdream4 text-sub'>StarHub와 함께 다른 모임을 찾아봐요!</p>
+    </div>
+  );
 
   const renderApplicationSection = () => {
-    // 모임이 확정된 경우
+    // 모임원이 확정된 경우
     if (postInfo.isConfirmed) {
-      return (
-        <div className='flex justify-end'>
-          <Button size='small' className='mt-8'>
-            스터디원 보기
-          </Button>
+      // 최종 모임원은 개설자와 승인된 사용자
+      const canViewMembers = userType === UserType.Creator || 
+        (userType === UserType.Applicant && applicationStatus === ApplicationStatus.APPROVED);
+      
+      return canViewMembers ? (
+        <div className="flex justify-end">
+          <Button size="small" className="mt-8">스터디원 보기</Button>
         </div>
-      );
+      ) : <ConfirmedMessage />;
     }
 
-    // 모임 개설자인 경우
-    if (!isApplicant) {
-      return <ApplicationList meetingId={postInfo.id} />;
-    }
+    // 모집중인 모임 게시글 보이기
+    const applicationComponents = {
+      [UserType.Creator]: <ApplicationList meetingId={postInfo.id} />,
+      [UserType.Applicant]: isApplication 
+        ? <MyApplication meetingId={postInfo.id} />
+        : <ApplicationForm meetingId={postInfo.id} />,
+      [UserType.Anonymous]: <ApplicationForm meetingId={postInfo.id} userType={userType} />
+    };
 
-    // 지원자인 경우
-    return applicationStatus ? (
-      <MyApplication meetingId={postInfo.id} />
-    ) : (
-      <ApplicationForm meetingId={postInfo.id} />
-    );
+    return applicationComponents[userType];
   };
 
   return (
-    <div className={
-      `flex flex-col w-full px-60 py-24 ${isApplicant ? 'bg-gray-100' : 'bg-background'}`}
+    <div
+      className={`flex flex-col w-full px-60 py-24 ${userType === UserType.Creator ? 'bg-background' : 'bg-gray-100'
+        }`}
     >
       <MeetingHeader
         meetingDetail={data.data}
-        isApplicant={isApplicant}
+        userType={userType}
       />
-      <MeetingInfo 
+      <MeetingInfo
         postInfo={postInfo}
       />
-      <MeetingContent 
+      <MeetingContent
         postInfo={postInfo}
       />
-      
       {renderApplicationSection()}
     </div>
   );

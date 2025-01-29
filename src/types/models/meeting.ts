@@ -14,6 +14,18 @@ export enum DURATION {
   MORE_THAN_ONE_YEAR = "MORE_THAN_ONE_YEAR",
 }
 
+export enum UserType {
+  Anonymous = "Anonymous",
+  Creator = "Creator",
+  Applicant = "Applicant",
+}
+
+export enum ApplicationStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
+
 export interface BaseMeeting {
   id: number;
   title: string;
@@ -43,7 +55,7 @@ export interface MeetingDetail extends BaseMeeting {
 
 export interface LikeDto {
   likeCount: number;
-  isLiked: boolean | null;
+  isLiked?: boolean;
 }
 
 export interface Sort {
