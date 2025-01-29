@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import DaumPostcode from "react-daum-postcode";
 import Button from "../../common/ui/Button";
-import { PostRequest } from "../../../types/api/post";
-import { AddressObj } from "../../../types/models/study";
+import { CreateMeetingRequest } from "../../../types/api/meeting";
+import { AddressObj } from "../../../types/models/meeting";
 import { LatLng } from "../../../types/models/common";
 
 interface DaumPostcodeData {
@@ -16,7 +16,7 @@ interface AddressSearchProps {
   addressValue: string;
   setAddressInfo: (addressInfo: AddressObj) => void;
   setLocation: (location: LatLng) => void;
-  setFormData: (data: Partial<PostRequest>) => void;
+  setFormData: (data: Partial<CreateMeetingRequest>) => void;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
 }
@@ -51,7 +51,7 @@ export const AddressSearch = ({
       });
 
       setFormData({
-        place: fullAddress
+        location: fullAddress
       });
       
       // 주소로 좌표를 검색 (Kakao Map API 사용)

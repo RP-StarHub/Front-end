@@ -51,3 +51,8 @@ export interface Sort {
   unsorted: boolean;
   sorted: boolean;
 }
+
+export interface AddressObj {
+  areaAddress: string;
+  townAddress: string;
+}
