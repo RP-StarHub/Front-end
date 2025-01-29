@@ -161,6 +161,7 @@ const Signup = () => {
                       placeholder="아이디를 입력해주세요"
                       value={formData.username}
                       fullWidth
+                      bordered
                       onChange={handleChange}
                       error={errors.username}
                       className="pl-12"

@@ -69,9 +69,9 @@ const CreateMeetingBasicPage = () => {
 
       <div className="flex items-center mt-20 mb-6">
         <Star className="text-yellow" sx={{ fontSize: 40 }} />
-        <p className="font-gmarket-bold text-page-title text-bold">기본 정보 설정</p>
+        <p className="font-gmarket-bold text-page-title text-bold">기본 정보 입력</p>
       </div>
-      <p className="text-label text-bold">스터디에 관한 기본 정보를 입력해주세요</p>
+      <p className="text-label text-bold">모집글에 쓰일 기본 정보들을 입력해주세요</p>
 
       <div className="col-span-2 h-px bg-sub my-8" />
 
