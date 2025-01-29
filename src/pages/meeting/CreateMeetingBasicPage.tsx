@@ -21,6 +21,12 @@ const CreateMeetingBasicPage = () => {
   const { location: userLocation, loaded } = useGeolocation();
   const { data: techStacksData } = useGetTechStack();
 
+  // Refs for dropdown positioning
+  const durationInputRef = useRef<HTMLDivElement>(null);
+  const participantsInputRef = useRef<HTMLDivElement>(null);
+  const techStackInputRef = useRef<HTMLDivElement>(null);
+  const recruitmentDropdownRef = useRef<HTMLDivElement>(null);
+
   const {
     recruitmentType,
     maxParticipants,
@@ -43,9 +49,6 @@ const CreateMeetingBasicPage = () => {
   const [isParticipantsModalOpen, setIsParticipantsModalOpen] = React.useState(false);
   const [isTechStackModalOpen, setIsTechStackModalOpen] = React.useState(false);
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const recruitmentDropdownRef = useRef<HTMLDivElement>(null);
-
   // 기술 스택 표시 텍스트 생성
   const getDisplayTechStacks = () => {
     if (!techStacksData?.data) return "";
@@ -67,7 +70,7 @@ const CreateMeetingBasicPage = () => {
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (recruitmentDropdownRef.current && !recruitmentDropdownRef.current.contains(event.target as Node)) {
         setIsRecruitmentDropdownOpen(false);
       }
     };
@@ -153,7 +156,7 @@ const CreateMeetingBasicPage = () => {
         </div>
 
         {/* 기술 스택 */}
-        <div className="relative">
+        <div className="relative" ref={techStackInputRef}>
           <p className="font-scdream6 text-label text-bold mb-4">기술 스택</p>
           <TextInput
             value={
@@ -171,7 +174,7 @@ const CreateMeetingBasicPage = () => {
         </div>
 
         {/* 모집 인원 */}
-        <div className="relative">
+        <div className="relative" ref={participantsInputRef}>
           <p className="font-scdream6 text-label text-bold mb-4">모집 인원</p>
           <TextInput
             value={getDisplayParticipants()}
@@ -185,7 +188,7 @@ const CreateMeetingBasicPage = () => {
         </div>
 
         {/* 진행 기간 */}
-        <div>
+        <div ref={durationInputRef}>
           <p className="font-scdream6 text-label text-bold mb-4">진행 기간</p>
           <TextInput
             value={duration ? toKoreanDuration(duration) : "진행 기간을 선택해주세요"}
@@ -226,7 +229,7 @@ const CreateMeetingBasicPage = () => {
             error={errors.location}
           />
           {location.latitude && location.longitude && (
-            <div className="mt-10 h-[800px] rounded-lg overflow-hidden relative">
+            <div className="mt-10 h-[400px] rounded-lg overflow-hidden relative">
               <KakaoMap
                 center={{
                   lat: location.latitude,
@@ -253,6 +256,7 @@ const CreateMeetingBasicPage = () => {
         onClose={() => setIsDurationModalOpen(false)}
         onSelect={(duration) => setBasicInfo({ duration })}
         selectedDuration={duration}
+        anchorEl={durationInputRef.current}
       />
 
       <ParticipantsModal
@@ -260,6 +264,7 @@ const CreateMeetingBasicPage = () => {
         onClose={() => setIsParticipantsModalOpen(false)}
         onSelect={(participants) => setBasicInfo({ maxParticipants: participants })}
         selectedParticipants={maxParticipants}
+        anchorEl={participantsInputRef.current}
       />
 
       <TechStackModal
@@ -267,6 +272,7 @@ const CreateMeetingBasicPage = () => {
         onClose={() => setIsTechStackModalOpen(false)}
         onSelect={setTechStacks}
         selectedTechStacks={techStacks}
+        anchorEl={techStackInputRef.current}
       />
 
       <div className="flex justify-end mt-8">
