@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent, ChangeEvent } from 'react';
+import React, { useState, KeyboardEvent, ChangeEvent, useEffect } from 'react';
 import { useGetTechStack } from '../../../hooks/api/useTechstack';
 import { TechCategory } from '../../../types/models/techstack';
 import BaseModal from '../../common/ui/BaseModal';
@@ -28,9 +28,15 @@ const TechStackModal = ({
   const { data: techStacksData, isLoading } = useGetTechStack();
 
   // 상태 관리
-  const [selectedIds, setSelectedIds] = useState<number[]>(selectedTechStacks.selectedIds);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [customStacks, setCustomStacks] = useState<string[]>([]);
   const [customStack, setCustomStack] = useState<string>('');
-  const [customStacks, setCustomStacks] = useState<string[]>(selectedTechStacks.customStacks);
+
+  // 선택된 기술스택 값이 변경될 때 상태 업데이트
+  useEffect(() => {
+    setSelectedIds(selectedTechStacks.selectedIds);
+    setCustomStacks(selectedTechStacks.customStacks);
+  }, [selectedTechStacks]);
 
   if (!isOpen || !anchorEl) return null;
   if (isLoading) return <div>Loading...</div>;
