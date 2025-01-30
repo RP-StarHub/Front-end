@@ -57,7 +57,7 @@ export const meetingService = {
   
   getMeetingMember: (id: number) => {
     return axiosInstance.get<GetMeetingMemberResponse>(
-      `/api/v1/meetings/${id}/confirm`
+      `/api/v1/meetings/${id}/confirmed`
     )
   }
 };
