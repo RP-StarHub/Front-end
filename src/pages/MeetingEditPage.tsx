@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Map as KakaoMap, MapMarker } from 'react-kakao-maps-sdk';
 import Button from '../components/common/ui/Button';
@@ -18,7 +18,7 @@ import { KeyboardArrowDown } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 
 const MeetingEditPage = () => {
-  const { meetingId } = useParams<{ meetingId: string }>();  
+  const { meetingId } = useParams<{ meetingId: string }>();
   const navigate = useNavigate();
 
   const { data: meetingData } = useMeetingDetail(Number(meetingId));
@@ -52,6 +52,11 @@ const MeetingEditPage = () => {
   const [showDurationModal, setShowDurationModal] = useState(false);
   const [showParticipantsModal, setShowParticipantsModal] = useState(false);
   const [showTechStackModal, setShowTechStackModal] = useState(false);
+
+  // 모달용 ref 상태 관리
+  const durationInputRef = useRef<HTMLDivElement>(null);
+  const participantsInputRef = useRef<HTMLDivElement>(null);
+  const techStackInputRef = useRef<HTMLDivElement>(null);
 
   // 기존 데이터 로드
   useEffect(() => {
@@ -202,7 +207,7 @@ const MeetingEditPage = () => {
         </div>
 
         {/* 기술 스택 */}
-        <div>
+        <div ref={techStackInputRef}>
           <p className="font-scdream6 text-label text-bold mb-4">기술 스택</p>
           <TextInput
             value={techStackDisplay()}
@@ -216,7 +221,7 @@ const MeetingEditPage = () => {
         </div>
 
         {/* 모집 인원 */}
-        <div>
+        <div ref={participantsInputRef}>
           <p className="font-scdream6 text-label text-bold mb-4">모집 인원</p>
           <TextInput
             value={`${maxParticipants}명`}
@@ -230,7 +235,7 @@ const MeetingEditPage = () => {
         </div>
 
         {/* 진행 기간 */}
-        <div>
+        <div ref={durationInputRef}>
           <p className="font-scdream6 text-label text-bold mb-4">진행 기간</p>
           <TextInput
             value={duration ? toKoreanDuration(duration) : "진행 기간을 선택해주세요"}
@@ -354,7 +359,7 @@ const MeetingEditPage = () => {
         onClose={() => setShowDurationModal(false)}
         onSelect={(duration) => setBasicInfo({ duration })}
         selectedDuration={duration}
-        anchorEl={null}
+        anchorEl={durationInputRef.current}
       />
 
       <ParticipantsModal
@@ -362,7 +367,7 @@ const MeetingEditPage = () => {
         onClose={() => setShowParticipantsModal(false)}
         onSelect={(participants) => setBasicInfo({ maxParticipants: participants })}
         selectedParticipants={maxParticipants}
-        anchorEl={null}
+        anchorEl={participantsInputRef.current}
       />
 
       <TechStackModal
@@ -370,7 +375,7 @@ const MeetingEditPage = () => {
         onClose={() => setShowTechStackModal(false)}
         onSelect={setTechStacks}
         selectedTechStacks={techStacks}
-        anchorEl={null}
+        anchorEl={techStackInputRef.current}
       />
 
       <div className="flex justify-end mt-8 gap-4">
