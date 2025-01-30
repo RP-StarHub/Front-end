@@ -60,14 +60,10 @@ const MeetingEditPage = () => {
 
   // 기존 데이터 로드
   useEffect(() => {
-    console.log('meetingData:', meetingData);
-
-    if (!meetingData?.data) {
-      console.log('No meeting data');
-      return;
-    }
+    if (!meetingData?.data || !techStacksData?.data) return;
 
     const meeting = meetingData.data.postInfo;
+    const techStackNames = meeting.techStacks;
     setBasicInfo({
       recruitmentType: meeting.recruitmentType,
       maxParticipants: meeting.maxParticipants,
@@ -86,16 +82,22 @@ const MeetingEditPage = () => {
     });
 
     // 기술 스택 설정
-    const techStackIds = meeting.techStacks
-      .filter((stack: any) => stack.id)
-      .map((stack: any) => stack.id);
-    const customStacks = meeting.techStacks
-      .filter((stack: any) => !stack.id)
-      .map((stack: any) => stack.name);
+    const standardTechStacks = techStacksData.data;
+    const selectedIds: number[] = [];
+    const customStacks: string[] = [];
+
+    techStackNames.forEach((techName: string) => {
+      const found = standardTechStacks.find(stack => stack.name === techName);
+      if (found) {
+        selectedIds.push(found.id);
+      } else {
+        customStacks.push(techName);
+      }
+    });
 
     setTechStacks({
-      selectedIds: techStackIds,
-      customStacks: customStacks,
+      selectedIds,
+      customStacks,
     });
 
     // 상세 정보 설정
@@ -103,7 +105,7 @@ const MeetingEditPage = () => {
     handleInputChange({ target: { name: "description", value: meeting.description } } as any);
     handleInputChange({ target: { name: "goal", value: meeting.goal } } as any);
     handleInputChange({ target: { name: "otherInfo", value: meeting.otherInfo || "" } } as any);
-  }, [meetingData, setBasicInfo, setLocation, setAddressInfo, setTechStacks, handleInputChange]);
+  }, [meetingData, techStacksData, setBasicInfo, setLocation, setAddressInfo, setTechStacks, handleInputChange]);
 
   // 취소 처리
   const handleCancel = () => {
