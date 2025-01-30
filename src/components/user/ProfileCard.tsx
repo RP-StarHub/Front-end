@@ -37,7 +37,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       </div>
 
       <p className='font-scdream4 text-bold text-regular my-2'>
-        {bio}
+        "{bio}"
       </p>
 
       <div className='flex flex-col'>
