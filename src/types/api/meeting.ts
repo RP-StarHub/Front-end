@@ -1,4 +1,13 @@
-import { ApplicationStatus, DURATION, LikeDto, Meeting, MeetingDetail, RecruitmentType, Sort, UserType } from "../models/meeting";
+import {
+  ApplicationStatus,
+  DURATION, 
+  LikeDto, 
+  Meeting,
+  MeetingDetail,
+  RecruitmentType, 
+  Sort, 
+  UserType
+} from "../models/meeting";
 import { ApiResponse } from "./response";
 
 // Request
@@ -16,6 +25,10 @@ export interface CreateMeetingRequest {
   otherInfo: string;
   techStackIds: number[];
   otherTechStacks: string[];
+}
+
+export interface PatchMemberRequest {
+  applicationIds: number[];
 }
 
 export interface PatchMeetingRequest {
@@ -49,7 +62,7 @@ export interface MeetingInfo {
   goal: string;
   otherInfo: string;
   techStacks: string[];
-  creator : {
+  creator: {
     nickname: string;
   }
 }
@@ -83,7 +96,17 @@ export interface MeetingDetailInfo {
   likeDto: LikeDto;
 }
 
+export interface MeetingMemberInfo {
+  name: string;
+  age: number;
+  bio: string;
+  phoneNumber: string;
+  email: string;
+}
+
 export type CreateMeetingResponse = ApiResponse<MeetingInfo>;
 export type GetMeetingListResponse = ApiResponse<MeetingList>;
 export type GetMeetingDetailResponse = ApiResponse<MeetingDetailInfo>;
 export type PatchMeetingResponse = ApiResponse<MeetingDetail>;
+export type PatchMeetingMemberResponse = ApiResponse<MeetingMemberInfo[]>;
+export type GetMeetingMemberResponse = ApiResponse<MeetingMemberInfo[]>;

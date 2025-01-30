@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient, UseQueryOptions } from "@tanstack/react-query"
-import { CreateMeetingRequest, GetMeetingListResponse, PatchMeetingRequest } from "../../types/api/meeting"
+import { CreateMeetingRequest, GetMeetingListResponse, PatchMeetingRequest, PatchMemberRequest } from "../../types/api/meeting"
 import { meetingService, mockMeetingService } from "../../services/api/meeting";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -112,4 +112,31 @@ export const useMeetingDelete = () => {
   // return useMutation({
   //   mutationFn: (id: number) => mockMeetingService.deleteMeeting(id),
   // });
+};
+
+export const useConfirmMeetingMembers = (meetingId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: PatchMemberRequest) => 
+      meetingService.patchMeetingMember(meetingId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['meetingMembers', meetingId]
+      });
+      
+      queryClient.invalidateQueries({
+        queryKey: ['meetingDetail', meetingId]
+      });
+    }
+  });
+};
+
+export const useGetMeetingMembers = (meetingId: number) => {
+  return useQuery({
+    queryKey: ['meetingMembers', meetingId],
+    queryFn: () => meetingService.getMeetingMember(meetingId),
+    select: (response) => response.data.data,
+    enabled: !!meetingId
+  });
 };
