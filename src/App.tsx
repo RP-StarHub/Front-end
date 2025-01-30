@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ApplicantListPage from "./pages/ApplicantListPage";
 import MeetingDetailPage from "./pages/MeetingDetailPage";
+import MeetingEditPage from "./pages/MeetingEditPage";
 import CreateMeetingBasicPage from "./pages/meeting/CreateMeetingBasicPage";
 import CreateMeetingDetailPage from "./pages/meeting/CreateMeetingDetailPage";
 import CreateMeetingPreviewPage from "./pages/meeting/CreateMeetingPreviewPage";
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/applicant/list/:meetingId" element={<ApplicantListPage />} />
           <Route path="/meeting/detail/:meetingId" element={<MeetingDetailPage />} />
+          <Route path="/meeting/edit/:meetingId" element={<MeetingEditPage />} />
           <Route path="/meeting/create/basic" element={<CreateMeetingBasicPage />} />
           <Route path="/meeting/create/detail" element={<CreateMeetingDetailPage />} />
           <Route path="/meeting/create/preview/:meetingId" element={<CreateMeetingPreviewPage />} />
