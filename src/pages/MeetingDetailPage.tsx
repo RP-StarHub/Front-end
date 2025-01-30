@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useMeetingDetail } from '../hooks/api/useMeeting';
 import MeetingHeader from '../components/meeting/detail/MeetingHeader';
 import MeetingInfo from '../components/meeting/detail/MeetingInfo';
@@ -10,6 +10,7 @@ import Button from '../components/common/ui/Button';
 import { ApplicationStatus, UserType } from '../types/models/meeting';
 
 const MeetingDetailPage = () => {
+  const navigate = useNavigate();
   const { meetingId } = useParams();
   const { data, isLoading } = useMeetingDetail(Number(meetingId));
 
@@ -33,12 +34,17 @@ const MeetingDetailPage = () => {
     // 모임원이 확정된 경우
     if (postInfo.isConfirmed) {
       // 최종 모임원은 개설자와 승인된 사용자
-      const canViewMembers = userType === UserType.Creator || 
+      const canViewMembers = userType === UserType.Creator ||
         (userType === UserType.Applicant && applicationStatus === ApplicationStatus.APPROVED);
-      
+
       return canViewMembers ? (
         <div className="flex justify-end">
-          <Button size="small" className="mt-8">스터디원 보기</Button>
+          <Button
+            size="small"
+            className="mt-8"
+            onClick={() => { navigate(`/applicant/list/${meetingId}`); }}>
+            스터디원 보기
+          </Button>
         </div>
       ) : <ConfirmedMessage />;
     }
@@ -46,7 +52,7 @@ const MeetingDetailPage = () => {
     // 모집중인 모임 게시글 보이기
     const applicationComponents = {
       [UserType.Creator]: <ApplicationList meetingId={postInfo.id} />,
-      [UserType.Applicant]: isApplication 
+      [UserType.Applicant]: isApplication
         ? <MyApplication meetingId={postInfo.id} />
         : <ApplicationForm meetingId={postInfo.id} />,
       [UserType.Anonymous]: <ApplicationForm meetingId={postInfo.id} userType={userType} />
