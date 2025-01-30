@@ -2,14 +2,18 @@ import React, { useState } from 'react'
 import { useApplicationList } from '../../../hooks/api/useApplication'
 import toast from 'react-hot-toast';
 import Button from '../../common/ui/Button';
+import { useConfirmMeetingMembers } from '../../../hooks/api/useMeeting';
+import { useNavigate } from 'react-router-dom';
 
 interface ApplicationListProps {
   meetingId: number
 }
 
 const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
+  const navigate = useNavigate();
   const [selectedApplication, setSelectedApplication] = useState<number[]>([]);
   const { data, isLoading } = useApplicationList(meetingId);
+  const { mutate: confirmMembers } = useConfirmMeetingMembers(meetingId);
 
   if (isLoading || !data) return <div>Loading...</div>;
 
@@ -24,8 +28,26 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
   };
 
   const handleConfirm = () => {
-    toast.success(`${selectedApplication} 지원자 확정`);
-  }
+    if (selectedApplication.length === 0) {
+      toast.error('확정할 지원자를 선택해주세요');
+      return;
+    }
+
+    confirmMembers(
+      { applicationIds: selectedApplication },
+      {
+        onSuccess: () => {
+          toast.success('스터디원이 확정되었습니다');
+          setSelectedApplication([]);
+          navigate(`/applicant/list/${meetingId}`);
+        },
+        onError: (error) => {
+          toast.error('스터디원 확정에 실패했습니다');
+          console.error('Error confirming members:', error);
+        }
+      }
+    );
+  };
 
   if (applications.length === 0) {
     return (
