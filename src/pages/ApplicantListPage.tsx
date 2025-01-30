@@ -2,16 +2,39 @@ import React from 'react';
 import ProfileCard from '../components/user/ProfileCard';
 import PickIcon from "../assets/icons/PickIcon.png";
 import { useParams } from 'react-router-dom';
-import { useUserPicked } from '../hooks/api/useComment';
+import { useGetMeetingMembers } from '../hooks/api/useMeeting';
+import { MeetingMemberInfo } from '../types/api/meeting';
 
 const ApplicantListPage: React.FC = () => {
-  const { postId } = useParams<{ postId: string }>();
-  const { data: response, isLoading } = useUserPicked(Number(postId));
-
-  const pickedUsers = response?.data.data || [];
+  const { meetingId } = useParams<{ meetingId: string }>();
+  const { data: members, isLoading, error } = useGetMeetingMembers(Number(meetingId));
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="font-scdream4 text-sub text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="font-scdream4 text-red-500 text-xl">
+          확정된 스터디원 목록을 불러오는데 실패했습니다.
+        </div>
+      </div>
+    );
+  }
+
+  if (!members || members.length === 0) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="font-scdream4 text-sub text-xl">
+          아직 확정된 스터디원이 없습니다.
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -21,20 +44,19 @@ const ApplicantListPage: React.FC = () => {
           src={PickIcon}
           style={{ width: "45px", height: "45px" }}
           alt="Pick Icon"
-          className='w-16 mr-4'
         />
-        <p className='text-6xl font-gmarket-bold text-sub'>Pick!</p>
+        <p className='text-big-title font-gmarket-bold text-sub'>Pick!</p>
       </div>
 
       <div className='grid grid-cols-4 gap-8'>
-        {pickedUsers.map((pickedUser) => (
-          <div key={pickedUser.user.email} className="flex justify-center">
+        {members.map((member: MeetingMemberInfo) => (
+          <div key={member.email} className="flex justify-center">
             <ProfileCard
-              name={pickedUser.user.name}
-              introduction={pickedUser.user.introduction}
-              email={pickedUser.user.email}
-              phoneNum={pickedUser.user.phoneNum}
-              age={pickedUser.user.age}
+              name={member.name}
+              bio={member.bio}
+              email={member.email}
+              phoneNumber={member.phoneNumber}
+              age={member.age}
             />
           </div>
         ))}

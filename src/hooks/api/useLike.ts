@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { likeServices } from "../../services/api/like";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export const useLike = (meetingId: number) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const toggleLike = useMutation({
     mutationFn: (isLiked: boolean | null) => {
@@ -28,6 +30,9 @@ export const useLike = (meetingId: number) => {
       } else if (error?.response?.status === 409) {
         toast.error('이미 좋아요를 누르셨습니다.');
       } else if (error !== 'Unauthorized') {
+        toast.error('관심 모임 등록하기는 로그인 후 이용할 수 있습니다.');
+        navigate('/login');
+      } else {
         toast.error('오류가 발생했습니다.');
       }
     }

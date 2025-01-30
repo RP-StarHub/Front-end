@@ -4,17 +4,25 @@ import MessageIcon from "../../assets/icons/MessageIcon.png";
 
 interface ProfileCardProps {
   name: string;
-  introduction: string;
+  bio: string;
   email: string;
-  phoneNum: string;
+  phoneNumber: string;
   age: number;
 }
 
+const formatPhoneNumber = (phoneNumber: string): string => {
+  const numbers = phoneNumber.replace(/[^0-9]/g, '');
+  if (numbers.length !== 11) {
+    return phoneNumber;
+  }
+  return numbers.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+};
+
 const ProfileCard: React.FC<ProfileCardProps> = ({
   name,
-  introduction,
+  bio,
   email,
-  phoneNum,
+  phoneNumber,
   age
 }) => {
   return (
@@ -29,33 +37,34 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       </div>
 
       <p className='font-scdream4 text-bold text-regular my-2'>
-        {introduction}
+        "{bio}"
       </p>
 
-      <div className='flex items-center justify-start my-1'>
-        <img
-          src={PhoneIcon}
-          alt="phoneIcon"
-          className='h-4 mr-2'
-        />
-        <p className='font-scdream4 text-bold text-regular'>
-          {phoneNum}
-        </p>
-      </div>
+      <div className='flex flex-col'>
+        <div className='flex items-center justify-start my-1'>
+          <img
+            src={PhoneIcon}
+            alt="phoneIcon"
+            className='h-4 mr-2'
+          />
+          <p className='font-scdream4 text-bold text-regular'>
+            {formatPhoneNumber(phoneNumber)}
+          </p>
+        </div>
 
-      <div className='flex items-center justify-start my-1'>
-        <img
-          src={MessageIcon}
-          alt="messageIcon"
-          className='h-4 mr-2'
-        />
-        <p className='font-scdream4 text-bold text-regular'>
-          {email}
-        </p>
+        <div className='flex items-center justify-start my-1'>
+          <img
+            src={MessageIcon}
+            alt="messageIcon"
+            className='h-4 mr-2'
+          />
+          <p className='font-scdream4 text-bold text-regular'>
+            {email}
+          </p>
+        </div>
       </div>
     </div>
   );
-}
-
+};
 
 export default ProfileCard

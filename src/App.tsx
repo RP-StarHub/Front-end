@@ -20,7 +20,7 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/applicant/list/:postId" element={<ApplicantListPage />} />
+          <Route path="/applicant/list/:meetingId" element={<ApplicantListPage />} />
           <Route path="/meeting/detail/:meetingId" element={<MeetingDetailPage />} />
           <Route path="/meeting/create/basic" element={<CreateMeetingBasicPage />} />
           <Route path="/meeting/create/detail" element={<CreateMeetingDetailPage />} />

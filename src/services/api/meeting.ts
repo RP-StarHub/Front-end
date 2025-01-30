@@ -3,8 +3,11 @@ import {
   CreateMeetingResponse,
   GetMeetingDetailResponse,
   GetMeetingListResponse,
+  GetMeetingMemberResponse,
+  PatchMeetingMemberResponse,
   PatchMeetingRequest,
   PatchMeetingResponse,
+  PatchMemberRequest,
 } from "../../types/api/meeting";
 import { axiosInstance } from "./axios"
 import { mainData, mockDetailData } from "../../assets/data/mainData";
@@ -43,6 +46,19 @@ export const meetingService = {
     return axiosInstance.delete<void>(
       `/api/v1/meetings/${id}`
     );
+  },
+
+  patchMeetingMember: (id: number, data: PatchMemberRequest) => {
+    return axiosInstance.patch<PatchMeetingMemberResponse>(
+      `/api/v1/meetings/${id}/confirm`,
+      data
+    )
+  },
+  
+  getMeetingMember: (id: number) => {
+    return axiosInstance.get<GetMeetingMemberResponse>(
+      `/api/v1/meetings/${id}/confirmed`
+    )
   }
 };
 
