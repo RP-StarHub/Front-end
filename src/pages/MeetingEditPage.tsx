@@ -43,7 +43,7 @@ const MeetingEditPage = () => {
     setAddressInfo,
     setTechStacks,
     handleInputChange,
-    validateForm,
+    validateEditForm,
     reset,
   } = useMeetingFormStore();
 
@@ -110,35 +110,35 @@ const MeetingEditPage = () => {
   // 취소 처리
   const handleCancel = () => {
     reset();
-    navigate(`/meeting/${meetingId}`);
+    navigate(`/meeting/detail/${meetingId}`);
   };
 
   // 수정 요청 처리
   const handleSubmit = async () => {
-    const isValid = validateForm();
+    const isValid = validateEditForm();
     if (!isValid) {
       toast.error('필수 정보를 모두 입력해주세요.');
       return;
     }
 
-    const requestData: PatchMeetingRequest = {
-      recruitmentType,
-      maxParticipants,
-      duration,
-      endDate,
-      location: addressInfo.townAddress,
-      title,
-      description,
-      goal,
-      otherInfo,
-      techStacks: techStacks.selectedIds,
-      otherTechStack: techStacks.customStacks,
-    };
+    const requestData: Partial<PatchMeetingRequest> = {};
 
-    // 위치 정보
+    if (title) requestData.title = title;
+    if (description) requestData.description = description;
+    if (goal) requestData.goal = goal;
+    if (otherInfo) requestData.otherInfo = otherInfo;
+    if (recruitmentType) requestData.recruitmentType = recruitmentType;
+    if (maxParticipants) requestData.maxParticipants = maxParticipants;
+    if (duration) requestData.duration = duration;
+    if (endDate) requestData.endDate = endDate;
+    if (addressInfo.townAddress) requestData.location = addressInfo.townAddress;
     if (location.latitude && location.longitude) {
       requestData.latitude = location.latitude;
       requestData.longitude = location.longitude;
+    }
+    if (techStacks.selectedIds.length > 0 || techStacks.customStacks.length > 0) {
+      requestData.techStacks = techStacks.selectedIds;
+      requestData.otherTechStack = techStacks.customStacks;
     }
 
     try {
@@ -147,13 +147,8 @@ const MeetingEditPage = () => {
         data: requestData,
       });
       toast.success('모임이 성공적으로 수정되었습니다.');
-      navigate(`/meeting/${meetingId}`);
+      navigate(`/meeting/detail/${meetingId}`);
     } catch (error: any) {
-      if (error?.response?.status === 403) {
-        toast.error('모임 수정 권한이 없습니다.');
-      } else {
-        toast.error('수정에 실패했습니다. 잠시 후 다시 시도해주세요.');
-      }
     }
   };
 
