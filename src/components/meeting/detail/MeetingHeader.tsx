@@ -63,7 +63,7 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
         <div className="flex items-center gap-4">
           {userType === UserType.Creator ? (
             <>
-              <button>
+              <button onClick={() => navigate(`/meeting/edit/${postInfo.id}`)}>
                 <Edit sx={{ fontSize: 40, color: "#7C8BBE" }} />
               </button>
               <button onClick={handleDelete}>

@@ -57,6 +57,7 @@ interface MeetingFormState {
   validateBasicInfo: () => boolean;
   validateDetailInfo: () => boolean;
   validateForm: () => boolean;
+  validateEditForm: () => boolean;
   getCreateMeetingRequest: () => CreateMeetingRequest;
   reset: () => void;
 }
@@ -202,6 +203,30 @@ export const useMeetingFormStore = create<MeetingFormState>((set, get) => ({
 
     if (!state.addressInfo.townAddress) {
       newErrors.location = '진행 장소를 선택해주세요.';
+    }
+
+    set((state) => ({ ...state, errors: newErrors }));
+    return Object.keys(newErrors).length === 0;
+  },
+
+  validateEditForm: () => {
+    const state = get();
+    const newErrors: MeetingFormErrors = {};
+
+    if (state.title.trim() === '') {
+      newErrors.title = '제목을 입력해주세요.';
+    }
+
+    if (state.description.trim() === '') {
+      newErrors.description = '스터디/프로젝트 소개를 입력해주세요.';
+    }
+
+    if (state.goal.trim() === '') {
+      newErrors.goal = '목표를 입력해주세요.';
+    }
+
+    if (state.techStacks.selectedIds.length === 0 && state.techStacks.customStacks.length === 0) {
+      newErrors.techStacks = '기술 스택을 1개 이상 선택해주세요.';
     }
 
     set((state) => ({ ...state, errors: newErrors }));

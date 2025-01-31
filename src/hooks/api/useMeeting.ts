@@ -79,11 +79,36 @@ export const useMeetingDetail = (id: number) => {
 };
 
 export const useMeetingPatch = () => {
-  // 목업
+  const queryClient = useQueryClient();
+  
   return useMutation({
-    mutationFn: ({ id, data }: { id: number, data: PatchMeetingRequest }) =>
-      mockMeetingService.patchMeeting(id, data),
+    mutationFn: ({ id, data }: { id: number, data: PatchMeetingRequest }) => 
+      meetingService.patchMeeting(id, data),
+    onSuccess: (_, variables) => {
+      // 수정 성공시 상세 데이터와 목록 데이터를 모두 갱신
+      queryClient.invalidateQueries({ queryKey: ['meeting', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ['meetings'] });
+    },
+    onError: (error: any) => {
+      if (error?.response?.status === 400) {
+        if (error?.response?.data?.code === 'STUDY_CONFIRMED') {
+          toast.error('스터디원이 확정된 상태에서는 글을 수정할 수 없습니다.');
+          return;
+        }
+        toast.error('입력하신 정보를 다시 확인해주세요.');
+      } else if (error?.response?.status === 404) {
+        toast.error('존재하지 않는 모임입니다.');
+      } else {
+        toast.error('수정에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      }
+    }
   });
+
+  // 목업
+  // return useMutation({
+  //   mutationFn: ({ id, data }: { id: number, data: PatchMeetingRequest }) =>
+  //     mockMeetingService.patchMeeting(id, data),
+  // });
 };
 
 export const useMeetingDelete = () => {
@@ -98,10 +123,14 @@ export const useMeetingDelete = () => {
       navigate('/');
     },
     onError: (error: any) => {
-      if (error?.response?.status === 404) {
+      if (error?.response?.status === 400) {
+        if (error?.response?.data?.code === 'STUDY_CONFIRMED') {
+          toast.error('스터디원이 확정된 상태에서는 글을 삭제할 수 없습니다.');
+          return;
+        }
+        toast.error('입력하신 정보를 다시 확인해주세요.');
+      } else if (error?.response?.status === 404) {
         toast.error('이미 삭제되거나 잘못된 게시글입니다. 화면을 새로고침해주세요.');
-      } else if (error?.response?.status === 403) {
-        toast.error('글 삭제는 글 게시자만 가능합니다.');
       } else {
         toast.error('삭제에 실패했습니다. 잠시 후 다시 시도해주세요.');
       }
