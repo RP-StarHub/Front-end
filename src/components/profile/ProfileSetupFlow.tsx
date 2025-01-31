@@ -72,8 +72,9 @@ export default function ProfileSetupFlow({ onComplete }: ProfileSetupFlowProps) 
       setUser(
         {
           username: user!.username,
+          isProfileComplete: true,
           nickname: profileResponse.data.data.nickname,
-          isProfileComplete: true
+          profileImage: profileResponse.data.data.profileImage
         },
         accessToken!
       );

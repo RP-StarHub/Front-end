@@ -89,8 +89,9 @@ const Signup = () => {
         setUser(
           {
             username: loginData.username,
-            nickname: null,
-            isProfileComplete: false
+            isProfileComplete: false,
+            nickname: '',
+            profileImage: '',
           },
           accessToken
         );

@@ -62,8 +62,10 @@ export interface MeetingInfo {
   goal: string;
   otherInfo: string;
   techStacks: string[];
+  updatedAt: string;
   creator: {
     nickname: string;
+    profileImage: string;
   }
 }
 
@@ -98,6 +100,8 @@ export interface MeetingDetailInfo {
 
 export interface MeetingMemberInfo {
   name: string;
+  profileImage: string;
+  nickname: string;
   age: number;
   bio: string;
   phoneNumber: string;

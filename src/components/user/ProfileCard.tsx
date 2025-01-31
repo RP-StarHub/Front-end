@@ -4,6 +4,8 @@ import MessageIcon from "../../assets/icons/MessageIcon.png";
 
 interface ProfileCardProps {
   name: string;
+  nickname: string;
+  profileImage: string;
   bio: string;
   email: string;
   phoneNumber: string;
@@ -20,6 +22,8 @@ const formatPhoneNumber = (phoneNumber: string): string => {
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
   name,
+  nickname,
+  profileImage,
   bio,
   email,
   phoneNumber,
@@ -27,6 +31,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 }) => {
   return (
     <div className="flex flex-col justify-center items-center bg-white rounded-2xl shadow-lg p-8 w-2/3">
+      <img
+        src={profileImage}
+        alt="Profile"
+        className="w-40 h-40 rounded-full object-cover mb-6"
+      />
+
       <div className='flex items-center justify-center'>
         <p className='font-scdream6 text-bold text-label mr-2'>
           {name}
@@ -35,6 +45,10 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           {age}세
         </p>
       </div>
+
+      <p className='font-scdream4 text-bold text-regular my-2'>
+        {nickname}
+      </p>
 
       <p className='font-scdream4 text-bold text-regular my-2'>
         "{bio}"

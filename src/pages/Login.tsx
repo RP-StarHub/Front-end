@@ -59,8 +59,9 @@ const Login = () => {
       setUser(
         {
           username: data.username,
-          nickname: data.nickname,
           isProfileComplete: data.isProfileComplete,
+          nickname: data.nickname || '',
+          profileImage: data.profileImage || '', 
         },
         accessToken
       );

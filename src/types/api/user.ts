@@ -11,7 +11,7 @@ export interface CheckUsernameRequest {
 }
 
 export interface CreateProfileRequest {
-  profileImage?: string;
+  profileImage: string;
   nickname: string;
   name: string;
   age: number;
@@ -39,12 +39,14 @@ export interface CheckUsernameData {
 export interface ProfileData {
   id: number;
   nickname: string;
+  profileImage: string;
 }
 
 export interface LoginUserData {
   username: string;
-  nickname: string;
   isProfileComplete: boolean;
+  nickname?: string;
+  profileImage?: string;
   accessToken: string;
   refreshToken: string;
 }

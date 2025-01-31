@@ -10,6 +10,7 @@ export interface User {
 
 export interface UserInfo {
   username: string;
-  nickname: string | null;
   isProfileComplete: boolean;
+  nickname: string;
+  profileImage: string;
 }
