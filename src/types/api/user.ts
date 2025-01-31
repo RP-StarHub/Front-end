@@ -45,7 +45,7 @@ export interface ProfileData {
 export interface LoginUserData {
   username: string;
   isProfileComplete: boolean;
-  nickname: string;
+  nickname?: string;
   profileImage?: string;
   accessToken: string;
   refreshToken: string;
