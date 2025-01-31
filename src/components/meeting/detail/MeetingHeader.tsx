@@ -84,7 +84,7 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
             className="w-8 h-8 rounded-full object-cover mr-2"
           />
           <p className="text-label font-scdream6 text-sub">
-            {postInfo.creator.nickname} | {postInfo.updatedAt}
+            {postInfo.creator.nickname} | {new Date(postInfo.updatedAt).toLocaleDateString('ko-KR')}
           </p>
         </div>
         <div onClick={handleLikeClick} className='flex items-center gap-4'>
