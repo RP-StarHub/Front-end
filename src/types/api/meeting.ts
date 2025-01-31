@@ -101,6 +101,7 @@ export interface MeetingDetailInfo {
 export interface MeetingMemberInfo {
   name: string;
   profileImage: string;
+  nickname: string;
   age: number;
   bio: string;
   phoneNumber: string;

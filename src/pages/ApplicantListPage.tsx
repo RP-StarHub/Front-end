@@ -53,6 +53,8 @@ const ApplicantListPage: React.FC = () => {
           <div key={member.email} className="flex justify-center">
             <ProfileCard
               name={member.name}
+              nickname={member.nickname}
+              profileImage={member.profileImage}
               bio={member.bio}
               email={member.email}
               phoneNumber={member.phoneNumber}

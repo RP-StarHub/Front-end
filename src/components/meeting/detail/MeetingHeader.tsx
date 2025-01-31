@@ -38,7 +38,7 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
       navigate('/login');
       return;
     }
-    
+
     e.stopPropagation();
     toggleLike.mutate(likeDto.isLiked || false);
   };
@@ -77,10 +77,16 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
       </div>
 
       <div className='flex justify-between items-center'>
-        <p className="text-label font-scdream6 text-sub mt-2 mb-6">
-          {/* {postInfo.creator.username} | {postInfo.createdAt} */}
-          {postInfo.creator.nickname}
-        </p>
+        <div className='flex items-center my-4'>
+          <img
+            src={postInfo.creator.profileImage}
+            alt="Profile"
+            className="w-8 h-8 rounded-full object-cover mr-2"
+          />
+          <p className="text-label font-scdream6 text-sub">
+            {postInfo.creator.nickname} | {postInfo.updatedAt}
+          </p>
+        </div>
         <div onClick={handleLikeClick} className='flex items-center gap-4'>
           {isLiked ?
             <Favorite sx={{ fontSize: 28, color: "#313866" }} /> :

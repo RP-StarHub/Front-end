@@ -57,14 +57,14 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
       </div>
     );
   }
-  
+
   return (
     <div className='w-full mt-8'>
       {applications.map((application) => (
         <div
           key={application.id}
           className={`
-            px-6 py-4 my-8
+            px-10 py-6 my-8
             border-4 border-sub rounded-2xl 
             font-scdream4 text-regular text-bold cursor-pointer
             ${selectedApplication.includes(application.id)
@@ -75,7 +75,14 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
           `}
           onClick={() => handleApplicationClick(application.id)}
         >
-          <p className='mb-4'>{application.applicant.nickname}</p>
+          <div className='flex items-center mb-6'>
+            <img
+              src={application.applicant.profileImage}
+              alt="Profile"
+              className="w-8 h-8 rounded-full object-cover mr-2"
+            />
+            <p className='font-scdream6'>{application.applicant.nickname}</p>
+          </div>
           <p>{application.content}</p>
         </div>
       ))}

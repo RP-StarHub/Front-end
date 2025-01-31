@@ -75,6 +75,7 @@ const MyApplication: React.FC<MyApplicationProps> = ({ meetingId }) => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             fullWidth
+            bordered
             borderColor='border-sub'
             className="min-h-[150px] mb-4 bg-gray-100"
           />
@@ -89,7 +90,14 @@ const MyApplication: React.FC<MyApplicationProps> = ({ meetingId }) => {
         </div>
       ) : (
         <div className='px-6 py-4 my-4 text-regular text-bold border-4 border-sub rounded-2xl'>
-          <p className='mb-4'>{application.applicant.nickname}</p>
+          <div className='flex items-center mb-6'>
+            <img
+              src={application.applicant.profileImage}
+              alt="Profile"
+              className="w-8 h-8 rounded-full object-cover mr-2"
+            />
+            <p className='font-scdream6'>{application.applicant.nickname}</p>
+          </div>
           <p>{application.content}</p>
         </div>
       )}
