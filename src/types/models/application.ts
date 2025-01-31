@@ -4,5 +4,6 @@ export interface Application {
   updatedAt: string;
   applicant : {
     nickname: string;
+    profileImage: string;
   }
 }

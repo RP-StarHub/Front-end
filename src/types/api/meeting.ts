@@ -64,6 +64,7 @@ export interface MeetingInfo {
   techStacks: string[];
   creator: {
     nickname: string;
+    profileImage: string;
   }
 }
 
@@ -98,6 +99,7 @@ export interface MeetingDetailInfo {
 
 export interface MeetingMemberInfo {
   name: string;
+  profileImage: string;
   age: number;
   bio: string;
   phoneNumber: string;

@@ -50,6 +50,7 @@ export interface MeetingDetail extends BaseMeeting {
   isConfirmed: boolean;
   creator: {
     nickname: string;
+    profileImage: string;
   }
 }
 
