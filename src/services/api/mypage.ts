@@ -1,11 +1,11 @@
-import { 
+import { myDetail, myRecent } from "../../assets/data/mypageData";
+import {
   GetMyMeetingDetail,
   GetMyMeetingRecent,
-  GetMyUser, 
-  UserProfilePatch 
+  GetMyUser,
+  UserProfilePatch
 } from "../../types/api/mypage"
 import { axiosInstance } from "./axios"
-
 
 export const mypageService = {
   getMyUser: () => {
@@ -64,5 +64,69 @@ export const mypageService = {
         params: { page }
       }
     );
+  },
+}
+
+export const mockMypageService = {
+  getMyUser: () => {
+    return Promise.resolve({
+      "id": 1,
+      "profileImage": "string",
+      "name": "류지예",
+      "nickname": "다라다라",
+      "age": 25,
+      "phoneNumber": "01012345678",
+      "email": "devdaradara@gmail.com",
+      "bio": "바이오"
+    });
+  },
+
+  getMyCreateMeetingRecent: () => {
+    return Promise.resolve({
+      myRecent
+    });
+  },
+
+  getMyLikeMeetingRecent: () => {
+    return Promise.resolve({
+      myRecent
+    });
+  },
+
+  getMyApplyMeetingRecent: () => {
+    return Promise.resolve({
+      myRecent
+    });
+  },
+
+  patchMyUser: (data: UserProfilePatch) => {
+    return Promise.resolve({
+      "id": 1,
+      "profileImage": "string",
+      "name": "류지예",
+      "nickname": "다라다라",
+      "age": 25,
+      "phoneNumber": "01012345678",
+      "email": "devdaradara@gmail.com",
+      "bio": "바이오"
+    });
+  },
+
+  getMyCreateMeeting: (page: number) => {
+    return Promise.resolve({
+      myDetail
+    });
+  },
+
+  getMyLikeMeeting: (page: number) => {
+    return Promise.resolve({
+      myDetail
+    });
+  },
+
+  getMyApplyMeeting: (page: number) => {
+    return Promise.resolve({
+      myDetail
+    });
   },
 }
