@@ -71,7 +71,7 @@ export const mockMypageService = {
   getMyUser: () => {
     return Promise.resolve({
       "id": 1,
-      "profileImage": "string",
+      "profileImage": "/static/media/profile2.7a0e468ce59adc3ec8f3.png",
       "name": "류지예",
       "nickname": "다라다라",
       "age": 25,
