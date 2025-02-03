@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { mockMypageService, mypageService } from "../../services/api/mypage";
 import { UserProfilePatch } from "../../types/api/mypage";
 import toast from "react-hot-toast";
+import { useAuthStore } from "../../store";
 
 export const useMyProfile = () => {
   return useQuery({
@@ -53,11 +54,25 @@ export const useRecentAppliedMeetings = () => {
 
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
+  const setUser = useAuthStore((state) => state.setUser);
+  const accessToken = useAuthStore((state) => state.accessToken);
 
   return useMutation({
     mutationFn: (data: UserProfilePatch) => mypageService.patchMyUser(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+
+      // auth store의 user 정보 업데이트
+      if (accessToken) {
+        const profileData = response.data.data;
+        setUser({
+          username: profileData.nickname,
+          nickname: profileData.nickname,
+          profileImage: profileData.profileImage,
+          isProfileComplete: true
+        }, accessToken);
+      }
+
       toast.success('프로필이 성공적으로 수정되었습니다.');
     },
     onError: (error: any) => {
