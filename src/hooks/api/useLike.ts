@@ -20,6 +20,15 @@ export const useLike = (meetingId: number) => {
     onSuccess: (_, isLiked) => {
       queryClient.invalidateQueries({ queryKey: ['meetings'] });
       queryClient.invalidateQueries({ queryKey: ['meeting'] });
+
+      // 마이페이지 관련 캐시 
+      queryClient.invalidateQueries({ queryKey: ['myRecentLikedMeetings'] });
+      queryClient.invalidateQueries({ queryKey: ['myLikedMeetings'] });
+      queryClient.invalidateQueries({ queryKey: ['myRecentAppliedMeetings'] });
+      queryClient.invalidateQueries({ queryKey: ['myAppliedMeetings'] });
+      queryClient.invalidateQueries({ queryKey: ['myRecentCreatedMeetings'] });
+      queryClient.invalidateQueries({ queryKey: ['myCreatedMeetings'] });
+      
       toast.success(isLiked ? '관심 모임글이 취소되었습니다.' : '관심 모임글로 등록했습니다.');
     },
     onError: (error: any) => {

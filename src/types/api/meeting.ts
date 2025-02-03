@@ -1,11 +1,10 @@
+import { LikeDto, Pageable, Sort } from "../models/common";
 import {
   ApplicationStatus,
   DURATION, 
-  LikeDto, 
   Meeting,
   MeetingDetail,
   RecruitmentType, 
-  Sort, 
   UserType
 } from "../models/meeting";
 import { ApiResponse } from "./response";
@@ -71,14 +70,7 @@ export interface MeetingInfo {
 
 export interface MeetingList {
   content: Meeting[];
-  pageable: {
-    sort: Sort;
-    offset: number;
-    pageSize: number;
-    pageNumber: number;
-    paged: boolean;
-    unpaged: boolean;
-  },
+  pageable: Pageable;
   totalElements: number;
   totalPages: number;
   last: boolean;

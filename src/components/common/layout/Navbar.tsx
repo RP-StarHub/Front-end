@@ -50,14 +50,21 @@ const Navbar = () => {
         <div className='flex items-center'>
           {user ? (
             <>
-              <img
-                src={user.profileImage}
-                alt="Profile"
-                className="w-12 h-12 rounded-full object-cover mr-2"
-              />
-              <span className='text-white font-scdream4 cursor-pointer mx-4 text-label'>
-                {user.nickname} 님
-              </span>
+              <div 
+                className='flex items-center'
+                onClick={() => { navigate('/mypage') }}
+              >
+                <img
+                  src={user.profileImage}
+                  alt="Profile"
+                  className="w-12 h-12 rounded-full object-cover mr-2"
+                />
+                <span
+                  className='text-white font-scdream4 cursor-pointer mx-4 text-label'
+                >
+                  {user.nickname} 님
+                </span>
+              </div>
               <span
                 className='text-white font-scdream4 cursor-pointer mx-4 text-label'
                 onClick={handleLogout}
