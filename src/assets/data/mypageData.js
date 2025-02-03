@@ -1,10 +1,12 @@
+import { DURATION, RecruitmentType } from "../../types/models/meeting"
+
 export const myRecent = [
   {
     "id": 29,
     "title": "ㅎㅇ",
-    "recruitmentType": "STUDY",
+    "recruitmentType": RecruitmentType.STUDY,
     "maxParticipants": 3,
-    "duration": "ONE_WEEK",
+    "duration": DURATION.ONE_WEEK,
     "endDate": "2025-03-25",
     "techStacks": [
       "React",
@@ -24,9 +26,9 @@ export const myRecent = [
   {
     "id": 28,
     "title": "ㅎㅇ",
-    "recruitmentType": "STUDY",
+    "recruitmentType": RecruitmentType.STUDY,
     "maxParticipants": 3,
-    "duration": "ONE_WEEK",
+    "duration": DURATION.ONE_WEEK,
     "endDate": "2025-03-25",
     "techStacks": [
       "React",
@@ -46,9 +48,9 @@ export const myRecent = [
   {
     "id": 27,
     "title": "ㅎㅇ",
-    "recruitmentType": "STUDY",
+    "recruitmentType": RecruitmentType.STUDY,
     "maxParticipants": 3,
-    "duration": "ONE_WEEK",
+    "duration": DURATION.ONE_WEEK,
     "endDate": "2025-03-25",
     "techStacks": [
       "React",
@@ -72,9 +74,9 @@ export const myDetail = {
     {
       "id": 29,
       "title": "ㅎㅇ",
-      "recruitmentType": "STUDY",
+      "recruitmentType": RecruitmentType.STUDY,
       "maxParticipants": 3,
-      "duration": "ONE_WEEK",
+      "duration": DURATION.ONE_WEEK,
       "endDate": "2025-03-25",
       "techStacks": [
         "React",
@@ -94,9 +96,9 @@ export const myDetail = {
     {
       "id": 28,
       "title": "ㅎㅇ",
-      "recruitmentType": "STUDY",
+      "recruitmentType": RecruitmentType.STUDY,
       "maxParticipants": 3,
-      "duration": "ONE_WEEK",
+      "duration": DURATION.ONE_WEEK,
       "endDate": "2025-03-25",
       "techStacks": [
         "React",
@@ -116,9 +118,9 @@ export const myDetail = {
     {
       "id": 27,
       "title": "ㅎㅇ",
-      "recruitmentType": "STUDY",
+      "recruitmentType": RecruitmentType.STUDY,
       "maxParticipants": 3,
-      "duration": "ONE_WEEK",
+      "duration": DURATION.ONE_WEEK,
       "endDate": "2025-03-25",
       "techStacks": [
         "React",
@@ -138,9 +140,9 @@ export const myDetail = {
     {
       "id": 26,
       "title": "ㅎㅇ",
-      "recruitmentType": "STUDY",
+      "recruitmentType": RecruitmentType.STUDY,
       "maxParticipants": 3,
-      "duration": "ONE_WEEK",
+      "duration": DURATION.ONE_WEEK,
       "endDate": "2025-03-25",
       "techStacks": [
         "React",
@@ -160,9 +162,9 @@ export const myDetail = {
     {
       "id": 25,
       "title": "ㅎㅇ",
-      "recruitmentType": "STUDY",
+      "recruitmentType": RecruitmentType.STUDY,
       "maxParticipants": 3,
-      "duration": "ONE_WEEK",
+      "duration": DURATION.ONE_WEEK,
       "endDate": "2025-03-25",
       "techStacks": [
         "React",

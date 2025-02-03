@@ -83,19 +83,28 @@ export const mockMypageService = {
 
   getMyCreateMeetingRecent: () => {
     return Promise.resolve({
-      myRecent
+      status: 200,
+      code: "SUCCESS_GET_CREATED_RECENT_MEETINGS",
+      message: "내가 작성한 모임 최신 3개를 성공적으로 불러왔습니다.",
+      data: myRecent
     });
   },
 
   getMyLikeMeetingRecent: () => {
     return Promise.resolve({
-      myRecent
+      status: 200,
+      code: "SUCCESS_GET_CREATED_RECENT_MEETINGS",
+      message: "내가 작성한 모임 최신 3개를 성공적으로 불러왔습니다.",
+      data: myRecent
     });
   },
 
   getMyApplyMeetingRecent: () => {
     return Promise.resolve({
-      myRecent
+      status: 200,
+      code: "SUCCESS_GET_CREATED_RECENT_MEETINGS",
+      message: "내가 작성한 모임 최신 3개를 성공적으로 불러왔습니다.",
+      data: myRecent
     });
   },
 
@@ -114,19 +123,28 @@ export const mockMypageService = {
 
   getMyCreateMeeting: (page: number) => {
     return Promise.resolve({
-      myDetail
+      status: 200,
+      code: "SUCCESS_GET_LIKED_MEETINGS",
+      message: "내가 관심 있는 모임 목록을 성공적으로 불러왔습니다.",
+      data: myDetail
     });
   },
 
   getMyLikeMeeting: (page: number) => {
     return Promise.resolve({
-      myDetail
+      status: 200,
+      code: "SUCCESS_GET_LIKED_MEETINGS",
+      message: "내가 관심 있는 모임 목록을 성공적으로 불러왔습니다.",
+      data: myDetail
     });
   },
 
   getMyApplyMeeting: (page: number) => {
     return Promise.resolve({
-      myDetail
+      status: 200,
+      code: "SUCCESS_GET_LIKED_MEETINGS",
+      message: "내가 관심 있는 모임 목록을 성공적으로 불러왔습니다.",
+      data: myDetail
     });
   },
 }
