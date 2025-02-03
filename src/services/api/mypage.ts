@@ -16,19 +16,19 @@ export const mypageService = {
 
   getMyCreateMeetingRecent: () => {
     return axiosInstance.get<GetMyMeetingRecent>(
-      'api/v1/mypage/meeting/created/recent'
+      'api/v1/mypage/meetings/created/recent'
     );
   },
 
   getMyLikeMeetingRecent: () => {
     return axiosInstance.get<GetMyMeetingRecent>(
-      'api/v1/mypage/meeting/liked/recent'
+      'api/v1/mypage/meetings/liked/recent'
     );
   },
 
   getMyApplyMeetingRecent: () => {
     return axiosInstance.get<GetMyMeetingRecent>(
-      'api/v1/mypage/meeting/applied/recent'
+      'api/v1/mypage/meetings/applied/recent'
     );
   },
 
@@ -41,7 +41,7 @@ export const mypageService = {
 
   getMyCreateMeeting: (page: number) => {
     return axiosInstance.get<GetMyMeetingDetail>(
-      'api/v1/mypage/meeting/created',
+      'api/v1/mypage/meetings/created',
       {
         params: { page }
       }
@@ -50,7 +50,7 @@ export const mypageService = {
 
   getMyLikeMeeting: (page: number) => {
     return axiosInstance.get<GetMyMeetingDetail>(
-      'api/v1/mypage/meeting/liked',
+      'api/v1/mypage/meetings/liked',
       {
         params: { page }
       }
@@ -59,7 +59,7 @@ export const mypageService = {
 
   getMyApplyMeeting: (page: number) => {
     return axiosInstance.get<GetMyMeetingDetail>(
-      'api/v1/mypage/meeting/applied',
+      'api/v1/mypage/meetings/applied',
       {
         params: { page }
       }
