@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Edit, Star } from '@mui/icons-material';
-import { useMyProfile } from '../../hooks/api/useMypage';
+import { useMyProfile, useUpdateProfile } from '../../hooks/api/useMypage';
 import TextInput from '../../components/common/ui/TextInput';
 import TextArea from '../../components/common/ui/TextArea';
 import Button from '../../components/common/ui/Button';
 import PhotoUploadStep from '../../components/profile/steps/PhotoUploadStep';
-import toast from 'react-hot-toast';
 
 interface FormData {
   age: string;
@@ -20,6 +19,7 @@ interface FormData {
 function ProfileEditPage() {
   const navigate = useNavigate();
   const { data: profileData, isLoading } = useMyProfile();
+  const { mutate: updateProfile } = useUpdateProfile();
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     age: '',
@@ -37,7 +37,7 @@ function ProfileEditPage() {
         age: profileData.age?.toString() || '',
         email: profileData.email || '',
         phoneNumber: profileData.phoneNumber || '',
-        nickname: profileData.name || '',
+        nickname: profileData.nickname || '',
         bio: profileData.bio || '',
         profileImage: profileData.profileImage || ''
       });
@@ -66,12 +66,21 @@ function ProfileEditPage() {
   const handleSubmit = async () => {
     if (!validateForm()) return;
 
-    try {
-      navigate('/mypage');
-      toast.success('프로필이 수정되었습니다.')
-    } catch (error) {
-      console.error('프로필 수정 실패:', error);
-    }
+    const updateData = {
+      age: parseInt(formData.age) || undefined,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      nickname: formData.nickname,
+      name: formData.nickname,
+      bio: formData.bio || undefined,
+      profileImage: formData.profileImage || undefined
+    };
+
+    updateProfile(updateData, {
+      onSuccess: () => {
+        navigate('/mypage');
+      }
+    });
   };
 
   const handleCancel = () => {
