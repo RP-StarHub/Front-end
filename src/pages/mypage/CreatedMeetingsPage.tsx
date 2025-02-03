@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCreatedMeetings } from '../../hooks/api/useMypage';
 import MeetingListLayout from '../../components/mypage/MeetingListLayout';
 
 function CreatedMeetingsPage() {
   const [page, setPage] = useState(1);
-  const totalPages = 1;
-  const { data, isLoading } = useCreatedMeetings(page);
+  const { data, isLoading, refetch } = useCreatedMeetings(page);
+
+  useEffect(() => {
+    refetch();
+  }, [page, refetch]);
 
   return (
     <MeetingListLayout
@@ -13,7 +16,7 @@ function CreatedMeetingsPage() {
       meetings={data?.content || []}
       isLoading={isLoading}
       page={page}
-      totalPages={totalPages}
+      totalPages={data?.totalPages || 1}
       onPageChange={setPage}
     />
   );

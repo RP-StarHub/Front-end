@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLikedMeetings } from '../../hooks/api/useMypage';
 import MeetingListLayout from '../../components/mypage/MeetingListLayout';
 
 function LikedMeetingsPage() {
   const [page, setPage] = useState(1);
-  const totalPages = 1;
-  const { data, isLoading } = useLikedMeetings(page);
+  const { data, isLoading, refetch } = useLikedMeetings(page);
+
+  useEffect(() => {
+    refetch();
+  }, [page, refetch]);
 
   return (
     <MeetingListLayout
@@ -13,7 +16,7 @@ function LikedMeetingsPage() {
       meetings={data?.content || []}
       isLoading={isLoading}
       page={page}
-      totalPages={totalPages}
+      totalPages={data?.totalPages || 1}
       onPageChange={setPage}
     />
   );
