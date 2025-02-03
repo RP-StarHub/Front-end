@@ -24,11 +24,12 @@ const RecentMeetingSection = ({ title, meetings, viewAllLink }: RecentMeetingSec
 
       <div className="w-full h-px bg-bold mt-4 mb-6" />
 
-      <div className="flex space-between gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
         {meetings.map((meeting) => (
           <InformCard
             key={meeting.id}
             meeting={meeting}
+            fullWidth
           />
         ))}
       </div>
