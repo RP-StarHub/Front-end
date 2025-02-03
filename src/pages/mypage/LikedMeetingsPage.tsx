@@ -10,7 +10,7 @@ function LikedMeetingsPage() {
   return (
     <MeetingListLayout
       title="내가 관심있는 글"
-      meetings={data?.data.content || []}
+      meetings={data?.content || []}
       isLoading={isLoading}
       page={page}
       totalPages={totalPages}

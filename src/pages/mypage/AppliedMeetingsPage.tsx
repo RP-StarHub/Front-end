@@ -10,7 +10,7 @@ function AppliedMeetingsPage() {
   return (
     <MeetingListLayout
       title="내가 참여한 모임"
-      meetings={data?.data.content || []}
+      meetings={data?.content || []}
       isLoading={isLoading}
       page={page}
       totalPages={totalPages}

@@ -10,7 +10,7 @@ function CreatedMeetingsPage() {
   return (
     <MeetingListLayout
       title="내가 작성한 글"
-      meetings={data?.data.content || []}
+      meetings={data?.content || []}
       isLoading={isLoading}
       page={page}
       totalPages={totalPages}

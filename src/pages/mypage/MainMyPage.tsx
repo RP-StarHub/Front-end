@@ -1,7 +1,12 @@
 import React from 'react'
 import MyProfile from '../../components/mypage/MyProfile'
 import RecentMeetingSection from '../../components/mypage/RecentMeetingSection';
-import { useMyProfile, useRecentAppliedMeetings, useRecentCreatedMeetings, useRecentLikedMeetings } from '../../hooks/api/useMypage'
+import {
+  useMyProfile,
+  useRecentAppliedMeetings,
+  useRecentCreatedMeetings,
+  useRecentLikedMeetings
+} from '../../hooks/api/useMypage'
 
 function MainMyPage() {
   const { data: profileData, isLoading: profileLoading } = useMyProfile();
@@ -22,31 +27,30 @@ function MainMyPage() {
       <MyProfile profile={profileData} />
 
       <div className='flex flex-col gap-8 mt-12'>
-      {createdData?.data && (
-        <RecentMeetingSection
-          title='내가 작성한 글'
-          meetings={createdData.data}
-          viewAllLink='/mypage/meetings/created'
-        />
-      )}
+        {createdData && (
+          <RecentMeetingSection
+            title='내가 작성한 글'
+            meetings={createdData}
+            viewAllLink='/mypage/meetings/created'
+          />
+        )}
 
-      {likedData?.data && (
-        <RecentMeetingSection
-          title='내가 관심있는 글'
-          meetings={likedData.data}
-          viewAllLink='/mypage/meetings/liked'
-        />
-      )}
+        {likedData && (
+          <RecentMeetingSection
+            title='내가 관심있는 글'
+            meetings={likedData}
+            viewAllLink='/mypage/meetings/liked'
+          />
+        )}
 
-      {appliedData?.data && (
-        <RecentMeetingSection
-          title='내가 참여한 모임'
-          meetings={appliedData.data}
-          viewAllLink='/mypage/meetings/applied'
-        />
-      )}
+        {appliedData && (
+          <RecentMeetingSection
+            title='내가 참여한 모임'
+            meetings={appliedData}
+            viewAllLink='/mypage/meetings/applied'
+          />
+        )}
       </div>
-
     </div>
   )
 }
