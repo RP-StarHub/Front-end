@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Meeting } from '../../types/models/meeting';
 import { MapPosition } from '../../types/models/common';
@@ -11,47 +11,45 @@ interface EventMarkerProps {
 }
 
 const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     const marker = new naver.maps.Marker({
       position: new naver.maps.LatLng(position.latitude, position.longitude),
       map
     });
 
-    const content = document.createElement('div');
-    content.innerHTML = ReactDOMServer.renderToString(
-      <OverCard
-        meeting={meeting}
-        onClose={() => null}
-        isMapOverlay={true}
-      />
-    );
+    const closeInfoWindow = () => {
+      infoWindow.close();
+    };
 
     const infoWindow = new naver.maps.InfoWindow({
-      content: content,
-      backgroundColor: "transparent",
-      borderColor: "transparent",
-      disableAnchor: true
+      content: ReactDOMServer.renderToString(
+        <OverCard
+          meeting={meeting}
+          onClose={closeInfoWindow}
+          isMapOverlay
+        />
+      ),
+      backgroundColor: '#fff',
+      borderColor: '#7C8BBE',
+      borderWidth: 1,
+      anchorSkew: true,
+      anchorSize: new naver.maps.Size(12, 12),
+      anchorColor: '#fff',
+      pixelOffset: new naver.maps.Point(0, -8)
     });
 
     naver.maps.Event.addListener(marker, 'click', () => {
-      setIsVisible(!isVisible);
-      if (infoWindow.getMap()) {
-        infoWindow.close();
-      } else {
-        infoWindow.open(map, marker);
-      }
+      infoWindow.open(map, marker);
     });
 
     naver.maps.Event.addListener(marker, 'mouseover', () => {
-      if (!isVisible) {
+      if (!infoWindow.getMap()) {
         infoWindow.open(map, marker);
       }
     });
 
     naver.maps.Event.addListener(marker, 'mouseout', () => {
-      if (!isVisible) {
+      if (!infoWindow.getMap()) {
         infoWindow.close();
       }
     });
@@ -60,9 +58,9 @@ const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
       marker.setMap(null);
       infoWindow.close();
     };
-  }, [meeting, position, map, isVisible]);
+  }, [meeting, position, map]);
 
-  return <></>;
+  return null;
 };
 
 export default EventMarker;
