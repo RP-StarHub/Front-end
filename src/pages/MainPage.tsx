@@ -16,7 +16,6 @@ const MainPage: React.FC = () => {
   
   const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
 
-  // 지도 초기화
   useEffect(() => {
     if (!mapRef.current || !canShowMap || !window.naver) return;
 
@@ -37,25 +36,6 @@ const MainPage: React.FC = () => {
     };
   }, [canShowMap, location]);
 
-  // 마커 생성 및 클릭 이벤트 관리
-  useEffect(() => {
-    if (!naverMap) return;
-
-    meetings.forEach(meeting => {
-      const marker = new naver.maps.Marker({
-        position: new naver.maps.LatLng(meeting.latitude, meeting.longitude),
-        map: naverMap,
-        title: meeting.title,
-        clickable: true
-      });
-
-      naver.maps.Event.addListener(marker, 'click', () => {
-        console.log('마커 클릭:', meeting.title);
-      });
-    });
-
-  }, [naverMap, meetings]);
-
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -70,11 +50,19 @@ const MainPage: React.FC = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-      <div 
-        ref={mapRef} 
-        id="map" 
-        style={{ width: "66%", height: "90vh", position: "fixed", right: 0 }}
-      />
+      <div ref={mapRef} id="map" style={{ width: "66%", height: "90vh", position: "fixed", right: 0 }}>
+        {naverMap && meetings.map((meeting) => (
+          <EventMarker
+            key={meeting.id}
+            meeting={meeting}
+            position={{
+              latitude: meeting.latitude,
+              longitude: meeting.longitude
+            }}
+            map={naverMap}
+          />
+        ))}
+      </div>
     </div>
   );
 };

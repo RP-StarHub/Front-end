@@ -1,68 +1,68 @@
-import React, { useState } from 'react';
-import { MapMarker } from "react-kakao-maps-sdk";
-import { MapPosition, KakaoLatLng, MarkerState } from '../../types/models/common'
-import OverCard from './OverCard';
+import React, { useEffect, useState } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { Meeting } from '../../types/models/meeting';
+import { MapPosition } from '../../types/models/common';
+import OverCard from './OverCard';
 
 interface EventMarkerProps {
   meeting: Meeting;
   position: MapPosition;
-  key: number;
+  map: naver.maps.Map;
 }
 
-const EventMarker = React.memo<EventMarkerProps>(({
-  position,
-  meeting,
-}) => {
-  const [markerState, setMarkerState] = useState<MarkerState>({
-    isVisible: false,
-    isClicked: false
-  });
+const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-  const handleMarkerClick = () => {
-    setMarkerState(prev => ({
-      ...prev,
-      isClicked: !prev.isClicked
-    }));
-  };
+  useEffect(() => {
+    const marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(position.latitude, position.longitude),
+      map
+    });
 
-  const handleMarkerMouseOver = () => {
-    if (!markerState.isClicked) {
-      setMarkerState(prev => ({ ...prev, isVisible: true }));
-    }
-  };
+    const content = document.createElement('div');
+    content.innerHTML = ReactDOMServer.renderToString(
+      <OverCard
+        meeting={meeting}
+        onClose={() => null}
+        isMapOverlay={true}
+      />
+    );
 
-  const handleMarkerMouseOut = () => {
-    if (!markerState.isClicked) {
-      setMarkerState(prev => ({ ...prev, isVisible: false }));
-    }
-  };
+    const infoWindow = new naver.maps.InfoWindow({
+      content: content,
+      backgroundColor: "transparent",
+      borderColor: "transparent",
+      disableAnchor: true
+    });
 
-  const handleClose = () => {
-    setMarkerState({ isVisible: false, isClicked: false });
-  };
+    naver.maps.Event.addListener(marker, 'click', () => {
+      setIsVisible(!isVisible);
+      if (infoWindow.getMap()) {
+        infoWindow.close();
+      } else {
+        infoWindow.open(map, marker);
+      }
+    });
 
-  const kakaoPosition: KakaoLatLng = {
-    lat: position.latitude,
-    lng: position.longitude
-  };
+    naver.maps.Event.addListener(marker, 'mouseover', () => {
+      if (!isVisible) {
+        infoWindow.open(map, marker);
+      }
+    });
 
-  return (
-    <MapMarker
-      key={meeting.id}
-      position={kakaoPosition}
-      onClick={handleMarkerClick}
-      onMouseOver={handleMarkerMouseOver}
-      onMouseOut={handleMarkerMouseOut}
-    >
-      {markerState.isVisible && (
-        <OverCard
-          meeting={meeting}
-          onClose={handleClose}
-        />
-      )}
-    </MapMarker>
-  );
-});
+    naver.maps.Event.addListener(marker, 'mouseout', () => {
+      if (!isVisible) {
+        infoWindow.close();
+      }
+    });
+
+    return () => {
+      marker.setMap(null);
+      infoWindow.close();
+    };
+  }, [meeting, position, map, isVisible]);
+
+  return <></>;
+};
 
 export default EventMarker;
