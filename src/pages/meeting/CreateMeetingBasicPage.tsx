@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from "react";
-import { Map as KakaoMap, MapMarker } from "react-kakao-maps-sdk";
+import React, { useEffect, useRef, useState } from "react";
 import { Star, KeyboardArrowDown } from "@mui/icons-material";
 import { AddressSearch } from "../../components/meeting/form/AddressSearch";
 import Button from "../../components/common/ui/Button";
@@ -16,12 +15,21 @@ import { useMeetingFormStore } from "../../store/meetingForm";
 import { useGetTechStack } from "../../hooks/api/useTechstack";
 import toast from "react-hot-toast";
 
+declare global {
+  interface Window {
+    naver: any;
+  }
+}
+
 const CreateMeetingBasicPage = () => {
   const navigation = useNavigate();
   const { location: userLocation, loaded } = useGeolocation();
   const { data: techStacksData } = useGetTechStack();
-
-  // Refs for dropdown positioning
+  
+  const mapRef = useRef<HTMLDivElement>(null);
+  const [naverMap, setNaverMap] = useState<naver.maps.Map | null>(null);
+  const [marker, setMarker] = useState<naver.maps.Marker | null>(null);
+  
   const durationInputRef = useRef<HTMLDivElement>(null);
   const participantsInputRef = useRef<HTMLDivElement>(null);
   const techStackInputRef = useRef<HTMLDivElement>(null);
@@ -44,10 +52,47 @@ const CreateMeetingBasicPage = () => {
     validateBasicInfo
   } = useMeetingFormStore();
 
-  const [isRecruitmentDropdownOpen, setIsRecruitmentDropdownOpen] = React.useState(false);
-  const [isDurationModalOpen, setIsDurationModalOpen] = React.useState(false);
-  const [isParticipantsModalOpen, setIsParticipantsModalOpen] = React.useState(false);
-  const [isTechStackModalOpen, setIsTechStackModalOpen] = React.useState(false);
+  const [isRecruitmentDropdownOpen, setIsRecruitmentDropdownOpen] = useState(false);
+  const [isDurationModalOpen, setIsDurationModalOpen] = useState(false);
+  const [isParticipantsModalOpen, setIsParticipantsModalOpen] = useState(false);
+  const [isTechStackModalOpen, setIsTechStackModalOpen] = useState(false);
+
+  // 네이버 지도 초기화
+  useEffect(() => {
+    if (!mapRef.current || !location.latitude || !location.longitude || !window.naver) return;
+
+    const mapOptions = {
+      center: new window.naver.maps.LatLng(location.latitude, location.longitude),
+      zoom: 15,
+      zoomControl: true,
+      zoomControlOptions: {
+        position: naver.maps.Position.TOP_RIGHT
+      }
+    };
+
+    const map = new window.naver.maps.Map(mapRef.current, mapOptions);
+    const newMarker = new window.naver.maps.Marker({
+      position: new window.naver.maps.LatLng(location.latitude, location.longitude),
+      map
+    });
+
+    setNaverMap(map);
+    setMarker(newMarker);
+
+    return () => {
+      newMarker.setMap(null);
+      map.destroy();
+    };
+  }, [location.latitude, location.longitude]);
+
+  // 위치 변경 시 지도와 마커 위치만 업데이트
+  useEffect(() => {
+    if (!naverMap || !location.latitude || !location.longitude || !marker) return;
+
+    const position = new window.naver.maps.LatLng(location.latitude, location.longitude);
+    naverMap.setCenter(position);
+    marker.setPosition(position);
+  }, [location.latitude, location.longitude, naverMap, marker]);
 
   // 기술 스택 표시 텍스트 생성
   const getDisplayTechStacks = () => {
@@ -119,7 +164,6 @@ const CreateMeetingBasicPage = () => {
       <div className="col-span-2 h-px bg-sub my-8" />
 
       <div className="grid grid-cols-2 gap-x-8 gap-y-10">
-        {/* 모집 구분 */}
         <div ref={recruitmentDropdownRef} className="relative">
           <p className="font-scdream6 text-label text-bold mb-4">모집 구분</p>
           <TextInput
@@ -155,7 +199,6 @@ const CreateMeetingBasicPage = () => {
           )}
         </div>
 
-        {/* 기술 스택 */}
         <div className="relative" ref={techStackInputRef}>
           <p className="font-scdream6 text-label text-bold mb-4">기술 스택</p>
           <TextInput
@@ -173,7 +216,6 @@ const CreateMeetingBasicPage = () => {
           />
         </div>
 
-        {/* 모집 인원 */}
         <div className="relative" ref={participantsInputRef}>
           <p className="font-scdream6 text-label text-bold mb-4">모집 인원</p>
           <TextInput
@@ -187,7 +229,6 @@ const CreateMeetingBasicPage = () => {
           />
         </div>
 
-        {/* 진행 기간 */}
         <div ref={durationInputRef}>
           <p className="font-scdream6 text-label text-bold mb-4">진행 기간</p>
           <TextInput
@@ -201,7 +242,6 @@ const CreateMeetingBasicPage = () => {
           />
         </div>
 
-        {/* 모집 마감일 */}
         <div>
           <p className="font-scdream6 text-label text-bold mb-4">모집 마감일</p>
           <TextInput
@@ -217,7 +257,6 @@ const CreateMeetingBasicPage = () => {
 
         <div className="col-span-2 h-px bg-sub my-4" />
 
-        {/* 진행 장소 */}
         <div className="col-span-2">
           <p className="font-scdream6 text-label text-bold mb-4">진행 장소</p>
           <AddressSearch
@@ -230,27 +269,15 @@ const CreateMeetingBasicPage = () => {
           />
           {location.latitude && location.longitude && (
             <div className="mt-10 h-[600px] rounded-lg overflow-hidden relative">
-              <KakaoMap
-                center={{
-                  lat: location.latitude,
-                  lng: location.longitude
-                }}
+              <div 
+                ref={mapRef} 
                 style={{ width: "100%", height: "100%" }}
-                level={3}
-              >
-                <MapMarker
-                  position={{
-                    lat: location.latitude,
-                    lng: location.longitude
-                  }}
-                />
-              </KakaoMap>
+              />
             </div>
           )}
         </div>
       </div>
 
-      {/* 모달 컴포넌트들 */}
       <DurationModal
         isOpen={isDurationModalOpen}
         onClose={() => setIsDurationModalOpen(false)}

@@ -51,6 +51,7 @@
     ]
   },
   "devDependencies": {
+    "@types/navermaps": "^3.7.8",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.3",
     "@types/react-dom": "^19.0.2",
