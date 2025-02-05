@@ -46,18 +46,10 @@ const ShotInform = ({ title, content, unit }: { title: IconTitleType; content: s
 };
 
 function OverCard({ meeting }: OverCardProps) {
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLElement;
-    if (!target.closest('[aria-label="Close"]')) {
-      window.location.href = `/meeting/detail/${meeting.id}`;
-    }
-  };
-
   return (
     <div
       className="bg-white h-fit cursor-pointer box-content"
       style={{ width: 'max-content' }}
-      onClick={handleClick}
     >
       <div className="flex flex-row justify-between p-5">
         <div className="w-full grid grid-cols-2 gap-1">
