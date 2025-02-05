@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Meeting } from '../../types/models/meeting';
 import { MapPosition } from '../../types/models/common';
@@ -11,24 +11,16 @@ interface EventMarkerProps {
 }
 
 const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
+  const isClickedRef = useRef(false);
+
   useEffect(() => {
     const marker = new naver.maps.Marker({
       position: new naver.maps.LatLng(position.latitude, position.longitude),
       map
     });
 
-    const closeInfoWindow = () => {
-      infoWindow.close();
-    };
-
     const infoWindow = new naver.maps.InfoWindow({
-      content: ReactDOMServer.renderToString(
-        <OverCard
-          meeting={meeting}
-          onClose={closeInfoWindow}
-          isMapOverlay
-        />
-      ),
+      content: '',
       backgroundColor: '#fff',
       borderColor: '#7C8BBE',
       borderWidth: 1,
@@ -38,18 +30,49 @@ const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
       pixelOffset: new naver.maps.Point(0, -8)
     });
 
-    naver.maps.Event.addListener(marker, 'click', () => {
+    const showInfoWindow = (withCloseButton: boolean) => {
+      const closeInfoWindow = () => {
+        infoWindow.close();
+        isClickedRef.current = false;
+      };
+
+      const content = ReactDOMServer.renderToString(
+        <OverCard
+          meeting={meeting}
+          onClose={withCloseButton ? closeInfoWindow : () => {}}
+        />
+      );
+      
+      infoWindow.setContent(content);
       infoWindow.open(map, marker);
+
+      if (withCloseButton) {
+        setTimeout(() => {
+          const closeButton = document.querySelector('.font-gmarket-bold[aria-label="Close"]');
+          if (closeButton) {
+            closeButton.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              closeInfoWindow();
+            });
+          }
+        }, 0);
+      }
+    };
+
+    naver.maps.Event.addListener(marker, 'click', () => {
+      isClickedRef.current = true;
+      showInfoWindow(true);
     });
 
     naver.maps.Event.addListener(marker, 'mouseover', () => {
-      if (!infoWindow.getMap()) {
-        infoWindow.open(map, marker);
+      if (!isClickedRef.current && !infoWindow.getMap()) {
+        showInfoWindow(false);
       }
     });
 
     naver.maps.Event.addListener(marker, 'mouseout', () => {
-      if (!infoWindow.getMap()) {
+      if (!isClickedRef.current && infoWindow.getMap()) {
         infoWindow.close();
       }
     });
@@ -57,10 +80,11 @@ const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
     return () => {
       marker.setMap(null);
       infoWindow.close();
+      isClickedRef.current = false;
     };
   }, [meeting, position, map]);
 
   return null;
 };
 
-export default EventMarker;
+export default React.memo(EventMarker);
