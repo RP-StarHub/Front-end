@@ -39,15 +39,24 @@ const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
       const content = ReactDOMServer.renderToString(
         <OverCard
           meeting={meeting}
-          onClose={withCloseButton ? closeInfoWindow : () => {}}
         />
       );
       
       infoWindow.setContent(content);
       infoWindow.open(map, marker);
 
-      if (withCloseButton) {
-        setTimeout(() => {
+      setTimeout(() => {
+        const contentDiv = document.querySelector('.bg-white.h-fit.cursor-pointer');
+        if (contentDiv) {
+          contentDiv.addEventListener('click', (e) => {
+            const target = e.target as HTMLElement;
+            if (!target.closest('[aria-label="Close"]')) {
+              window.location.href = `/meeting/detail/${meeting.id}`;
+            }
+          });
+        }
+
+        if (withCloseButton) {
           const closeButton = document.querySelector('.font-gmarket-bold[aria-label="Close"]');
           if (closeButton) {
             closeButton.addEventListener('click', (e) => {
@@ -56,8 +65,8 @@ const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
               closeInfoWindow();
             });
           }
-        }, 0);
-      }
+        }
+      }, 0);
     };
 
     naver.maps.Event.addListener(marker, 'click', () => {

@@ -50,7 +50,7 @@ const MainPage: React.FC = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-      <div ref={mapRef} id="map" style={{ width: "66%", height: "90vh", position: "fixed", right: 0 }}>
+      <div ref={mapRef} id="map" style={{ width: "66%", position: "fixed", right: 0 }}>
         {naverMap && meetings.map((meeting) => (
           <EventMarker
             key={meeting.id}

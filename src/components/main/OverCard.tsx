@@ -12,8 +12,6 @@ import { toKoreanDuration, toKoreanRecruitmentType } from "../../util/transformK
 
 interface OverCardProps {
   meeting: Meeting;
-  onClose: () => void;
-  isMapOverlay?: boolean;
 }
 
 type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
@@ -47,18 +45,12 @@ const ShotInform = ({ title, content, unit }: { title: IconTitleType; content: s
   );
 };
 
-function OverCard({ meeting, onClose, isMapOverlay = false }: OverCardProps) {
-  const handleClick = () => {
-    if (isMapOverlay) {
-      window.location.href = `/meeting/detail/${meeting.id}`;
-    } else {
+function OverCard({ meeting }: OverCardProps) {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('[aria-label="Close"]')) {
       window.location.href = `/meeting/detail/${meeting.id}`;
     }
-  };
-
-  const handleClose = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onClose();
   };
 
   return (
@@ -86,7 +78,6 @@ function OverCard({ meeting, onClose, isMapOverlay = false }: OverCardProps) {
           </div>
         </div>
         <button
-          onClick={handleClose}
           className="text-sub hover:text-bold self-start font-gmarket-bold ml-2 text-regular"
           aria-label="Close"
         >
