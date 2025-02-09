@@ -1,3 +1,5 @@
+import { LikeDto } from "./common";
+
 export enum RecruitmentType {
   STUDY = "STUDY",
   PROJECT = "PROJECT",
@@ -53,17 +55,6 @@ export interface MeetingDetail extends BaseMeeting {
     nickname: string;
     profileImage: string;
   }
-}
-
-export interface LikeDto {
-  likeCount: number;
-  isLiked?: boolean;
-}
-
-export interface Sort {
-  empty: boolean;
-  unsorted: boolean;
-  sorted: boolean;
 }
 
 export interface AddressObj {

@@ -63,9 +63,10 @@ const ShotInform = ({ title, content }: ShotInformProps) => {
 
 interface Props {
   meeting: Meeting;
+  fullWidth?: boolean;
 }
 
-function InformCard({ meeting }: Props) {
+const InformCard: React.FC<Props> = ({ meeting, fullWidth }) => {
   const navigate = useNavigate();
   const {
     id,
@@ -95,9 +96,11 @@ function InformCard({ meeting }: Props) {
     return `${maxParticipants}명`;
   };
 
+  const widthClass = fullWidth ? 'w-full' : 'w-3/5 min-w-max';
+
   return (
     <div
-      className="bg-white rounded-lg shadow-md px-5 py-4 cursor-pointer w-3/5 min-w-max"
+      className={`bg-white rounded-lg shadow-md px-5 py-4 cursor-pointer ${widthClass}`}
       onClick={moveDetail}
     >
       <div className="w-full grid grid-cols-2 gap-1">
