@@ -59,6 +59,7 @@ function OverCard({ meeting }: OverCardProps) {
 
   return (
     <div
+      data-overcard
       className="bg-white h-fit cursor-pointer box-content"
       style={{ width: 'max-content' }}
     >
@@ -81,6 +82,7 @@ function OverCard({ meeting }: OverCardProps) {
           </div>
         </div>
         <button
+          data-button="close"
           className="text-sub hover:text-bold self-start font-gmarket-bold ml-2 text-regular"
           aria-label="Close"
         >

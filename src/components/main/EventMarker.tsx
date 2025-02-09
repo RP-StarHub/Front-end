@@ -42,9 +42,7 @@ const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
       // InfoWindow가 리액트 컴포넌트를 직접 지원하지 않음
       // 이후에 별도의 이벤트 리스너 추가
       const content = ReactDOMServer.renderToString(
-        <OverCard
-          meeting={meeting}
-        />
+        <OverCard meeting={meeting} />
       );
 
       infoWindow.setContent(content);
@@ -52,7 +50,7 @@ const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
 
       setTimeout(() => {
         // 컨텐츠 영역을 누른 경우, 상세 페이지로 이동
-        const contentDiv = document.querySelector('.bg-white.h-fit.cursor-pointer');
+        const contentDiv = document.querySelector('[data-overcard]');
         if (contentDiv) {
           contentDiv.addEventListener('click', (e) => {
             const target = e.target as HTMLElement;
@@ -63,7 +61,7 @@ const EventMarker = ({ meeting, position, map }: EventMarkerProps) => {
         }
 
         // 닫기 버튼을 누른 경우, InfoWindow 닫음
-        const closeButton = document.querySelector('.font-gmarket-bold[aria-label="Close"]');
+        const closeButton = document.querySelector('[data-button="close"]');
         if (closeButton) {
           closeButton.addEventListener('click', (e) => {
             e.preventDefault();
