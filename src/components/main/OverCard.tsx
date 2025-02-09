@@ -46,6 +46,17 @@ const ShotInform = ({ title, content, unit }: { title: IconTitleType; content: s
 };
 
 function OverCard({ meeting }: OverCardProps) {
+  const { 
+    recruitmentType,
+    title,
+    likeDto, 
+    maxParticipants, 
+    duration,
+    endDate, 
+    techStacks, 
+    location 
+  } = meeting;
+
   return (
     <div
       className="bg-white h-fit cursor-pointer box-content"
@@ -55,18 +66,18 @@ function OverCard({ meeting }: OverCardProps) {
         <div className="w-full grid grid-cols-2 gap-1">
           <div className="col-span-2 flex justify-between items-start">
             <p className="text-bold mb-2 text-label font-gmarket-bold truncate max-w-[80%]">
-              [{toKoreanRecruitmentType(meeting.recruitmentType)}] {meeting.title}
+              [{toKoreanRecruitmentType(recruitmentType)}] {title}
             </p>
           </div>
-          <ShotInform title="관심" content={meeting.likeDto.likeCount.toString()} />
-          <ShotInform title="인원" content={meeting.maxParticipants.toString()} unit="명" />
-          <ShotInform title="기간" content={toKoreanDuration(meeting.duration)} />
-          <ShotInform title="마감" content={meeting.endDate} />
+          <ShotInform title="관심" content={likeDto.likeCount.toString()} />
+          <ShotInform title="인원" content={maxParticipants.toString()} unit="명" />
+          <ShotInform title="기간" content={toKoreanDuration(duration)} />
+          <ShotInform title="마감" content={endDate} />
           <div className="col-span-2">
-            <ShotInform title="스택" content={meeting.techStacks.join(", ")} />
+            <ShotInform title="스택" content={techStacks.join(", ")} />
           </div>
           <div className="col-span-2">
-            <ShotInform title="장소" content={meeting.location} />
+            <ShotInform title="장소" content={location} />
           </div>
         </div>
         <button
