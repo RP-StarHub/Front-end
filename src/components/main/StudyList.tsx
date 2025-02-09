@@ -13,7 +13,7 @@ interface StudyListProps {
 const StudyList = React.memo<StudyListProps>(
   ({ meetings, currentPage, totalPages, onPageChange }) => {
     return (
-      <div className="flex flex-col bg-background w-full h-full">
+      <div className="flex flex-col bg-background w-full h-full px-4 py-12">
         <div className="grid grid-rows-4 gap-8 flex-1 w-full items-center">
           {meetings.map((meeting) => (
             <div
