@@ -21,12 +21,30 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/applicant/list/:meetingId" element={<ApplicantListPage />} />
-          <Route path="/meeting/detail/:meetingId" element={<MeetingDetailPage />} />
-          <Route path="/meeting/edit/:meetingId" element={<MeetingEditPage />} />
-          <Route path="/meeting/create/basic" element={<CreateMeetingBasicPage />} />
-          <Route path="/meeting/create/detail" element={<CreateMeetingDetailPage />} />
-          <Route path="/meeting/create/preview/:meetingId" element={<CreateMeetingPreviewPage />} />
+          <Route
+            path="/applicant/list/:meetingId"
+            element={<ApplicantListPage />}
+          />
+          <Route
+            path="/meeting/detail/:meetingId"
+            element={<MeetingDetailPage />}
+          />
+          <Route
+            path="/meeting/edit/:meetingId"
+            element={<MeetingEditPage />}
+          />
+          <Route
+            path="/meeting/create/basic"
+            element={<CreateMeetingBasicPage />}
+          />
+          <Route
+            path="/meeting/create/detail"
+            element={<CreateMeetingDetailPage />}
+          />
+          <Route
+            path="/meeting/create/preview/:meetingId"
+            element={<CreateMeetingPreviewPage />}
+          />
         </Routes>
       </main>
       <Footer />
