@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import EventMarker from "../components/main/EventMarker";
 import StudyList from "../components/main/StudyList";
-import { useGeolocation } from '../hooks/common/useGeolocation';
+import { useGeolocation } from "../hooks/common/useGeolocation";
 import { useMeetingList } from "../hooks/api/useMeeting";
 
 const MainPage: React.FC = () => {
@@ -13,7 +13,6 @@ const MainPage: React.FC = () => {
   
   const meetings = useMemo(() => data?.data.content || [], [data?.data.content]);
   const totalPages = data?.data?.totalPages ?? 0;
-  
   const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
 
   useEffect(() => {
@@ -43,14 +42,17 @@ const MainPage: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="w-full flex min-h-[90vh]">
+    <div className="w-full flex flex-col md:flex-row min-h-[90vh]">
+      <div className="w-full md:w-1/3 lg:w-1/4">
       <StudyList
         meetings={meetings}
         currentPage={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-      <div ref={mapRef} id="map" style={{ width: "66%", position: "fixed", right: 0 }}>
+      </div>
+       <div className="w-full md:w-2/3 lg:w-3/4 flex-grow h-[500px] md:h-auto">
+      <div ref={mapRef} id="map" style={{ width: "100%", position: "fixed", right: 0 }}>
         {naverMap && meetings.map((meeting) => (
           <EventMarker
             key={meeting.id}
@@ -62,6 +64,7 @@ const MainPage: React.FC = () => {
             map={naverMap}
           />
         ))}
+      </div>
       </div>
     </div>
   );
