@@ -9,6 +9,7 @@ import {
 } from "@mui/icons-material";
 import { Meeting } from "../../types/models/meeting";
 import { toKoreanDuration, toKoreanRecruitmentType } from "../../util/transformKorean";
+import { useNavigate } from "react-router-dom";
 
 interface OverCardProps {
   meeting: Meeting;
@@ -30,37 +31,72 @@ const IconComponent = ({ title }: { title: IconTitleType }) => {
   }
 };
 
-const ShotInform = ({ title, content, unit }: { title: IconTitleType; content: string; unit?: string }) => {
+interface ShotInformProps {
+  title: IconTitleType;
+  content: string;
+}
+
+const ShotInform = ({ title, content }: ShotInformProps) => {
   const isPlace = title === "장소";
-  const displayContent = isPlace ? (content.match(/\(([^)]+)\)/) ?? [null, content])[1] : content;
+  let displayContent = content;
+
+  if (isPlace) {
+    const match = content.match(/\(([^)]+)\)/);
+    displayContent = match ? match[1] : content;
+  }
 
   return (
-    <div className="flex flex-row items-center mb-2">
+    <div
+      className="flex flex-row items-center mb-2"
+      data-testid={`inform-${title}`}
+    >
       <IconComponent title={title} />
-      <p className="text-center text-regular text-sub font-scdream4 mx-2">{title}</p>
-      <div className="text-bold text-regular font-scdream4">
-        {displayContent}{unit}
+      <p
+        className="text-center text-regular text-sub font-scdream4 mx-2"
+        data-testid={`inform-${title}-label`}
+      >
+        {title}
+      </p>
+      <div
+        className="text-bold text-regular font-scdream4"
+        data-testid={`inform-${title}-content`}
+      >
+        {displayContent}
       </div>
     </div>
   );
 };
 
 function OverCard({ meeting }: OverCardProps) {
-  const { 
+  const navigate = useNavigate();
+  const {
+    id,
     recruitmentType,
     title,
-    likeDto, 
-    maxParticipants, 
+    likeDto,
+    maxParticipants,
     duration,
-    endDate, 
-    techStacks, 
-    location 
+    endDate,
+    techStacks,
+    location
   } = meeting;
+
+  const moveDetail = () => {
+    navigate(`/meeting/detail/${id}`);
+  }
+
+  const getDisplayParticipants = () => {
+    if (!maxParticipants) return "1명";
+    if (maxParticipants === 10) return "10명 이상";
+    return `${maxParticipants}명`;
+  };
 
   return (
     <div
       data-overcard
+      data-testid="overcard"
       className="bg-white h-fit cursor-pointer box-content"
+      onClick={moveDetail}
       style={{ width: 'max-content' }}
     >
       <div className="flex flex-row justify-between p-5">
@@ -71,7 +107,7 @@ function OverCard({ meeting }: OverCardProps) {
             </p>
           </div>
           <ShotInform title="관심" content={likeDto.likeCount.toString()} />
-          <ShotInform title="인원" content={maxParticipants.toString()} unit="명" />
+          <ShotInform title="인원" content={getDisplayParticipants()} />
           <ShotInform title="기간" content={toKoreanDuration(duration)} />
           <ShotInform title="마감" content={endDate} />
           <div className="col-span-2">

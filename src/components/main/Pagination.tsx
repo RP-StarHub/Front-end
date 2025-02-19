@@ -40,6 +40,8 @@ const Pagination = ({ totalPages, currentPage, onPageChange }: PaginationProps) 
   return (
     <div className='flex justify-center items-center pt-4'>
       <button
+        aria-label='이전 페이지'
+        data-testid='prev-button'
         className='mx-2 py-1 px-4 font-button font-scdream4 bg-sub text-background rounded-lg border-none disabled:opacity-50'
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -51,6 +53,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }: PaginationProps) 
         <button
           key={idx}
           onClick={() => typeof page === 'number' ? onPageChange(page) : null}
+          aria-current={typeof page === 'number' && page === currentPage ? 'page' : undefined}
           className={`
             mx-1 px-2 font-button font-sub font-scdream4 bg-transparent border-none
             ${typeof page === 'number'
@@ -66,6 +69,8 @@ const Pagination = ({ totalPages, currentPage, onPageChange }: PaginationProps) 
       ))}
 
       <button
+        aria-label='다음 페이지'
+        data-testid='next-button'
         className='mx-2 py-1 px-4 font-button font-scdream4 bg-sub text-white rounded-lg border-none disabled:opacity-50'
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}

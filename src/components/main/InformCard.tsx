@@ -13,7 +13,7 @@ import {
 import { toKoreanDuration, toKoreanRecruitmentType } from "../../util/transformKorean";
 import { useLike } from "../../hooks/api/useLike";
 
-type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
+export type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
 
 const IconComponent = ({ title }: { title: IconTitleType }) => {
   const iconStyle = { fontSize: 18, color: "#7C8BBE" };
@@ -51,10 +51,21 @@ const ShotInform = ({ title, content }: ShotInformProps) => {
   }
 
   return (
-    <div className="flex flex-row items-center mb-2">
+    <div
+      className="flex flex-row items-center mb-2"
+      data-testid={`inform-${title}`}
+    >
       <IconComponent title={title} />
-      <p className="text-center text-regular text-sub font-scdream4 mx-2">{title}</p>
-      <div className="text-bold text-regular font-scdream4">
+      <p
+        className="text-center text-regular text-sub font-scdream4 mx-2"
+        data-testid={`inform-${title}-label`}
+      >
+        {title}
+      </p>
+      <div
+        className="text-bold text-regular font-scdream4"
+        data-testid={`inform-${title}-content`}
+      >
         {displayContent}
       </div>
     </div>
@@ -102,28 +113,35 @@ const InformCard: React.FC<Props> = ({ meeting, fullWidth }) => {
     <div
       className={`bg-white rounded-lg shadow-md px-5 py-4 cursor-pointer ${widthClass}`}
       onClick={moveDetail}
+      data-testid="inform-card"
     >
       <div className="w-full grid grid-cols-2 gap-1">
         <div className="col-span-2 flex justify-between items-start">
           <p className="text-bold mb-2 text-label font-gmarket-bold truncate max-w-[80%]">
             [{toKoreanRecruitmentType(recruitmentType)}] {title}
           </p>
-          <div onClick={handleLikeClick}>
-            { isLiked ?
-              <Favorite sx={{ fontSize: 28, color: "#7C8BBE" }} /> :
-              <FavoriteBorder sx={{ fontSize: 28, color: "#7C8BBE" }} />
+          <div onClick={handleLikeClick} data-testid="like-button">
+            {isLiked ?
+              <Favorite
+                sx={{ fontSize: 28, color: "#7C8BBE" }}
+                data-testid="like-filled-button"
+              /> :
+              <FavoriteBorder
+                sx={{ fontSize: 28, color: "#7C8BBE" }}
+                data-testid="like-border-button"
+              />
             }
           </div>
         </div>
-        <ShotInform title="관심" content={likeCount.toString()}/>
+        <ShotInform title="관심" content={likeCount.toString()} />
         <ShotInform title="인원" content={getDisplayParticipants()} />
-        <ShotInform title="기간" content={toKoreanDuration(duration)}/>
-        <ShotInform title="마감" content={endDate}/>
+        <ShotInform title="기간" content={toKoreanDuration(duration)} />
+        <ShotInform title="마감" content={endDate} />
         <div className="col-span-2">
-          <ShotInform title="스택" content={techStacks.join(", ")}/>
+          <ShotInform title="스택" content={techStacks.join(", ")} />
         </div>
         <div className="col-span-2">
-          <ShotInform title="장소" content={location}/>
+          <ShotInform title="장소" content={location} />
         </div>
       </div>
     </div>
