@@ -33,27 +33,35 @@ const DurationModal = ({
       anchorEl={anchorEl}
       onConfirm={() => onClose()}
     >
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3" data-testid="duration-options">
         {durations.map((duration) => (
           <label
             key={duration}
+            data-testid={`duration-option-${duration}`}
             className="flex items-center space-x-2 cursor-pointer"
             onClick={() => handleSelect(duration)}
           >
-            <div 
+            <div
+              data-testid={`duration-radio-${duration}`}
               className={`
                 w-5 h-5 rounded-full border-2 flex items-center justify-center
-                ${selectedDuration === duration 
-                  ? 'border-bold bg-bold' 
+                ${selectedDuration === duration
+                  ? 'border-bold bg-bold'
                   : 'border-bold'
                 }
               `}
             >
               {selectedDuration === duration && (
-                <div className="w-2 h-2 rounded-full bg-white" />
+                <div
+                  data-testid={`duration-radio-dot-${duration}`}
+                  className="w-2 h-2 rounded-full bg-white"
+                />
               )}
             </div>
-            <span className="font-scdream4 text-regular text-bold">
+            <span
+              data-testid={`duration-text-${duration}`}
+              className="font-scdream4 text-regular text-bold"
+            >
               {toKoreanDuration(duration)}
             </span>
           </label>
