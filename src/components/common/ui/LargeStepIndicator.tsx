@@ -1,14 +1,14 @@
 import React from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 
-interface StepIndicatorProps {
+interface LargeStepIndicatorProps {
   currentStep: number;
   steps: Array<{
     title: string;
   }>;
 }
 
-export default function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
+export default function LargeStepIndicator({ currentStep, steps }: LargeStepIndicatorProps) {
   return (
     <div role="navigation" aria-label="progress" className="w-full py-8" data-testid="step-indicator">
       <div className="relative flex items-center justify-center max-w-full mx-auto">

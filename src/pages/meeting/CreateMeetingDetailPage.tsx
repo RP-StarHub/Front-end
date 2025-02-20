@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/common/ui/Button";
 import TextInput from "../../components/common/ui/TextInput";
 import TextArea from "../../components/common/ui/TextArea";
-import LargeStepIndicator from "../../components/common/ui/LagreStepIndicator";
+import LargeStepIndicator from "../../components/common/ui/LargeStepIndicator";
 import { useMeetingFormStore } from '../../store/meetingForm';
 import { useCreateMeeting } from '../../hooks/api/useMeeting';
 import toast from 'react-hot-toast';

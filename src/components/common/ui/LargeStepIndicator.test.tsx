@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
-import StepIndicator from "./LagreStepIndicator";
+import LargeStepIndicator from "./LargeStepIndicator";
 
 const DEFAULT_STEPS = [
   { title: "기본 정보" },
@@ -15,7 +15,7 @@ describe("LargeStepIndicator 컴포넌트", () => {
       steps: DEFAULT_STEPS
     };
 
-    const utils = render(<StepIndicator {...defaultProps} {...props} />);
+    const utils = render(<LargeStepIndicator {...defaultProps} {...props} />);
 
     return {
       getStepIndicator: () => screen.getByTestId("step-indicator"),
@@ -73,7 +73,7 @@ describe("LargeStepIndicator 컴포넌트", () => {
       // Act
       expect(getStepCircle(0)).toHaveClass("bg-white", "border-bold");
 
-      rerender(<StepIndicator currentStep={1} steps={DEFAULT_STEPS} />);
+      rerender(<LargeStepIndicator currentStep={1} steps={DEFAULT_STEPS} />);
 
       // Assert
       expect(getStepCircle(0)).toHaveClass("bg-bold", "border-bold");

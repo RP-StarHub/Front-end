@@ -3,7 +3,7 @@ import { Star, KeyboardArrowDown } from "@mui/icons-material";
 import { AddressSearch } from "../../components/meeting/form/AddressSearch";
 import Button from "../../components/common/ui/Button";
 import TextInput from "../../components/common/ui/TextInput";
-import LargeStepIndicator from "../../components/common/ui/LagreStepIndicator";
+import LargeStepIndicator from "../../components/common/ui/LargeStepIndicator";
 import { RecruitmentType } from "../../types/models/meeting";
 import { toKoreanDuration } from "../../util/transformKorean";
 import DurationModal from "../../components/meeting/modals/DurationModal";
