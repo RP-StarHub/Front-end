@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect } from "react";
-import DaumPostcode from "react-daum-postcode";
 import Button from "../../common/ui/Button";
 import { CreateMeetingRequest } from "../../../types/api/meeting";
 import { AddressObj } from "../../../types/models/meeting";
@@ -53,7 +52,7 @@ export const AddressSearch = ({
       setFormData({
         location: fullAddress
       });
-      
+
       // 주소로 좌표를 검색 (Kakao Map API 사용)
       window.kakao.maps.load(() => {
         const geocoder = new window.kakao.maps.services.Geocoder();
@@ -85,7 +84,6 @@ export const AddressSearch = ({
         const address = new window.daum.Postcode({
           oncomplete: handleComplete,
         });
-        // @ts-ignore
         window.address = address;
       } else {
         console.error("Failed to load Kakao Maps API");
@@ -102,7 +100,7 @@ export const AddressSearch = ({
   }, [handleComplete]);
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2" data-testid="address-search">
       <input
         type="text"
         id="addressInput"
@@ -112,18 +110,19 @@ export const AddressSearch = ({
         onChange={handleInputChange}
         readOnly
         className={`
-          flex-1 px-6 py-3 border border-gray-300 rounded-lg
-          font-scdream4 text-placeholder bg-white
-          focus:outline-none focus:border-main
-          placeholder-gray-400
-          ${error ? 'border-red-500' : ''}
-        `}
+        flex-1 px-6 py-3 border border-gray-300 rounded-lg
+        font-scdream4 text-placeholder bg-white
+        focus:outline-none focus:border-main
+        placeholder-gray-400
+        ${error ? 'border-red-500' : ''}
+      `}
+        data-testid="address-input"
       />
       <Button
         type="button"
         variant="secondary"
-        // @ts-ignore
         onClick={() => window.address?.open()}
+        data-testid="address-search-button"
       >
         주소 찾기
       </Button>

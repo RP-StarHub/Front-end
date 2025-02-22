@@ -19,6 +19,7 @@ const ParticipantsModal = ({
 }: ParticipantsModalProps) => {
   const [value, setValue] = useState(selectedParticipants);
   if (!isOpen) return null;
+  
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(Number(e.target.value));
   };
@@ -45,20 +46,28 @@ const ParticipantsModal = ({
       anchorEl={anchorEl}
       onConfirm={handleConfirm}
     >
-      <div>
+      <div data-testid="participants-content">
         <div className="text-left mb-4">
-          <span className="font-scdream6 text-regular text-bold">
+          <span 
+            data-testid="participants-text" 
+            className="font-scdream6 text-regular text-bold"
+          >
             {getDisplayValue(value)}
           </span>
         </div>
 
-        <div className="relative">
-          <div className="w-full h-1 bg-gray-200 rounded-full" />
+        <div className="relative" data-testid="slider-container">
+          <div 
+            className="w-full h-1 bg-gray-200 rounded-full"
+            data-testid="slider-track"
+          />
           <div
+            data-testid="slider-progress"
             className="absolute top-0 left-0 h-1 bg-sub rounded-full transition-all"
             style={{ width: `${Math.max(0, (value / 10) * 100)}%` }}
           />
           <input
+            data-testid="slider-input"
             type="range"
             min={0}
             max={10}
@@ -80,10 +89,28 @@ const ParticipantsModal = ({
           />
         </div>
 
-        <div className="flex justify-between items-center mt-4">
-          <span className="font-scdream4 text-regular text-bold">최소</span>
-          <span className="font-scdream4 text-regular text-bold">5명</span>
-          <span className="font-scdream4 text-regular text-bold">최대</span>
+        <div 
+          className="flex justify-between items-center mt-4"
+          data-testid="slider-labels"
+        >
+          <span 
+            data-testid="min-label"
+            className="font-scdream4 text-regular text-bold"
+          >
+            최소
+          </span>
+          <span 
+            data-testid="mid-label"
+            className="font-scdream4 text-regular text-bold"
+          >
+            5명
+          </span>
+          <span 
+            data-testid="max-label"
+            className="font-scdream4 text-regular text-bold"
+          >
+            최대
+          </span>
         </div>
       </div>
     </BaseModal>
