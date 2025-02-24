@@ -51,11 +51,11 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full" data-testid="meeting-header">
       <div className="flex flex-row items-center justify-between mb-2">
         <div className="flex items-center">
           <Star className="text-yellow" sx={{ fontSize: 50 }} />
-          <p className="font-gmarket-bold text-big-title text-bold ml-4">
+          <p className="font-gmarket-bold text-big-title text-bold ml-4" data-testid="meeting-title">
             [{toKoreanRecruitmentType(postInfo.recruitmentType)}] {postInfo.title}
           </p>
         </div>
@@ -63,10 +63,16 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
         <div className="flex items-center gap-4">
           {userType === UserType.Creator ? (
             <>
-              <button onClick={() => navigate(`/meeting/edit/${postInfo.id}`)}>
+              <button
+                onClick={() => navigate(`/meeting/edit/${postInfo.id}`)}
+                data-testid="edit-button"
+              >
                 <Edit sx={{ fontSize: 40, color: "#7C8BBE" }} />
               </button>
-              <button onClick={handleDelete}>
+              <button
+                onClick={handleDelete}
+                data-testid="delete-button"
+              >
                 <Delete sx={{ fontSize: 40, color: "#7C8BBE" }} />
               </button>
             </>
@@ -77,7 +83,7 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
       </div>
 
       <div className='flex justify-between items-center'>
-        <div className='flex items-center my-4'>
+        <div className='flex items-center my-4' data-testid="creator-info">
           <img
             src={postInfo.creator.profileImage}
             alt="Profile"
@@ -87,20 +93,31 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
             {postInfo.creator.nickname} | {new Date(postInfo.updatedAt).toLocaleDateString('ko-KR')}
           </p>
         </div>
-        <div onClick={handleLikeClick} className='flex items-center gap-4'>
+        <div
+          onClick={handleLikeClick}
+          className='flex items-center gap-4'
+          data-testid="like-button"
+        >
           {isLiked ?
-            <Favorite sx={{ fontSize: 28, color: "#313866" }} /> :
-            <FavoriteBorder sx={{ fontSize: 28, color: "#313866" }} />
+            <Favorite sx={{ fontSize: 28, color: "#313866" }} data-testid="favorite-filled" /> :
+            <FavoriteBorder sx={{ fontSize: 28, color: "#313866" }} data-testid="favorite-border" />
           }
-          <span className="text-bold text-label font-scdream6">
+          <span className="text-bold text-label font-scdream6" data-testid="like-count">
             {likeDto.likeCount}
           </span>
         </div>
       </div>
 
       {showDeleteModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setShowDeleteModal(false)} />
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          data-testid="delete-modal"
+        >
+          <div
+            className="fixed inset-0 bg-black/50"
+            onClick={() => setShowDeleteModal(false)}
+            data-testid="delete-modal-backdrop"
+          />
           <div className="relative bg-white p-8 rounded-xl shadow-lg min-w-[400px] text-center">
             <h3 className="font-scdream6 text-xl mb-6">
               정말 삭제하시겠습니까? <br />
@@ -110,12 +127,14 @@ const MeetingHeader: React.FC<MeetingHeaderProps> = ({
               <Button
                 size="small"
                 onClick={() => setShowDeleteModal(false)}
+                data-testid="delete-cancel-button"
               >
                 취소
               </Button>
               <Button
                 size="small"
                 onClick={confirmDelete}
+                data-testid="delete-confirm-button"
               >
                 삭제
               </Button>

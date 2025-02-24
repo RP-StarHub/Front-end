@@ -20,13 +20,24 @@ const MeetingDetailPage = () => {
 
   // 확정된 모임 상태 메시지 컴포넌트
   const ConfirmedMessage = () => (
-    <div className='flex flex-col items-center justify-center w-full py-20'>
-      <p className='font-scdream6 text-sub text-lg mb-2'>
+    <div
+      className='flex flex-col items-center justify-center w-full py-20'
+      data-testid="confirmed-message"
+    >
+      <p
+        className='font-scdream6 text-sub text-lg mb-2'
+        data-testid="confirmed-title"
+      >
         {userType === UserType.Applicant && applicationStatus === ApplicationStatus.REJECTED
           ? '아쉽게도 최종 모임원으로 선정되지 못했습니다.'
           : '해당 모임글은 모집이 마감되었습니다.'}
       </p>
-      <p className='font-scdream4 text-sub'>StarHub와 함께 다른 모임을 찾아봐요!</p>
+      <p
+        className='font-scdream4 text-sub'
+        data-testid="confirmed-description"
+      >
+        StarHub와 함께 다른 모임을 찾아봐요!
+      </p>
     </div>
   );
 
@@ -65,6 +76,7 @@ const MeetingDetailPage = () => {
     <div
       className={`flex flex-col w-full px-60 py-24 ${userType === UserType.Creator ? 'bg-background' : 'bg-gray-100'
         }`}
+      data-testid="meeting-detail-page"
     >
       <MeetingHeader
         meetingDetail={data.data}
@@ -76,7 +88,9 @@ const MeetingDetailPage = () => {
       <MeetingContent
         postInfo={postInfo}
       />
-      {renderApplicationSection()}
+      <div data-testid="application-section">
+        {renderApplicationSection()}
+      </div>
     </div>
   );
 };

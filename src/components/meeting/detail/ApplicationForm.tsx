@@ -44,9 +44,11 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
   };
 
   return (
-    <div>
-      <div className='w-full h-px bg-main my-10' />
-      <p className='font-scdream6 text-label mb-6'>지원서</p>
+    <div data-testid="application-form">
+      <div className='w-full h-px bg-main my-10' data-testid="divider" />
+      <p className='font-scdream6 text-label mb-6' data-testid="form-title">
+        지원서
+      </p>
       <TextArea
         placeholder="모임에 참여할 수 있도록 자신을 어필해주세요! 작성된 내용은 게시자 외 확인할 수 없습니다."
         value={content}
@@ -55,17 +57,19 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
         bordered
         borderColor='border-sub'
         className="min-h-[150px] mb-4 bg-gray-100"
+        data-testid="application-textarea"
       />
       <div className="flex justify-end">
         <Button
           size='small'
           onClick={handleSubmit}
+          data-testid="submit-button"
         >
           등록
         </Button>
       </div>
     </div>
-  );
+  )
 };
 
 export default ApplicationForm;

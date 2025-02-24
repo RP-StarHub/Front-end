@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Edit, Delete } from '@mui/icons-material';
-import { useApplicationMe, useApplicationPatch, useApplicationDelete } from '../../../hooks/api/useApplication'
-import TextArea from '../../common/ui/TextArea';
-import Button from '../../common/ui/Button';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { Edit, Delete } from "@mui/icons-material";
+import { useApplicationMe, useApplicationPatch, useApplicationDelete } from "../../../hooks/api/useApplication"
+import TextArea from "../../common/ui/TextArea";
+import Button from "../../common/ui/Button";
+import toast from "react-hot-toast";
 
 interface MyApplicationProps {
   meetingId: number
@@ -24,7 +24,7 @@ const MyApplication: React.FC<MyApplicationProps> = ({ meetingId }) => {
   const handleEdit = async () => {
     if (isEditing) {
       if (!content.trim()) {
-        toast.error('내용을 입력해주세요');
+        toast.error("내용을 입력해주세요");
         return;
       }
 
@@ -34,9 +34,9 @@ const MyApplication: React.FC<MyApplicationProps> = ({ meetingId }) => {
           data: { content }
         });
         setIsEditing(false);
-        toast.success('지원서가 수정되었습니다');
+        toast.success("지원서가 수정되었습니다");
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     } else {
       setContent(application.content);
@@ -47,7 +47,7 @@ const MyApplication: React.FC<MyApplicationProps> = ({ meetingId }) => {
   const handleDelete = async () => {
     await deleteApplication.mutateAsync(meetingId);
     setShowDeleteModal(false);
-    toast.success('지원서가 삭제되었습니다');
+    toast.success("지원서가 삭제되었습니다");
   };
 
   const confirmDelete = () => {
@@ -55,68 +55,90 @@ const MyApplication: React.FC<MyApplicationProps> = ({ meetingId }) => {
   };
 
   return (
-    <div>
-      <div className='w-full h-px bg-main my-10' />
-      <div className='flex justify-between items-center mb-6'>
-        <p className='font-scdream6 text-label'>지원서</p>
+    <div data-testid="my-application">
+      <div className="w-full h-px bg-main my-10" data-testid="divider" />
+      <div className="flex justify-between items-center mb-6">
+        <p className="font-scdream6 text-label" data-testid="section-title">지원서</p>
         <div>
-          <button onClick={handleEdit}>
+          <button onClick={handleEdit} data-testid="edit-button">
             <Edit sx={{ fontSize: 24, color: "#313866", marginRight: 2 }} />
           </button>
-          <button onClick={confirmDelete}>
+          <button onClick={confirmDelete} data-testid="delete-button">
             <Delete sx={{ fontSize: 24, color: "#313866" }} />
           </button>
         </div>
       </div>
 
       {isEditing ? (
-        <div>
+        <div data-testid="edit-form">
           <TextArea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             fullWidth
             bordered
-            borderColor='border-sub'
+            borderColor="border-sub"
             className="min-h-[150px] mb-4 bg-gray-100"
+            data-testid="edit-textarea"
           />
           <div className="flex justify-end">
             <Button
-              size='small'
+              size="small"
               onClick={handleEdit}
+              data-testid="submit-edit-button"
             >
               수정완료
             </Button>
           </div>
         </div>
       ) : (
-        <div className='px-6 py-4 my-4 text-regular text-bold border-4 border-sub rounded-2xl'>
-          <div className='flex items-center mb-6'>
+        <div
+          className="px-6 py-4 my-4 text-regular text-bold border-4 border-sub rounded-2xl"
+          data-testid="application-content"
+        >
+          <div className="flex items-center mb-6">
             <img
               src={application.applicant.profileImage}
               alt="Profile"
               className="w-8 h-8 rounded-full object-cover mr-2"
+              data-testid="profile-image"
             />
-            <p className='font-scdream6'>{application.applicant.nickname}</p>
+            <p className="font-scdream6" data-testid="applicant-name">
+              {application.applicant.nickname}
+            </p>
           </div>
-          <p>{application.content}</p>
+          <p data-testid="content-text">{application.content}</p>
         </div>
       )}
 
       {showDeleteModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setShowDeleteModal(false)} />
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          data-testid="delete-modal"
+        >
+          <div
+            className="fixed inset-0 bg-black/50"
+            onClick={() => setShowDeleteModal(false)}
+            data-testid="modal-backdrop"
+          />
           <div className="relative bg-white p-8 rounded-xl shadow-lg min-w-[400px] text-center">
-            <h3 className="font-scdream6 text-xl mb-6">정말 삭제하시겠습니까?</h3>
+            <h3
+              className="font-scdream6 text-xl mb-6"
+              data-testid="modal-title"
+            >
+              정말 삭제하시겠습니까?
+            </h3>
             <div className="flex justify-center gap-4">
               <Button
                 size="small"
                 onClick={() => setShowDeleteModal(false)}
+                data-testid="cancel-delete-button"
               >
                 취소
               </Button>
               <Button
                 size="small"
                 onClick={handleDelete}
+                data-testid="confirm-delete-button"
               >
                 삭제
               </Button>
