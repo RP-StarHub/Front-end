@@ -11,6 +11,10 @@ declare global {
   }
 }
 
+/**
+ * 스크립트 로딩 상태를 추적하는 전역 변수
+ * 중복 로딩 방지 및 상태 관리를 위해 컴포넌트 외부에 선언
+ */
 let isNaverScriptLoading = false;
 
 const MainPage: React.FC = () => {
@@ -32,16 +36,20 @@ const MainPage: React.FC = () => {
   const totalPages = useMemo(() => data?.data?.totalPages || 0, [data?.data?.totalPages]);
   const canUseGeolocation = loaded && location?.latitude != null && location?.longitude != null;
 
-  // 네이버 맵 스크립트 로딩 함수
+  /**
+   * 네이버 맵 스크립트 로딩 함수
+   * 스크립트 로딩 상태를 관리하고 중복 로딩을 방지
+   * Promise 기반으로 스크립트 로딩 완료 시점을 명확히 처리
+   */
   const loadNaverScript = useCallback(() => {
     return new Promise<void>((resolve, reject) => {
-      // 이미 로드된 경우
+      // 이미 로드된 경우 즉시 완료 처리
       if (window.naver && window.naver.maps) {
         resolve();
         return;
       }
       
-      // 로딩 중인 경우
+      // 로딩 중인 경우 완료될 때까지 대기
       if (isNaverScriptLoading) {
         const checkInterval = setInterval(() => {
           if (window.naver && window.naver.maps) {
@@ -81,6 +89,11 @@ const MainPage: React.FC = () => {
     });
   }, []);
 
+  /**
+   * 지도 초기화 함수
+   * 지도 객체를 생성하고 설정하는 로직
+   * 기존 지도가 있으면 제거 후 새로 생성
+   */
   const initializeMap = useCallback(() => {
     if (!mapRef.current || !window.naver || !window.naver.maps) {
       console.error("지도 초기화 불가: DOM 또는 API 준비되지 않음");
@@ -99,7 +112,7 @@ const MainPage: React.FC = () => {
         ? { lat: location?.latitude, lng: location?.longitude }
         : { lat: defaultLocation.latitude, lng: defaultLocation.longitude };
       
-      // 지도 생성
+      // 지도 생성 - ref 사용으로 리렌더링 방지
       naverMapRef.current = new window.naver.maps.Map(mapRef.current, {
         center: new window.naver.maps.LatLng(currentLocation.lat, currentLocation.lng),
         zoom: 17,
@@ -116,7 +129,11 @@ const MainPage: React.FC = () => {
     }
   }, [canUseGeolocation, location, defaultLocation]);
 
-  // 컴포넌트 마운트 후 DOM 준비 확인 및 지도 초기화
+  /**
+   * 컴포넌트 마운트 시 지도 초기화 처리
+   * DOM 렌더링 완료 확인 후 스크립트 로딩 및 지도 초기화 진행
+   * setTimeout 사용으로 DOM 렌더링 완료 후 처리 보장
+   */
   useEffect(() => {
     let isMounted = true;
     
@@ -126,10 +143,12 @@ const MainPage: React.FC = () => {
       }
       
       try {
+        // 스크립트 로딩 - 비동기 처리
         await loadNaverScript();
         
         if (!isMounted) return;
         
+        // 지도 초기화 설정
         const success = initializeMap();
         
         if (success && isMounted) {
@@ -140,7 +159,6 @@ const MainPage: React.FC = () => {
       }
     };
     
-    // 약간의 지연을 두고 DOM 렌더링 확인 후 지도 초기화
     setTimeout(() => {
       if (isMounted) {
         setupMap();
@@ -157,7 +175,10 @@ const MainPage: React.FC = () => {
     };
   }, [loadNaverScript, initializeMap]);
 
-  // 위치 변경 시 지도 중심 업데이트
+  /**
+   * 위치 변경 시 지도 중심 업데이트
+   * 위치 정보나 지도 상태가 변경될 때만 실행
+   */
   useEffect(() => {
     if (!naverMapRef.current || !mapReady) return;
     
@@ -174,19 +195,19 @@ const MainPage: React.FC = () => {
     }
   }, [canUseGeolocation, location, defaultLocation, mapReady]);
 
-  // 검색어 변경 시 로깅
   useEffect(() => {
     if (searchTerm) {
       console.log("검색어 변경됨:", searchTerm);
     }
   }, [searchTerm]);
 
-  // UI 이벤트 핸들러
+  // TODO: 추후 API 연결 추가 필요
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     console.log("검색어 입력:", term);
   };
   
+  // TODO: 추후 필터 로직 구현
   const handleFilterChange = (filterType: string, value?: string) => {
     console.log("필터 변경:", filterType, value);
   };
@@ -195,7 +216,6 @@ const MainPage: React.FC = () => {
     setPage(newPage);
   };
 
-  // 로딩 상태 처리
   if (isLoading) return <div>로딩 중...</div>;
 
   return (
