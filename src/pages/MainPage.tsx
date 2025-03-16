@@ -7,10 +7,11 @@ import { useMeetingList } from "../hooks/api/useMeeting";
 const MainPage: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [naverMap, setNaverMap] = useState<naver.maps.Map | null>(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1); 
+  const [searchTerm, setSearchTerm] = useState("");
   const { location, loaded } = useGeolocation();
   const { data, isLoading } = useMeetingList(page);
-
+  
   const meetings = useMemo(() => data?.data.content || [], [data?.data.content]);
   const totalPages = data?.data?.totalPages ?? 0;
   const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
@@ -35,6 +36,16 @@ const MainPage: React.FC = () => {
     };
   }, [canShowMap, location]);
 
+  // TODO: 추후 API 연결 추가 필요
+  useEffect(() => {
+    console.log("상태관리 검색어:", searchTerm);
+  }, [searchTerm]);
+  
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    console.log("검색어:", term);
+  };
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -49,6 +60,7 @@ const MainPage: React.FC = () => {
           currentPage={page}
           totalPages={totalPages}
           onPageChange={handlePageChange}
+          onSearch={handleSearch}
         />
       </div>
       <div className="w-full md:w-2/3 lg:w-3/4 flex-grow h-[500px] md:h-auto">
