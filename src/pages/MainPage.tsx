@@ -13,15 +13,23 @@ const MainPage: React.FC = () => {
   const { location, loaded } = useGeolocation();
   const { data, isLoading } = useMeetingList(page);
   
+  // 기본 위치 설정 (서울시청 좌표)
+  const defaultLocation = { latitude: 37.5666805, longitude: 126.9784147 };
+  
   const meetings = useMemo(() => data?.data.content || [], [data?.data.content]);
   const totalPages = data?.data?.totalPages ?? 0;
-  const canShowMap = loaded && location?.latitude != null && location?.longitude != null;
+  
+  const canUseGeolocation = loaded && location?.latitude != null && location?.longitude != null;
 
   useEffect(() => {
-    if (!mapRef.current || !canShowMap || !window.naver) return;
+    if (!mapRef.current || !window.naver) return;
+    
+    const mapCenter = canUseGeolocation
+      ? new naver.maps.LatLng(location.latitude, location.longitude)
+      : new naver.maps.LatLng(defaultLocation.latitude, defaultLocation.longitude);
 
     const map = new naver.maps.Map(mapRef.current, {
-      center: new naver.maps.LatLng(location.latitude, location.longitude),
+      center: mapCenter,
       zoom: 17,
       zoomControl: true,
       zoomControlOptions: {
@@ -31,11 +39,21 @@ const MainPage: React.FC = () => {
 
     setNaverMap(map);
 
+    // 디버깅을 위한 로그
+    // TODO: 이상하게 해당 로그 코드 지우면 지도가 안 뜨는 현상 발생
+    // 추후 원인 파악 필요
+    console.log("지도 생성됨", {
+      geolocationLoaded: loaded,
+      userLocation: location,
+      usingDefaultLocation: !canUseGeolocation,
+      mapCenter: mapCenter
+    });
+
     return () => {
       map?.destroy();
       setNaverMap(null);
     };
-  }, [canShowMap, location]);
+  }, [canUseGeolocation, defaultLocation.latitude, defaultLocation.longitude, loaded, location]);
 
   // TODO: 추후 API 연결 추가 필요
   useEffect(() => {
