@@ -6,6 +6,7 @@ import {
   PeopleAlt
 } from "@mui/icons-material";
 import MainDurationModal from "./modals/MainDurationModal";
+import MainTechStackModal from "./modals/MainTechStackModal";
 import { DURATION } from "../../types/models/meeting";
 
 interface FilterFloatingButtonProps {
@@ -17,6 +18,10 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   
   const [selectedDurations, setSelectedDurations] = useState<DURATION[]>([]);
+  const [selectedTechStacks, setSelectedTechStacks] = useState<{ 
+    selectedIds: number[], 
+    customStacks: string[] 
+  }>({ selectedIds: [], customStacks: [] });
 
   const handleFilterClick = (e: React.MouseEvent<HTMLButtonElement>, filterType: string) => {
     e.preventDefault();
@@ -40,13 +45,20 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
       onFilterChange("기간", durations);
     }
   };
+  
+  const handleTechStackSelect = (techStacks: { selectedIds: number[], customStacks: string[] }) => {
+    setSelectedTechStacks(techStacks);
+    if (onFilterChange) {
+      onFilterChange("스택", techStacks);
+    }
+  };
 
   const renderFilterModal = () => {
-    if (!openFilter || openFilter === "기간") return null;
+    if (!openFilter || openFilter === "기간" || openFilter === "스택") return null;
     
     return (
       <div 
-        className="absolute top-14 left-0 w-64 bg-white shadow-md z-50 p-4"
+        className="absolute top-14 left-0 w-64 bg-white shadow-md z-20 p-4"
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -71,77 +83,71 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
   );
 
   return (
-    <>
-      {openFilter && (
-        <div 
-          className="fixed inset-0 z-30" 
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleCloseModal();
-          }}
-          style={{ pointerEvents: 'all' }}
-        />
-      )}
-    
-      <div className="absolute top-6 left-6 z-40 pointer-events-none">
-        <div className="flex items-center gap-6 pointer-events-auto">
-          <button
-            className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${
-              openFilter === "기간" ? "border-bold text-bold" : "text-gray-600"
-            }`}
-            onClick={(e) => handleFilterClick(e, "기간")}
-          >
-            <CalendarToday sx={{ fontSize: 24 }} />
-            <span className="text-regular font-gmarket-bold text-bold">기간</span>
-            <TriangleIcon />
-          </button>
+    <div className="absolute top-6 left-6 z-10 pointer-events-none">
+      <div className="flex items-center gap-6 pointer-events-auto">
+        <button
+          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${
+            openFilter === "기간" ? "border-bold text-bold" : "text-gray-600"
+          }`}
+          onClick={(e) => handleFilterClick(e, "기간")}
+        >
+          <CalendarToday sx={{ fontSize: 24 }} />
+          <span className="text-regular font-gmarket-bold text-bold">기간</span>
+          <TriangleIcon />
+        </button>
 
-          <button
-            className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${
-              openFilter === "스택" ? "border-bold text-bold" : "text-gray-600"
-            }`}
-            onClick={(e) => handleFilterClick(e, "스택")}
-          >
-            <RocketLaunch sx={{ fontSize: 24 }} />
-            <span className="text-regular font-gmarket-bold text-bold">스택</span>
-            <TriangleIcon />
-          </button>
+        <button
+          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${
+            openFilter === "스택" ? "border-bold text-bold" : "text-gray-600"
+          }`}
+          onClick={(e) => handleFilterClick(e, "스택")}
+        >
+          <RocketLaunch sx={{ fontSize: 24 }} />
+          <span className="text-regular font-gmarket-bold text-bold">스택</span>
+          <TriangleIcon />
+        </button>
 
-          <button
-            className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${
-              openFilter === "인원" ? "border-bold text-bold" : "text-gray-600"
-            }`}
-            onClick={(e) => handleFilterClick(e, "인원")}
-          >
-            <PeopleAlt sx={{ fontSize: 24 }} />
-            <span className="text-regular font-gmarket-bold text-bold">인원</span>
-            <TriangleIcon />
-          </button>
+        <button
+          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${
+            openFilter === "인원" ? "border-bold text-bold" : "text-gray-600"
+          }`}
+          onClick={(e) => handleFilterClick(e, "인원")}
+        >
+          <PeopleAlt sx={{ fontSize: 24 }} />
+          <span className="text-regular font-gmarket-bold text-bold">인원</span>
+          <TriangleIcon />
+        </button>
 
-          <button
-            className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${
-              openFilter === "지역" ? "border-bold text-bold" : "text-gray-600"
-            }`}
-            onClick={(e) => handleFilterClick(e, "지역")}
-          >
-            <FilterAlt sx={{ fontSize: 24 }} />
-            <span className="text-regular font-gmarket-bold text-bold">지역</span>
-            <TriangleIcon />
-          </button>
-        </div>
-        
-        {renderFilterModal()}
-        
-        <MainDurationModal 
-          isOpen={openFilter === "기간"}
-          onClose={handleCloseModal}
-          onSelect={handleDurationSelect}
-          selectedDurations={selectedDurations}
-          anchorEl={anchorEl}
-        />
+        <button
+          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${
+            openFilter === "지역" ? "border-bold text-bold" : "text-gray-600"
+          }`}
+          onClick={(e) => handleFilterClick(e, "지역")}
+        >
+          <FilterAlt sx={{ fontSize: 24 }} />
+          <span className="text-regular font-gmarket-bold text-bold">지역</span>
+          <TriangleIcon />
+        </button>
       </div>
-    </>
+      
+      {renderFilterModal()}
+      
+      <MainDurationModal 
+        isOpen={openFilter === "기간"}
+        onClose={handleCloseModal}
+        onSelect={handleDurationSelect}
+        selectedDurations={selectedDurations}
+        anchorEl={anchorEl}
+      />
+      
+      <MainTechStackModal
+        isOpen={openFilter === "스택"}
+        onClose={handleCloseModal}
+        onSelect={handleTechStackSelect}
+        selectedTechStacks={selectedTechStacks}
+        anchorEl={anchorEl}
+      />
+    </div>
   );
 };
 
