@@ -54,7 +54,7 @@ const MainPage: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col md:flex-row min-h-[90vh]">
-      <div className="w-full md:w-1/3 lg:w-1/4">
+      <div className="w-full md:w-1/3 lg:w-1/4 overflow-y-auto">
         <StudyList
           meetings={meetings}
           currentPage={page}
@@ -63,8 +63,12 @@ const MainPage: React.FC = () => {
           onSearch={handleSearch}
         />
       </div>
-      <div className="w-full md:w-2/3 lg:w-3/4 flex-grow h-[500px] md:h-auto">
-        <div ref={mapRef} id="map" style={{ width: "100%", position: "fixed", right: 0 }}>
+      <div className="w-full md:w-2/3 lg:w-3/4 relative h-[500px] md:h-[90vh]">
+        <div 
+          ref={mapRef} 
+          id="map" 
+          className="w-full h-full"
+        >
           {naverMap && meetings.map((meeting) => (
             <EventMarker
               key={meeting.id}
