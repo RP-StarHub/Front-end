@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import EventMarker from "../components/main/EventMarker";
 import StudyList from "../components/main/StudyList";
+import FilterFloatingButton from "../components/main/FilterFloatingButton";
 import { useGeolocation } from "../hooks/common/useGeolocation";
 import { useMeetingList } from "../hooks/api/useMeeting";
 
@@ -45,6 +46,11 @@ const MainPage: React.FC = () => {
     setSearchTerm(term);
     console.log("검색어:", term);
   };
+  
+  // TODO: 추후 필터 로직 구현
+  const handleFilterChange = (filterType: string, value?: string) => {
+    console.log("선택된 필터:", filterType, "값:", value);
+  };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -64,6 +70,8 @@ const MainPage: React.FC = () => {
         />
       </div>
       <div className="w-full md:w-2/3 lg:w-3/4 relative h-[500px] md:h-[90vh]">
+        <FilterFloatingButton onFilterChange={handleFilterChange} />
+        
         <div 
           ref={mapRef} 
           id="map" 
