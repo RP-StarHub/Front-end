@@ -10,6 +10,7 @@
     "@tanstack/react-query": "^5.64.1",
     "axios": "^1.6.2",
     "cors": "^2.8.5",
+    "rc-slider": "^11.1.8",
     "react": "^18.2.0",
     "react-datepicker": "^4.21.0",
     "react-daum-postcode": "^3.1.3",
