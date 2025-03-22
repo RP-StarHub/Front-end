@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState, useCallback } from "react"
 import EventMarker from "../components/main/EventMarker";
 import StudyList from "../components/main/StudyList";
 import FilterFloatingButton from "../components/main/FilterFloatingButton";
+import MapSearchButton from "../components/main/MapSearchButton";
 import { useGeolocation } from "../hooks/common/useGeolocation";
 import { useMeetingList } from "../hooks/api/useMeeting";
 
@@ -216,6 +217,29 @@ const MainPage: React.FC = () => {
     setPage(newPage);
   };
 
+  const handleMapSearch = useCallback(() => {
+    if (!naverMapRef.current) return;
+    
+    // 현재 지도의 경계 정보 가져오기
+    try {
+      const bounds = naverMapRef.current.getBounds();
+      const ne = bounds.getNE();
+      const sw = bounds.getSW();
+      
+      // 좌표 값 추출
+      const minLat = sw.lat();
+      const maxLat = ne.lat();
+      const minLng = sw.lng();
+      const maxLng = ne.lng();
+      
+      const coordParam = `${minLat},${maxLat},${minLng},${maxLng}`;
+      
+      console.log(`최소 위도, 최대 위도, 최소 경도, 최대 경도: c=${coordParam}`);
+    } catch (error) {
+      console.error("지도 검색 오류:", error);
+    }
+  }, []);
+
   if (isLoading) return <div>로딩 중...</div>;
 
   return (
@@ -231,6 +255,8 @@ const MainPage: React.FC = () => {
       </div>
       <div className="w-full md:w-2/3 lg:w-3/4 relative h-[500px] md:h-[90vh]">
         <FilterFloatingButton onFilterChange={handleFilterChange} />
+        
+        <MapSearchButton onClick={handleMapSearch} />
         
         <div 
           ref={mapRef} 
