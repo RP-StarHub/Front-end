@@ -10,6 +10,10 @@ interface MainParticipantsModalProps {
   anchorEl?: HTMLElement | null;
 }
 
+/**
+ * 메인 페이지 인원 필터 모달 컴포넌트
+ * 참여 인원 범위를 슬라이더로 선택할 수 있는 모달 컴포넌트
+ */
 const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
   isOpen,
   onClose,
@@ -87,7 +91,6 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
                     max={10}
                     value={range}
                     onChange={handleSliderChange}
-                    // rc-slider 라이브러리의 스타일에 맞게 사용
                     trackStyle={[{ backgroundColor: '#7C8BBE', height: 4 }]}
                     handleStyle={[
                       { 

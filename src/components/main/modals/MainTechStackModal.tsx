@@ -16,6 +16,10 @@ interface MainTechStackModalProps {
   anchorEl?: HTMLElement | null;
 }
 
+/**
+ * 메인 페이지 기술 스택 필터 모달 컴포넌트
+ * 프론트엔드, 백엔드, 모바일 카테고리별로 기술 스택 선택 UI 제공
+ */
 const MainTechStackModal: React.FC<MainTechStackModalProps> = ({
   isOpen,
   onClose,
@@ -24,7 +28,6 @@ const MainTechStackModal: React.FC<MainTechStackModalProps> = ({
   anchorEl
 }) => {
   const { data: techStacksData, isLoading } = useGetTechStack();
-
   const [selectedIds, setSelectedIds] = useState<number[]>(selectedTechStacks.selectedIds);
 
   useEffect(() => {
@@ -90,6 +93,7 @@ const MainTechStackModal: React.FC<MainTechStackModalProps> = ({
 
   if (!techStacksData?.data) return null;
 
+  // 기술 스택을 카테고리별로 그룹화
   const groupedTechStacks = techStacksData.data.reduce((acc, stack) => {
     const category = stack.category.toLowerCase();
     if (!acc[category]) {
@@ -99,6 +103,7 @@ const MainTechStackModal: React.FC<MainTechStackModalProps> = ({
     return acc;
   }, {} as Record<string, typeof techStacksData.data>);
 
+  // 카테고리 영문명을 한글명으로 매핑
   const categoryMapping: Record<string, string> = {
     [TechCategory.FRONTEND.toLowerCase()]: '프론트엔드',
     [TechCategory.BACKEND.toLowerCase()]: '백엔드',

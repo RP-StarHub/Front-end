@@ -10,6 +10,10 @@ interface MainDurationModalProps {
   anchorEl?: HTMLElement | null;
 }
 
+/**
+ * 기간 필터 모달 컴포넌트
+ * 중복 선택이 가능한 프로젝트 기간 필터 UI 제공
+ */
 const MainDurationModal: React.FC<MainDurationModalProps> = ({
   isOpen,
   onClose,

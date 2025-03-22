@@ -16,6 +16,10 @@ interface FilterFloatingButtonProps {
   onFilterChange?: (filterType: string, values?: any) => void;
 }
 
+/**
+ * 메인 페이지 필터 버튼 컴포넌트
+ * 기간, 기술 스택, 인원, 지역 필터링을 위한 플로팅 버튼 UI
+ */
 const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterChange }) => {
   const [openFilter, setOpenFilter] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -30,9 +34,9 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
     min: number,
     max: number
   }>({ min: 1, max: 5 });
-  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation>({ 
-    selectedSido: '', 
-    selectedSigunguList: [] 
+  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation>({
+    selectedSido: '',
+    selectedSigunguList: []
   });
 
   useEffect(() => {
@@ -55,7 +59,6 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
     setAnchorEl(null);
   };
 
-  // 필터 선택 핸들러들
   const handleDurationSelect = (durations: DURATION[]) => {
     setSelectedDurations(durations);
     if (onFilterChange) {
@@ -76,7 +79,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
       onFilterChange("인원", participants);
     }
   };
-  
+
   const handleLocationSelect = (location: SelectedLocation) => {
     setSelectedLocation(location);
     if (onFilterChange && location) {
@@ -84,6 +87,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
     }
   };
 
+  // 지역 버튼 라벨 생성('시도명' 형식으로 표기)
   const getLocationButtonLabel = () => {
     if (selectedLocation.selectedSido && selectedLocation.selectedSigunguList.length > 0) {
       return `${selectedLocation.selectedSido} (${selectedLocation.selectedSigunguList.length})`;
@@ -107,8 +111,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
     <div className="absolute top-6 left-6 z-40 pointer-events-none">
       <div className="flex items-center gap-6 pointer-events-auto">
         <button
-          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${openFilter === "기간" ? "border-bold text-bold" : "text-gray-600"
-          }`}
+          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md 
+            ${openFilter === "기간" ? "border-bold text-bold" : "text-gray-600"}`}
           onClick={(e) => handleFilterClick(e, "기간")}
         >
           <CalendarToday sx={{ fontSize: 24 }} />
@@ -117,8 +121,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
         </button>
 
         <button
-          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${openFilter === "스택" ? "border-bold text-bold" : "text-gray-600"
-          }`}
+          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md
+            ${openFilter === "스택" ? "border-bold text-bold" : "text-gray-600"}`}
           onClick={(e) => handleFilterClick(e, "스택")}
         >
           <RocketLaunch sx={{ fontSize: 24 }} />
@@ -127,8 +131,9 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
         </button>
 
         <button
-          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${openFilter === "인원" ? "border-bold text-bold" : "text-gray-600"
-          }`}
+          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md 
+            ${openFilter === "인원" ? "border-bold text-bold" : "text-gray-600"
+            }`}
           onClick={(e) => handleFilterClick(e, "인원")}
         >
           <PeopleAlt sx={{ fontSize: 24 }} />
@@ -137,8 +142,9 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
         </button>
 
         <button
-          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${openFilter === "지역" ? "border-bold text-bold" : "text-gray-600"
-          }`}
+          className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md 
+            ${openFilter === "지역" ? "border-bold text-bold" : "text-gray-600"
+            }`}
           onClick={(e) => handleFilterClick(e, "지역")}
         >
           <FilterAlt sx={{ fontSize: 24 }} />
@@ -172,7 +178,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
         selectedParticipants={selectedParticipants}
         anchorEl={anchorEl}
       />
-      
+
       <MainLocationModal
         isOpen={openFilter === "지역"}
         onClose={handleCloseModal}

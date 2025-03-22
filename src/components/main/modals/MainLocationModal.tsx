@@ -16,6 +16,10 @@ interface MainLocationModalProps {
   anchorEl?: HTMLElement | null;
 }
 
+/**
+ * 메인 페이지 지역 필터 모달 컴포넌트
+ * 시도-시군구 계층 구조의 지역 선택 UI를 제공
+ */
 const MainLocationModal: React.FC<MainLocationModalProps> = ({
   isOpen,
   onClose,
@@ -27,6 +31,7 @@ const MainLocationModal: React.FC<MainLocationModalProps> = ({
   const [selectedSigunguList, setSelectedSigunguList] 
     = useState<SigunguItem[]>(selectedLocation.selectedSigunguList);
   const [activeSido, setActiveSido] = useState<string | null>(selectedLocation.selectedSido || null);
+  
   const [locationData, setLocationData] = useState<SidoItem[]>(defaultLocationData);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -83,7 +88,6 @@ const MainLocationModal: React.FC<MainLocationModalProps> = ({
     setSelectedSigunguList(prev => prev.filter(item => item.id !== id));
   };
 
-  // 현재 선택된 시도의 시군구 목록
   const getSigunguList = (): SigunguItem[] => {
     const sidoItem = getCurrentSidoItem();
     if (!sidoItem) return [];
