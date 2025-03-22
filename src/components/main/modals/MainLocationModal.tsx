@@ -170,7 +170,7 @@ const MainLocationModal: React.FC<MainLocationModalProps> = ({
           />
 
           <div
-            className="absolute top-16 left-2/3 z-50 bg-white rounded shadow-md p-4 w-2/3"
+            className="absolute top-16 left-2/3 z-50 bg-white rounded shadow-md p-4 w-full"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
