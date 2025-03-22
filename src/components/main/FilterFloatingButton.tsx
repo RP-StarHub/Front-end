@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FilterAlt,
   RocketLaunch,
@@ -8,7 +8,9 @@ import {
 import MainDurationModal from "./modals/MainDurationModal";
 import MainTechStackModal from "./modals/MainTechStackModal";
 import MainParticipantsModal from "./modals/MainParticipantsModal";
+import MainLocationModal from "./modals/MainLocationModal";
 import { DURATION } from "../../types/models/meeting";
+import { SelectedLocation, preloadLocationData } from "../../util/locationUtils";
 
 interface FilterFloatingButtonProps {
   onFilterChange?: (filterType: string, values?: any) => void;
@@ -28,6 +30,14 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
     min: number,
     max: number
   }>({ min: 1, max: 5 });
+  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation>({ 
+    selectedSido: '', 
+    selectedSigunguList: [] 
+  });
+
+  useEffect(() => {
+    preloadLocationData();
+  }, []);
 
   const handleFilterClick = (e: React.MouseEvent<HTMLButtonElement>, filterType: string) => {
     e.preventDefault();
@@ -66,23 +76,19 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
       onFilterChange("인원", participants);
     }
   };
+  
+  const handleLocationSelect = (location: SelectedLocation) => {
+    setSelectedLocation(location);
+    if (onFilterChange && location) {
+      onFilterChange("지역", location);
+    }
+  };
 
-  // 기존 더미 모달 렌더링 함수
-  const renderFilterModal = () => {
-    if (!openFilter || openFilter === "기간" || openFilter === "스택" || openFilter === "인원") return null;
-
-    return (
-      <div
-        className="absolute top-14 left-0 w-64 bg-white shadow-md z-50 p-4"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        style={{ pointerEvents: 'all' }}
-      >
-        <div className="text-regular font-gmarket-bold text-bold">모달 제목: {openFilter}</div>
-      </div>
-    );
+  const getLocationButtonLabel = () => {
+    if (selectedLocation.selectedSido && selectedLocation.selectedSigunguList.length > 0) {
+      return `${selectedLocation.selectedSido} (${selectedLocation.selectedSigunguList.length})`;
+    }
+    return "지역";
   };
 
   const TriangleIcon = () => (
@@ -102,7 +108,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
       <div className="flex items-center gap-6 pointer-events-auto">
         <button
           className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${openFilter === "기간" ? "border-bold text-bold" : "text-gray-600"
-            }`}
+          }`}
           onClick={(e) => handleFilterClick(e, "기간")}
         >
           <CalendarToday sx={{ fontSize: 24 }} />
@@ -112,7 +118,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
 
         <button
           className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${openFilter === "스택" ? "border-bold text-bold" : "text-gray-600"
-            }`}
+          }`}
           onClick={(e) => handleFilterClick(e, "스택")}
         >
           <RocketLaunch sx={{ fontSize: 24 }} />
@@ -122,7 +128,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
 
         <button
           className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${openFilter === "인원" ? "border-bold text-bold" : "text-gray-600"
-            }`}
+          }`}
           onClick={(e) => handleFilterClick(e, "인원")}
         >
           <PeopleAlt sx={{ fontSize: 24 }} />
@@ -132,16 +138,16 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
 
         <button
           className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md ${openFilter === "지역" ? "border-bold text-bold" : "text-gray-600"
-            }`}
+          }`}
           onClick={(e) => handleFilterClick(e, "지역")}
         >
           <FilterAlt sx={{ fontSize: 24 }} />
-          <span className="text-regular font-gmarket-bold text-bold">지역</span>
+          <span className="text-regular font-gmarket-bold text-bold">
+            {getLocationButtonLabel()}
+          </span>
           <TriangleIcon />
         </button>
       </div>
-
-      {renderFilterModal()}
 
       <MainDurationModal
         isOpen={openFilter === "기간"}
@@ -164,6 +170,14 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
         onClose={handleCloseModal}
         onSelect={handleParticipantsSelect}
         selectedParticipants={selectedParticipants}
+        anchorEl={anchorEl}
+      />
+      
+      <MainLocationModal
+        isOpen={openFilter === "지역"}
+        onClose={handleCloseModal}
+        onSelect={handleLocationSelect}
+        selectedLocation={selectedLocation}
         anchorEl={anchorEl}
       />
     </div>
