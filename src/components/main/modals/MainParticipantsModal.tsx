@@ -5,7 +5,7 @@ import 'rc-slider/assets/index.css';
 interface MainParticipantsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (participants: { min: number, max: number }) => void;
+  onSelect: (minParticipants: number, maxParticipants: number) => void;
   selectedParticipants: { min: number, max: number };
   anchorEl?: HTMLElement | null;
 }
@@ -18,7 +18,7 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
   isOpen,
   onClose,
   onSelect,
-  selectedParticipants = { min: 1, max: 4 },
+  selectedParticipants = { min: 1, max: 5 },
   anchorEl
 }) => {
   const initialMin = Math.max(1, selectedParticipants.min);
@@ -47,7 +47,7 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
     e.preventDefault();
     e.stopPropagation();
     
-    onSelect({ min: range[0], max: range[1] });
+    onSelect(range[0], range[1]);
     onClose();
   };
 

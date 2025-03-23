@@ -5,14 +5,8 @@ import { TechCategory } from '../../../types/models/techstack';
 interface MainTechStackModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (techStacks: {
-    selectedIds: number[],
-    customStacks: string[]
-  }) => void;
-  selectedTechStacks: {
-    selectedIds: number[],
-    customStacks: string[]
-  };
+  onSelect: (techStacks: number[]) => void;
+  selectedTechStacks: number[];
   anchorEl?: HTMLElement | null;
 }
 
@@ -24,14 +18,14 @@ const MainTechStackModal: React.FC<MainTechStackModalProps> = ({
   isOpen,
   onClose,
   onSelect,
-  selectedTechStacks = { selectedIds: [], customStacks: [] },
+  selectedTechStacks = [],
   anchorEl
 }) => {
   const { data: techStacksData, isLoading } = useGetTechStack();
-  const [selectedIds, setSelectedIds] = useState<number[]>(selectedTechStacks.selectedIds);
+  const [selectedIds, setSelectedIds] = useState<number[]>(selectedTechStacks);
 
   useEffect(() => {
-    setSelectedIds(selectedTechStacks.selectedIds);
+    setSelectedIds(selectedTechStacks);
   }, [selectedTechStacks]);
 
   if (!isOpen) return null;
@@ -51,10 +45,7 @@ const MainTechStackModal: React.FC<MainTechStackModalProps> = ({
     e.preventDefault();
     e.stopPropagation();
 
-    onSelect({
-      selectedIds,
-      customStacks: []
-    });
+    onSelect(selectedIds);
     onClose();
   };
 

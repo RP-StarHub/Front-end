@@ -5,27 +5,27 @@ import { toKoreanDuration } from '../../../util/transformKorean';
 interface MainDurationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (durations: DURATION[]) => void;
-  selectedDurations: DURATION[];
+  onSelect: (duration: DURATION | null) => void;
+  selectedDuration: DURATION | null;
   anchorEl?: HTMLElement | null;
 }
 
 /**
  * 기간 필터 모달 컴포넌트
- * 중복 선택이 가능한 프로젝트 기간 필터 UI 제공
+ * 단일 선택만 가능한 프로젝트 기간 필터 UI 제공
  */
 const MainDurationModal: React.FC<MainDurationModalProps> = ({
   isOpen,
   onClose,
   onSelect,
-  selectedDurations = [],
+  selectedDuration = null,
   anchorEl
 }) => {
-  const [selected, setSelected] = useState<DURATION[]>(selectedDurations);
+  const [selected, setSelected] = useState<DURATION | null>(selectedDuration);
   
   useEffect(() => {
-    setSelected(selectedDurations);
-  }, [selectedDurations]);
+    setSelected(selectedDuration);
+  }, [selectedDuration]);
   
   if (!isOpen) return null;
   
@@ -35,11 +35,11 @@ const MainDurationModal: React.FC<MainDurationModalProps> = ({
     e.preventDefault();
     e.stopPropagation();
     
-    const newSelected = selected.includes(duration)
-      ? selected.filter(d => d !== duration)
-      : [...selected, duration];
-      
-    setSelected(newSelected);
+    if (selected === duration) {
+      setSelected(null);
+    } else {
+      setSelected(duration);
+    }
   };
 
   const handleConfirm = (e: React.MouseEvent) => {
@@ -73,7 +73,7 @@ const MainDurationModal: React.FC<MainDurationModalProps> = ({
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-button font-gmarket-bold text-bold">기간</h3>
-              <p className="text-regular text-gray-500">중복선택 가능</p>
+              <p className="text-regular text-gray-500">하나만 선택 가능</p>
             </div>
             
             <div className="grid grid-cols-2 gap-3 mb-4">
@@ -85,15 +85,15 @@ const MainDurationModal: React.FC<MainDurationModalProps> = ({
                 >
                   <div 
                     className={`
-                      w-5 h-5 rounded border-2 flex items-center justify-center
-                      ${selected.includes(duration) 
+                      w-5 h-5 rounded-full border-2 flex items-center justify-center
+                      ${selected === duration 
                         ? 'border-bold bg-bold' 
                         : 'border-bold'
                       }
                     `}
                   >
-                    {selected.includes(duration) && (
-                      <div className="w-3 h-3 flex items-center justify-center text-white">✓</div>
+                    {selected === duration && (
+                      <div className="w-3 h-3 rounded-full bg-white"></div>
                     )}
                   </div>
                   <span className="font-scdream4 text-label text-bold">

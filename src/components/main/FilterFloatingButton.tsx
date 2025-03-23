@@ -10,7 +10,8 @@ import MainTechStackModal from "./modals/MainTechStackModal";
 import MainParticipantsModal from "./modals/MainParticipantsModal";
 import MainLocationModal from "./modals/MainLocationModal";
 import { DURATION } from "../../types/models/meeting";
-import { SelectedLocation, preloadLocationData } from "../../util/locationUtils";
+import { preloadLocationData, SelectedLocation } from "../../util/locationUtils";
+import useMapStore from "../../store/mapStore";
 
 interface FilterFloatingButtonProps {
   onFilterChange?: (filterType: string, values?: any) => void;
@@ -25,19 +26,11 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   // 필터 상태들
-  const [selectedDurations, setSelectedDurations] = useState<DURATION[]>([]);
-  const [selectedTechStacks, setSelectedTechStacks] = useState<{
-    selectedIds: number[],
-    customStacks: string[]
-  }>({ selectedIds: [], customStacks: [] });
-  const [selectedParticipants, setSelectedParticipants] = useState<{
-    min: number,
-    max: number
-  }>({ min: 1, max: 5 });
-  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation>({
-    selectedSido: '',
-    selectedSigunguList: []
-  });
+  const filters = useMapStore(state => state.filters);
+  const setDurations = useMapStore(state => state.setDurations);
+  const setTechStacks = useMapStore(state => state.setTechStacks);
+  const setParticipants = useMapStore(state => state.setParticipants);
+  const setLocation = useMapStore(state => state.setLocation);
 
   useEffect(() => {
     preloadLocationData();
@@ -59,41 +52,50 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
     setAnchorEl(null);
   };
 
-  const handleDurationSelect = (durations: DURATION[]) => {
-    setSelectedDurations(durations);
+  const handleDurationSelect = (duration: DURATION | null) => {
+    setDurations(duration);
+    
     if (onFilterChange) {
-      onFilterChange("기간", durations);
+      onFilterChange("기간", duration);
     }
   };
 
-  const handleTechStackSelect = (techStacks: { selectedIds: number[], customStacks: string[] }) => {
-    setSelectedTechStacks(techStacks);
+  const handleTechStackSelect = (techStacks: number[]) => {
+    setTechStacks(techStacks);
+    
     if (onFilterChange) {
       onFilterChange("스택", techStacks);
     }
   };
 
-  const handleParticipantsSelect = (participants: { min: number, max: number }) => {
-    setSelectedParticipants(participants);
+  const handleParticipantsSelect = (minParticipants: number, maxParticipants: number) => {
+    setParticipants(minParticipants, maxParticipants);
+    
     if (onFilterChange) {
-      onFilterChange("인원", participants);
+      onFilterChange("인원", { minParticipants, maxParticipants });
     }
   };
 
   const handleLocationSelect = (location: SelectedLocation) => {
-    setSelectedLocation(location);
-    if (onFilterChange && location) {
+    setLocation(location);
+    
+    if (onFilterChange) {
       onFilterChange("지역", location);
     }
   };
 
   // 지역 버튼 라벨 생성('시도명' 형식으로 표기)
   const getLocationButtonLabel = () => {
-    if (selectedLocation.selectedSido && selectedLocation.selectedSigunguList.length > 0) {
-      return `${selectedLocation.selectedSido} (${selectedLocation.selectedSigunguList.length})`;
+    if (filters.location.selectedSido && filters.location.selectedSigunguList.length > 0) {
+      return `${filters.location.selectedSido} (${filters.location.selectedSigunguList.length})`;
     }
     return "지역";
   };
+
+  const isDurationActive = !!filters.duration;
+  const isTechStackActive = filters.techStacks.length > 0;
+  const isParticipantsActive = filters.minParticipants !== 1 || filters.maxParticipants !== 5;
+  const isLocationActive = !!filters.location.selectedSido && filters.location.selectedSigunguList.length > 0;
 
   const TriangleIcon = () => (
     <svg
@@ -112,7 +114,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
       <div className="flex items-center gap-6 pointer-events-auto">
         <button
           className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md 
-            ${openFilter === "기간" ? "border-bold text-bold" : "text-gray-600"}`}
+            ${openFilter === "기간" ? "border-bold text-bold" : "text-gray-600"}
+            ${isDurationActive ? "border-main text-main" : ""}`}
           onClick={(e) => handleFilterClick(e, "기간")}
         >
           <CalendarToday sx={{ fontSize: 24 }} />
@@ -122,7 +125,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
 
         <button
           className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md
-            ${openFilter === "스택" ? "border-bold text-bold" : "text-gray-600"}`}
+            ${openFilter === "스택" ? "border-bold text-bold" : "text-gray-600"}
+            ${isTechStackActive ? "border-main text-main" : ""}`}
           onClick={(e) => handleFilterClick(e, "스택")}
         >
           <RocketLaunch sx={{ fontSize: 24 }} />
@@ -132,8 +136,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
 
         <button
           className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md 
-            ${openFilter === "인원" ? "border-bold text-bold" : "text-gray-600"
-            }`}
+            ${openFilter === "인원" ? "border-bold text-bold" : "text-gray-600"}
+            ${isParticipantsActive ? "border-main text-main" : ""}`}
           onClick={(e) => handleFilterClick(e, "인원")}
         >
           <PeopleAlt sx={{ fontSize: 24 }} />
@@ -143,8 +147,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
 
         <button
           className={`flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md 
-            ${openFilter === "지역" ? "border-bold text-bold" : "text-gray-600"
-            }`}
+            ${openFilter === "지역" ? "border-bold text-bold" : "text-gray-600"}
+            ${isLocationActive ? "border-main text-main" : ""}`}
           onClick={(e) => handleFilterClick(e, "지역")}
         >
           <FilterAlt sx={{ fontSize: 24 }} />
@@ -155,37 +159,48 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
         </button>
       </div>
 
-      <MainDurationModal
-        isOpen={openFilter === "기간"}
-        onClose={handleCloseModal}
-        onSelect={handleDurationSelect}
-        selectedDurations={selectedDurations}
-        anchorEl={anchorEl}
-      />
+      {openFilter === "기간" && (
+        <MainDurationModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          onSelect={handleDurationSelect}
+          selectedDuration={filters.duration}
+          anchorEl={anchorEl}
+        />
+      )}
 
-      <MainTechStackModal
-        isOpen={openFilter === "스택"}
-        onClose={handleCloseModal}
-        onSelect={handleTechStackSelect}
-        selectedTechStacks={selectedTechStacks}
-        anchorEl={anchorEl}
-      />
+      {openFilter === "스택" && (
+        <MainTechStackModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          onSelect={handleTechStackSelect}
+          selectedTechStacks={filters.techStacks}
+          anchorEl={anchorEl}
+        />
+      )}
 
-      <MainParticipantsModal
-        isOpen={openFilter === "인원"}
-        onClose={handleCloseModal}
-        onSelect={handleParticipantsSelect}
-        selectedParticipants={selectedParticipants}
-        anchorEl={anchorEl}
-      />
+      {openFilter === "인원" && (
+        <MainParticipantsModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          onSelect={handleParticipantsSelect}
+          selectedParticipants={{ 
+            min: filters.minParticipants, 
+            max: filters.maxParticipants 
+          }}
+          anchorEl={anchorEl}
+        />
+      )}
 
-      <MainLocationModal
-        isOpen={openFilter === "지역"}
-        onClose={handleCloseModal}
-        onSelect={handleLocationSelect}
-        selectedLocation={selectedLocation}
-        anchorEl={anchorEl}
-      />
+      {openFilter === "지역" && (
+        <MainLocationModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          onSelect={handleLocationSelect}
+          selectedLocation={filters.location}
+          anchorEl={anchorEl}
+        />
+      )}
     </div>
   );
 };
