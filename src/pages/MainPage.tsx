@@ -15,7 +15,7 @@ import { SelectedLocation } from "../util/locationUtils";
  */
 const MainPage: React.FC = () => {
   const [page, setPage] = useState(1);
-  
+
   const searchTerm = useMapStore(state => state.searchTerm);
   const isSearching = useMapStore(state => state.isSearching);
   const setSearchTerm = useMapStore(state => state.setSearchTerm);
@@ -26,29 +26,29 @@ const MainPage: React.FC = () => {
   const setCoordinates = useMapStore(state => state.setCoordinates);
   const setIsSearching = useMapStore(state => state.setIsSearching);
   const getSearchParams = useMapStore(state => state.getSearchParams);
-  
-  const { 
-    mapRef, 
-    naverMapRef, 
-    mapReady, 
-    executeMapSearch 
+
+  const {
+    mapRef,
+    naverMapRef,
+    mapReady,
+    executeMapSearch
   } = useMap();
-  
+
   // 검색 파라미터 생성
   const searchParams = useMemo<SearchMeetingParams>(() => {
     const { params, body } = getSearchParams();
-    
+
     return {
       title: params.title,
       coordinates: params.c,
       page: page,
-      size: params.size || 10,
+      size: 4, // 페이지당 4개 항목으로 변경
       body: Object.keys(body).length > 0 ? body : undefined
     };
   }, [getSearchParams, page]);
 
   const { data, isLoading } = useMeetingList(searchParams);
-  
+
   const meetings = useMemo(() => data?.data?.content || [], [data?.data?.content]);
   const totalPages = useMemo(() => data?.data?.totalPages || 0, [data?.data?.totalPages]);
 
@@ -57,7 +57,7 @@ const MainPage: React.FC = () => {
       console.log("검색어 변경됨:", searchTerm);
     }
   }, [searchTerm]);
-  
+
   useEffect(() => {
     if (isSearching && !isLoading) {
       setIsSearching(false);
@@ -70,13 +70,13 @@ const MainPage: React.FC = () => {
     setPage(1);
     console.log("검색어 입력:", term);
   };
-  
+
   const handleFilterChange = (filterType: string, value?: any) => {
     setIsSearching(true);
     setPage(1);
-    
+
     console.log("필터 변경:", filterType, value);
-    
+
     try {
       switch (filterType) {
         case '기간':
@@ -102,7 +102,7 @@ const MainPage: React.FC = () => {
       console.error("필터 변경 중 오류 발생:", error);
     }
   };
-  
+
   // 페이지 변경 처리
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -130,15 +130,15 @@ const MainPage: React.FC = () => {
           isLoading={isLoading || isSearching}
         />
       </div>
-      
+
       <div className="w-full md:w-2/3 lg:w-3/4 relative h-[500px] md:h-[90vh]">
         <FilterFloatingButton onFilterChange={handleFilterChange} />
-        
+
         <MapSearchButton onClick={handleMapSearch} />
-        
-        <div 
-          ref={mapRef} 
-          id="map" 
+
+        <div
+          ref={mapRef}
+          id="map"
           className="w-full h-full bg-gray-100"
           style={{ position: 'relative' }}
         >
@@ -152,7 +152,7 @@ const MainPage: React.FC = () => {
               </div>
             </div>
           )}
-          
+
           {mapReady && naverMapRef.current && meetings.map((meeting) => (
             <EventMarker
               key={meeting.id}

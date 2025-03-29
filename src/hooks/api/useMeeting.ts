@@ -40,16 +40,7 @@ export const useCreateMeeting = () => {
       }
     }
   });
-  return createMeeting
-
-  // 목업용
-  // return useMutation({
-  //   mutationFn: (data: CreateMeetingRequest) =>
-  //     mockMeetingService.createMeeting(data),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['meetings'] });
-  //   }
-  // });
+  return createMeeting;
 }
 
 export const useMeetingList = (params: SearchMeetingParams) => {
@@ -57,29 +48,33 @@ export const useMeetingList = (params: SearchMeetingParams) => {
     queryKey: ['meetings', params],
     queryFn: async () => {
       const queryParams: Record<string, any> = {
-        page: params.page - 1,
-        size: params.size || 10,
+        page: params.page - 1, // API는 0부터 시작하는 페이지 인덱스 사용
+        size: 4, // 페이지당 4개 항목으로 변경
       };
       
       if (params.title) {
         queryParams.title = params.title;
       }
       
-      if (params.coordinates) {
-        queryParams.c = params.coordinates;
-      }
+      // 좌표 정보 추가 - 필수 파라미터로 처리
+      queryParams.c = params.coordinates || '37.5,37.7,126.9,127.1'; // 서울 기본 좌표 범위
       
-      let response;
-      if (params.body && Object.keys(params.body).length > 0) {
-        response = await meetingService.searchMeetings(queryParams, params.body);
-      } else {
-        response = await meetingService.getMeetingList(queryParams.page);
+      try {
+        console.log('API 요청 파라미터:', queryParams, params.body || {});
+        const response = await meetingService.searchMeetings(
+          queryParams, 
+          params.body || {}
+        );
+        console.log('API 응답:', response.data);
+        return response.data;
+      } catch (error) {
+        console.error('API 오류:', error);
+        throw error;
       }
-      
-      return response.data;
     },
     staleTime: 0,
     placeholderData: (previousData) => previousData,
+    retry: 1, // 오류 시 1번만 재시도
   };
   
   return useQuery<GetMeetingListResponse>(queryOptions);
@@ -95,15 +90,6 @@ export const useMeetingDetail = (id: number) => {
     staleTime: 0,
     placeholderData: (previousData) => previousData,
   });
-
-  // 목업용
-  // return useQuery({
-  //   queryKey: ['meeting', id],
-  //   queryFn: async () => {
-  //     const response = await mockMeetingService.getMeetingDetail(id);
-  //     return response.data
-  //   }
-  // })
 };
 
 export const useMeetingPatch = () => {
@@ -131,12 +117,6 @@ export const useMeetingPatch = () => {
       }
     }
   });
-
-  // 목업
-  // return useMutation({
-  //   mutationFn: ({ id, data }: { id: number, data: PatchMeetingRequest }) =>
-  //     mockMeetingService.patchMeeting(id, data),
-  // });
 };
 
 export const useMeetingDelete = () => {
@@ -164,11 +144,6 @@ export const useMeetingDelete = () => {
       }
     }
   });
-
-  // 목업
-  // return useMutation({
-  //   mutationFn: (id: number) => mockMeetingService.deleteMeeting(id),
-  // });
 };
 
 export const useConfirmMeetingMembers = (meetingId: number) => {
@@ -197,3 +172,6 @@ export const useGetMeetingMembers = (meetingId: number) => {
     enabled: !!meetingId
   });
 };
+
+// meetingService 재내보내기
+export { meetingService, mockMeetingService };

@@ -103,6 +103,7 @@ const useMapStore = create<MapStoreState>((set, get) => ({
     
     const params: Record<string, any> = {};
     
+    // URL 쿼리 파라미터 설정
     if (searchTerm) {
       params.title = searchTerm;
     }
@@ -112,12 +113,13 @@ const useMapStore = create<MapStoreState>((set, get) => ({
       params.c = coordsString;
     }
     
+    // 페이지네이션 파라미터 (API는 0-based index 사용)
     params.page = 0;
     params.size = 10;
     
     const body: Record<string, any> = {};
     
-    // 사용자가 선택한 필터 값만 포함
+    // 사용자가 선택한 필터 값만 포함 (API 요구사항)
     if (filters.duration) {
       body.duration = filters.duration;
     }
@@ -126,10 +128,12 @@ const useMapStore = create<MapStoreState>((set, get) => ({
       body.techStacks = filters.techStacks;
     }
     
-    if (filters.minParticipants !== 1) {
+    // 기본값과 다른 경우에만 필터 적용
+    if (filters.minParticipants !== defaultFilters.minParticipants) {
       body.minParticipants = filters.minParticipants;
     }
-    if (filters.maxParticipants !== 5) {
+    
+    if (filters.maxParticipants !== defaultFilters.maxParticipants) {
       body.maxParticipants = filters.maxParticipants;
     }
     
