@@ -21,11 +21,13 @@ const MainDurationModal: React.FC<MainDurationModalProps> = ({
   selectedDuration = null,
   anchorEl
 }) => {
+  // 내부 상태로 선택된 값 관리
   const [selected, setSelected] = useState<DURATION | null>(selectedDuration);
   
+  // 모달이 열릴 때마다 외부 selectedDuration 값으로 초기화
   useEffect(() => {
     setSelected(selectedDuration);
-  }, [selectedDuration]);
+  }, [selectedDuration, isOpen]);
   
   if (!isOpen) return null;
   
@@ -35,6 +37,7 @@ const MainDurationModal: React.FC<MainDurationModalProps> = ({
     e.preventDefault();
     e.stopPropagation();
     
+    // 내부 상태만 변경, 아직 부모 컴포넌트로 전달하지 않음
     if (selected === duration) {
       setSelected(null);
     } else {
@@ -42,11 +45,13 @@ const MainDurationModal: React.FC<MainDurationModalProps> = ({
     }
   };
 
+  // 확인 버튼 클릭 시에만 부모 컴포넌트로 값 전달
   const handleConfirm = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // 선택된 값을 부모 컴포넌트로 전달하고 모달 닫기
     onSelect(selected);
-    onClose();
   };
 
   return (

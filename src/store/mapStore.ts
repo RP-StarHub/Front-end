@@ -86,7 +86,10 @@ const useMapStore = create<MapStoreState>((set, get) => ({
   
   setCoordinates: (coordinates) => set({ coordinates }),
   
-  resetFilters: () => set({ filters: defaultFilters }),
+  resetFilters: () => set((state) => ({
+    filters: defaultFilters,
+    coordinates: null
+  })),
   
   setIsSearching: (isSearching) => set({ isSearching }),
   
@@ -111,11 +114,14 @@ const useMapStore = create<MapStoreState>((set, get) => ({
     const coordsString = state.getCoordinatesString();
     if (coordsString) {
       params.c = coordsString;
+    } else {
+      // 좌표가 없을 경우 기본 좌표 제공 (서울 기준)
+      params.c = '37.5,37.7,126.9,127.1';
     }
     
     // 페이지네이션 파라미터 (API는 0-based index 사용)
     params.page = 0;
-    params.size = 4;
+    params.size = 4; // 페이지 크기 4로 변경
     
     const body: Record<string, any> = {};
     

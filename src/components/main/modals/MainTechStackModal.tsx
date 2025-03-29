@@ -23,13 +23,11 @@ const MainTechStackModal: React.FC<MainTechStackModalProps> = ({
 }) => {
   const { data: techStacksData, isLoading } = useGetTechStack();
   const [selectedIds, setSelectedIds] = useState<number[]>(selectedTechStacks || []);
-
+  
+  // 모달이 열릴 때마다 외부 selectedTechStacks 값으로 초기화
   useEffect(() => {
-    // 무한 루프 방지를 위해 값이 실제로 변경된 경우에만 상태 업데이트
-    if (JSON.stringify(selectedIds) !== JSON.stringify(selectedTechStacks)) {
-      setSelectedIds(selectedTechStacks || []);
-    }
-  }, [selectedIds, selectedTechStacks]);
+    setSelectedIds([...selectedTechStacks]);
+  }, [selectedTechStacks, isOpen]);
 
   if (!isOpen) return null;
 
@@ -47,9 +45,7 @@ const MainTechStackModal: React.FC<MainTechStackModalProps> = ({
   const handleConfirm = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
     onSelect(selectedIds);
-    onClose();
   };
 
   if (isLoading) {

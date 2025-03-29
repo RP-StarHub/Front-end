@@ -3,7 +3,8 @@ import {
   FilterAlt,
   RocketLaunch,
   CalendarToday,
-  PeopleAlt
+  PeopleAlt,
+  Refresh
 } from "@mui/icons-material";
 import MainDurationModal from "./modals/MainDurationModal";
 import MainTechStackModal from "./modals/MainTechStackModal";
@@ -31,6 +32,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
   const setTechStacks = useMapStore(state => state.setTechStacks);
   const setParticipants = useMapStore(state => state.setParticipants);
   const setLocation = useMapStore(state => state.setLocation);
+  const resetFilters = useMapStore(state => state.resetFilters);
 
   useEffect(() => {
     preloadLocationData();
@@ -41,10 +43,6 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
     setOpenFilter(openFilter === filterType ? null : filterType);
-
-    if (onFilterChange) {
-      onFilterChange(filterType);
-    }
   };
 
   const handleCloseModal = () => {
@@ -55,6 +53,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
   const handleDurationSelect = (duration: DURATION | null) => {
     setDurations(duration);
     
+    handleCloseModal();
+    
     if (onFilterChange) {
       onFilterChange("기간", duration);
     }
@@ -62,6 +62,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
 
   const handleTechStackSelect = (techStacks: number[]) => {
     setTechStacks(techStacks);
+    
+    handleCloseModal();
     
     if (onFilterChange) {
       onFilterChange("스택", techStacks);
@@ -71,6 +73,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
   const handleParticipantsSelect = (minParticipants: number, maxParticipants: number) => {
     setParticipants(minParticipants, maxParticipants);
     
+    handleCloseModal();
+    
     if (onFilterChange) {
       onFilterChange("인원", { minParticipants, maxParticipants });
     }
@@ -79,17 +83,29 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
   const handleLocationSelect = (location: SelectedLocation) => {
     setLocation(location);
     
+    handleCloseModal();
+    
     if (onFilterChange) {
       onFilterChange("지역", location);
     }
   };
 
+  const handleResetFilters = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    resetFilters();
+
+    if (onFilterChange) {
+      onFilterChange("초기화");
+    }
+  };
+
   // 지역 버튼 라벨 생성('시도명' 형식으로 표기)
   const getLocationButtonLabel = () => {
-    if (filters?.location && 
-        filters.location.selectedSido && 
-        filters.location.selectedSigunguList && 
-        filters.location.selectedSigunguList.length > 0) {
+    if (filters?.location &&
+      filters.location.selectedSido &&
+      filters.location.selectedSigunguList &&
+      filters.location.selectedSigunguList.length > 0) {
       return `${filters.location.selectedSido} (${filters.location.selectedSigunguList.length})`;
     }
     return "지역";
@@ -98,10 +114,13 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
   const isDurationActive = !!filters?.duration;
   const isTechStackActive = filters?.techStacks && filters.techStacks.length > 0;
   const isParticipantsActive = filters?.minParticipants !== 1 || filters?.maxParticipants !== 5;
-  const isLocationActive = filters?.location && 
-                          !!filters.location.selectedSido && 
-                          filters.location.selectedSigunguList && 
-                          filters.location.selectedSigunguList.length > 0;
+  const isLocationActive = filters?.location &&
+    !!filters.location.selectedSido &&
+    filters.location.selectedSigunguList &&
+    filters.location.selectedSigunguList.length > 0;
+
+  // 필터가 하나라도 적용된 경우 초기화 버튼 표시
+  const isAnyFilterActive = isDurationActive || isTechStackActive || isParticipantsActive || isLocationActive;
 
   const TriangleIcon = () => (
     <svg
@@ -163,6 +182,17 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
           </span>
           <TriangleIcon />
         </button>
+        
+        {isAnyFilterActive && (
+          <button
+            className="flex items-center gap-4 bg-white rounded-full border py-2 px-4 shadow-md text-gray-600 hover:text-red-500"
+            onClick={handleResetFilters}
+            title="필터 초기화"
+          >
+            <Refresh sx={{ fontSize: 24 }} />
+            <span className="text-regular font-gmarket-bold text-bold">초기화</span>
+          </button>
+        )}
       </div>
 
       {openFilter === "기간" && (
@@ -190,9 +220,9 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
           isOpen={true}
           onClose={handleCloseModal}
           onSelect={handleParticipantsSelect}
-          selectedParticipants={{ 
-            min: filters?.minParticipants || 1, 
-            max: filters?.maxParticipants || 5 
+          selectedParticipants={{
+            min: filters?.minParticipants || 1,
+            max: filters?.maxParticipants || 5
           }}
           anchorEl={anchorEl}
         />

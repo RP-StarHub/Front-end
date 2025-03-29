@@ -18,6 +18,7 @@ const MainPage: React.FC = () => {
 
   const searchTerm = useMapStore(state => state.searchTerm);
   const isSearching = useMapStore(state => state.isSearching);
+  const filters = useMapStore(state => state.filters);
   const setSearchTerm = useMapStore(state => state.setSearchTerm);
   const setDurations = useMapStore(state => state.setDurations);
   const setTechStacks = useMapStore(state => state.setTechStacks);
@@ -39,20 +40,22 @@ const MainPage: React.FC = () => {
     const { params, body } = getSearchParams();
 
     return {
-      title: searchTerm, // params.title 대신 searchTerm 직접 사용
+      title: searchTerm,
       coordinates: params.c,
       page: page,
       size: 4,
       body: Object.keys(body).length > 0 ? body : undefined
     };
-  }, [getSearchParams, page, searchTerm]);
-
-  useEffect(() => {
-    if (searchTerm) {
-      console.log("검색어 변경됨:", searchTerm);
-      setIsSearching(true);
-    }
-  }, [searchTerm, setIsSearching]);
+  }, [
+    getSearchParams, 
+    page, 
+    searchTerm,
+    filters.duration,
+    filters.techStacks,
+    filters.minParticipants,
+    filters.maxParticipants,
+    filters.location
+  ]);
 
   const { data, isLoading } = useMeetingList(searchParams);
 
@@ -61,9 +64,10 @@ const MainPage: React.FC = () => {
 
   useEffect(() => {
     if (searchTerm) {
-      console.log("검색어 변경됨:", searchTerm);
+       // 검색 중 상태로 변경하여 API 요청 트리거
+      setIsSearching(true);
     }
-  }, [searchTerm]);
+  }, [searchTerm, setIsSearching]);
 
   useEffect(() => {
     if (isSearching && !isLoading) {
@@ -102,9 +106,17 @@ const MainPage: React.FC = () => {
             setLocation(value as SelectedLocation);
           }
           break;
+        case '초기화':
+          break;
         default:
           console.warn(`알 수 없는 필터 타입: ${filterType}`);
       }
+      
+      // 상태 업데이트 후 API 요청 트리거를 위한 추가 코드
+      setTimeout(() => {
+        // 다음 렌더 사이클에서 상태가 업데이트된 후 API 요청 강제 트리거
+        setIsSearching(true); 
+      }, 0);
     } catch (error) {
       console.error("필터 변경 중 오류 발생:", error);
     }
