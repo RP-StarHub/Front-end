@@ -43,13 +43,15 @@ const MainPage: React.FC = () => {
   const updateSearchParams = useCallback(() => {
     const { params, body } = getSearchParams();
 
-    setSearchParams({
+    const updatedParams = {
       title: searchTerm,
       coordinates: params.c,
       page: page,
       size: 4,
       body: Object.keys(body).length > 0 ? body : undefined
-    });
+    };
+
+    setSearchParams(updatedParams);
   }, [getSearchParams, page, searchTerm]);
 
   // shouldSearch 플래그가 true일 때만 검색 파라미터 업데이트
@@ -112,7 +114,7 @@ const MainPage: React.FC = () => {
           break;
         default:
       }
-      
+
       setTimeout(() => {
         setShouldSearch(true);
       }, 0);
@@ -133,10 +135,10 @@ const MainPage: React.FC = () => {
     const coords = executeMapSearch();
     if (coords) {
       setCoordinates(coords);
-      
+
       setTimeout(() => {
         setShouldSearch(true);
-      }, 0);
+      }, 10);
     }
   }, [executeMapSearch, setCoordinates, setIsSearching]);
 
