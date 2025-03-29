@@ -39,13 +39,20 @@ const MainPage: React.FC = () => {
     const { params, body } = getSearchParams();
 
     return {
-      title: params.title,
+      title: searchTerm, // params.title 대신 searchTerm 직접 사용
       coordinates: params.c,
       page: page,
-      size: 4, // 페이지당 4개 항목으로 변경
+      size: 4,
       body: Object.keys(body).length > 0 ? body : undefined
     };
-  }, [getSearchParams, page]);
+  }, [getSearchParams, page, searchTerm]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      console.log("검색어 변경됨:", searchTerm);
+      setIsSearching(true);
+    }
+  }, [searchTerm, setIsSearching]);
 
   const { data, isLoading } = useMeetingList(searchParams);
 

@@ -10,7 +10,7 @@ interface StudyListProps {
   totalPages: number;
   onPageChange: (page: number) => void;
   onSearch: (searchTerm: string) => void;
-  isLoading?: boolean; // isLoading prop 추가
+  isLoading?: boolean;
 }
 
 const StudyList = React.memo<StudyListProps>(

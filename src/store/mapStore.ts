@@ -115,7 +115,7 @@ const useMapStore = create<MapStoreState>((set, get) => ({
     
     // 페이지네이션 파라미터 (API는 0-based index 사용)
     params.page = 0;
-    params.size = 10;
+    params.size = 4;
     
     const body: Record<string, any> = {};
     
