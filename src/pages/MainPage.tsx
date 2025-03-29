@@ -4,8 +4,10 @@ import StudyList from "../components/main/StudyList";
 import FilterFloatingButton from "../components/main/FilterFloatingButton";
 import MapSearchButton from "../components/main/MapSearchButton";
 import { useMap } from "../hooks/common/useMap";
-import { useMeetingList } from "../hooks/api/useMeeting";
+import { useMeetingList, SearchMeetingParams } from "../hooks/api/useMeeting";
 import useMapStore from "../store/mapStore";
+import { DURATION } from "../types/models/meeting";
+import { SelectedLocation } from "../util/locationUtils";
 
 /**
  * 메인 페이지 컴포넌트 : 
@@ -15,8 +17,15 @@ const MainPage: React.FC = () => {
   const [page, setPage] = useState(1);
   
   const searchTerm = useMapStore(state => state.searchTerm);
+  const isSearching = useMapStore(state => state.isSearching);
   const setSearchTerm = useMapStore(state => state.setSearchTerm);
+  const setDurations = useMapStore(state => state.setDurations);
+  const setTechStacks = useMapStore(state => state.setTechStacks);
+  const setParticipants = useMapStore(state => state.setParticipants);
+  const setLocation = useMapStore(state => state.setLocation);
+  const setCoordinates = useMapStore(state => state.setCoordinates);
   const setIsSearching = useMapStore(state => state.setIsSearching);
+  const getSearchParams = useMapStore(state => state.getSearchParams);
   
   const { 
     mapRef, 
@@ -25,7 +34,20 @@ const MainPage: React.FC = () => {
     executeMapSearch 
   } = useMap();
   
-  const { data, isLoading } = useMeetingList(page);
+  // 검색 파라미터 생성
+  const searchParams = useMemo<SearchMeetingParams>(() => {
+    const { params, body } = getSearchParams();
+    
+    return {
+      title: params.title,
+      coordinates: params.c,
+      page: page,
+      size: params.size || 10,
+      body: Object.keys(body).length > 0 ? body : undefined
+    };
+  }, [getSearchParams, page]);
+
+  const { data, isLoading } = useMeetingList(searchParams);
   
   const meetings = useMemo(() => data?.data?.content || [], [data?.data?.content]);
   const totalPages = useMemo(() => data?.data?.totalPages || 0, [data?.data?.totalPages]);
@@ -35,16 +57,44 @@ const MainPage: React.FC = () => {
       console.log("검색어 변경됨:", searchTerm);
     }
   }, [searchTerm]);
+  
+  useEffect(() => {
+    if (isSearching && !isLoading) {
+      setIsSearching(false);
+    }
+  }, [isLoading, isSearching, setIsSearching]);
 
-  // TODO: 추후 API 연결 추가 필요
   const handleSearch = (term: string) => {
+    setIsSearching(true);
     setSearchTerm(term);
+    setPage(1);
     console.log("검색어 입력:", term);
   };
   
-  // TODO: 추후 필터 로직 구현
-  const handleFilterChange = (filterType: string, value?: string) => {
+  const handleFilterChange = (filterType: string, value?: any) => {
+    setIsSearching(true);
+    setPage(1);
+    
     console.log("필터 변경:", filterType, value);
+    
+    switch (filterType) {
+      case 'duration':
+        setDurations(value as DURATION | null);
+        break;
+      case 'techStacks':
+        setTechStacks(value as number[]);
+        break;
+      case 'participants':
+        if (Array.isArray(value) && value.length === 2) {
+          setParticipants(value[0], value[1]);
+        }
+        break;
+      case 'location':
+        setLocation(value as SelectedLocation);
+        break;
+      default:
+        console.warn(`알 수 없는 필터 타입: ${filterType}`);
+    }
   };
   
   // 페이지 변경 처리
@@ -54,17 +104,13 @@ const MainPage: React.FC = () => {
 
   // 지도 영역 검색 처리
   const handleMapSearch = () => {
-    const coordinates = executeMapSearch();
-    if (coordinates) {
-      console.log(`지도 영역 검색: c=${coordinates.minLat},${coordinates.maxLat},${coordinates.minLng},${coordinates.maxLng}`);
-      
-      setTimeout(() => {
-        setIsSearching(false);
-      }, 1000);
+    setIsSearching(true);
+    const coords = executeMapSearch();
+    if (coords) {
+      setCoordinates(coords);
+      console.log(`지도 영역 검색: c=${coords.minLat},${coords.maxLat},${coords.minLng},${coords.maxLng}`);
     }
   };
-
-  if (isLoading) return <div>로딩 중...</div>;
 
   return (
     <div className="w-full flex flex-col md:flex-row min-h-[90vh]">
@@ -75,6 +121,7 @@ const MainPage: React.FC = () => {
           totalPages={totalPages}
           onPageChange={handlePageChange}
           onSearch={handleSearch}
+          isLoading={isLoading || isSearching}
         />
       </div>
       
@@ -89,10 +136,12 @@ const MainPage: React.FC = () => {
           className="w-full h-full bg-gray-100"
           style={{ position: 'relative' }}
         >
-          {!mapReady && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+          {(!mapReady || isLoading || isSearching) && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-70 z-10">
               <div className="text-center">
-                <div className="mb-2">지도를 로딩 중입니다...</div>
+                <div className="mb-2">
+                  {!mapReady ? "지도를 로딩 중입니다..." : "검색 중입니다..."}
+                </div>
                 <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
               </div>
             </div>
