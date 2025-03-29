@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import EventMarker from "../components/main/EventMarker";
 import StudyList from "../components/main/StudyList";
 import FilterFloatingButton from "../components/main/FilterFloatingButton";
@@ -15,6 +15,11 @@ import { SelectedLocation } from "../util/locationUtils";
  */
 const MainPage: React.FC = () => {
   const [page, setPage] = useState(1);
+  const [shouldSearch, setShouldSearch] = useState(false);
+  const [searchParams, setSearchParams] = useState<SearchMeetingParams>({
+    page: 1,
+    size: 4
+  });
 
   const searchTerm = useMapStore(state => state.searchTerm);
   const isSearching = useMapStore(state => state.isSearching);
@@ -34,30 +39,39 @@ const MainPage: React.FC = () => {
     executeMapSearch
   } = useMap();
 
-  // 검색 파라미터 생성
-  const searchParams = useMemo<SearchMeetingParams>(() => {
+  // 검색 파라미터 업데이트 (좌표 변경 시 자동 검색 방지)
+  const updateSearchParams = useCallback(() => {
     const { params, body } = getSearchParams();
 
-    return {
+    setSearchParams({
       title: searchTerm,
       coordinates: params.c,
       page: page,
       size: 4,
       body: Object.keys(body).length > 0 ? body : undefined
-    };
+    });
   }, [getSearchParams, page, searchTerm]);
+
+  // shouldSearch 플래그가 true일 때만 검색 파라미터 업데이트
+  useEffect(() => {
+    if (shouldSearch) {
+      updateSearchParams();
+      setShouldSearch(false);
+    }
+  }, [shouldSearch, updateSearchParams]);
+
+  // 검색어 변경 시 검색 실행
+  useEffect(() => {
+    if (searchTerm) {
+      setIsSearching(true);
+      setShouldSearch(true);
+    }
+  }, [searchTerm, setIsSearching]);
 
   const { data, isLoading } = useMeetingList(searchParams);
 
   const meetings = useMemo(() => data?.data?.content || [], [data?.data?.content]);
   const totalPages = useMemo(() => data?.data?.totalPages || 0, [data?.data?.totalPages]);
-
-  useEffect(() => {
-    if (searchTerm) {
-       // 검색 중 상태로 변경하여 API 요청 트리거
-      setIsSearching(true);
-    }
-  }, [searchTerm, setIsSearching]);
 
   useEffect(() => {
     if (isSearching && !isLoading) {
@@ -69,14 +83,12 @@ const MainPage: React.FC = () => {
     setIsSearching(true);
     setSearchTerm(term);
     setPage(1);
-    console.log("검색어 입력:", term);
+    setShouldSearch(true);
   };
 
   const handleFilterChange = (filterType: string, value?: any) => {
     setIsSearching(true);
     setPage(1);
-
-    console.log("필터 변경:", filterType, value);
 
     try {
       switch (filterType) {
@@ -99,13 +111,10 @@ const MainPage: React.FC = () => {
         case '초기화':
           break;
         default:
-          console.warn(`알 수 없는 필터 타입: ${filterType}`);
       }
       
-      // 상태 업데이트 후 API 요청 트리거를 위한 추가 코드
       setTimeout(() => {
-        // 다음 렌더 사이클에서 상태가 업데이트된 후 API 요청 강제 트리거
-        setIsSearching(true); 
+        setShouldSearch(true);
       }, 0);
     } catch (error) {
       console.error("필터 변경 중 오류 발생:", error);
@@ -115,17 +124,21 @@ const MainPage: React.FC = () => {
   // 페이지 변경 처리
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    setShouldSearch(true);
   };
 
-  // 지도 영역 검색 처리
-  const handleMapSearch = () => {
+  // 지도 영역 검색 처리 - 검색 버튼 클릭 시에만 실행
+  const handleMapSearch = useCallback(() => {
     setIsSearching(true);
     const coords = executeMapSearch();
     if (coords) {
       setCoordinates(coords);
-      console.log(`지도 영역 검색: c=${coords.minLat},${coords.maxLat},${coords.minLng},${coords.maxLng}`);
+      
+      setTimeout(() => {
+        setShouldSearch(true);
+      }, 0);
     }
-  };
+  }, [executeMapSearch, setCoordinates, setIsSearching]);
 
   return (
     <div className="w-full flex flex-col md:flex-row min-h-[90vh]">

@@ -45,36 +45,37 @@ export const useCreateMeeting = () => {
 
 export const useMeetingList = (params: SearchMeetingParams) => {
   const queryOptions: UseQueryOptions<GetMeetingListResponse> = {
-    queryKey: ['meetings', params],
+    queryKey: ['meetings', JSON.stringify(params)],
     queryFn: async () => {
       const queryParams: Record<string, any> = {
-        page: params.page - 1, // API는 0부터 시작하는 페이지 인덱스 사용
-        size: 4, // 페이지당 4개 항목으로 변경
+        page: params.page - 1,
+        size: 4,
       };
       
       if (params.title) {
         queryParams.title = params.title;
       }
       
-      // 좌표 정보 추가 - 필수 파라미터로 처리
-      queryParams.c = params.coordinates || '37.5,37.7,126.9,127.1'; // 서울 기본 좌표 범위
+      if (params.coordinates) {
+        queryParams.c = params.coordinates;
+      } else {
+        queryParams.c = '37.5,37.7,126.9,127.1';
+      }
       
       try {
-        console.log('API 요청 파라미터:', queryParams, params.body || {});
         const response = await meetingService.searchMeetings(
           queryParams, 
           params.body || {}
         );
-        console.log('API 응답:', response.data);
         return response.data;
       } catch (error) {
-        console.error('API 오류:', error);
         throw error;
       }
     },
     staleTime: 0,
+    refetchOnWindowFocus: false,
     placeholderData: (previousData) => previousData,
-    retry: 1, // 오류 시 1번만 재시도
+    retry: 1,
   };
   
   return useQuery<GetMeetingListResponse>(queryOptions);

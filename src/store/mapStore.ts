@@ -84,7 +84,9 @@ const useMapStore = create<MapStoreState>((set, get) => ({
     }
   })),
   
-  setCoordinates: (coordinates) => set({ coordinates }),
+  setCoordinates: (coordinates) => {
+    set({ coordinates });
+  },
   
   resetFilters: () => set((state) => ({
     filters: defaultFilters,
@@ -96,7 +98,8 @@ const useMapStore = create<MapStoreState>((set, get) => ({
   getCoordinatesString: () => {
     const coords = get().coordinates;
     if (!coords) return null;
-    return `${coords.minLat},${coords.maxLat},${coords.minLng},${coords.maxLng}`;
+    const coordString = `${coords.minLat},${coords.maxLat},${coords.minLng},${coords.maxLng}`;
+    return coordString;
   },
   
   // API 요청 시 사용할 파라미터 생성
