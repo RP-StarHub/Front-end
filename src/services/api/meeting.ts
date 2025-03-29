@@ -19,6 +19,15 @@ export const meetingService = {
       data
     );
   },
+  
+  searchMeetings: (params: Record<string, any>, body: any) => {
+    return axiosInstance.post<GetMeetingListResponse>(
+      '/api/v1/meetings/search',
+      body,
+      { params }
+    );
+  },
+  
 
   getMeetingList: (page: number) => {
     return axiosInstance.get<GetMeetingListResponse>(

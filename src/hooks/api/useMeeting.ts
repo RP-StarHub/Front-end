@@ -3,6 +3,24 @@ import { CreateMeetingRequest, GetMeetingListResponse, PatchMeetingRequest, Patc
 import { meetingService, mockMeetingService } from "../../services/api/meeting";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { DURATION } from "../../types/models/meeting";
+
+export interface SearchMeetingParams {
+  // URL 쿼리 파라미터
+  title?: string;
+  coordinates?: string;
+  page: number;
+  size?: number;
+  
+  // POST body 파라미터
+  body?: {
+    minParticipants?: number;
+    maxParticipants?: number;
+    techStacks?: number[];
+    location?: string;
+    duration?: DURATION;
+  };
+}
 
 export const useCreateMeeting = () => {
   const queryClient = useQueryClient();
@@ -34,27 +52,37 @@ export const useCreateMeeting = () => {
   // });
 }
 
-export const useMeetingList = (page: number) => {
+export const useMeetingList = (params: SearchMeetingParams) => {
   const queryOptions: UseQueryOptions<GetMeetingListResponse> = {
-    queryKey: ['meetings', page],
+    queryKey: ['meetings', params],
     queryFn: async () => {
-      const response = await meetingService.getMeetingList(page - 1);
-      return response.data
+      const queryParams: Record<string, any> = {
+        page: params.page - 1,
+        size: params.size || 10,
+      };
+      
+      if (params.title) {
+        queryParams.title = params.title;
+      }
+      
+      if (params.coordinates) {
+        queryParams.c = params.coordinates;
+      }
+      
+      let response;
+      if (params.body && Object.keys(params.body).length > 0) {
+        response = await meetingService.searchMeetings(queryParams, params.body);
+      } else {
+        response = await meetingService.getMeetingList(queryParams.page);
+      }
+      
+      return response.data;
     },
-    // 데이터가 바로 만료되도록 설정 (새로고침 시 항상 새 데이터 fetch)
     staleTime: 0,
-    // 새 데이터 로딩 중에 이전 데이터 표시
     placeholderData: (previousData) => previousData,
   };
+  
   return useQuery<GetMeetingListResponse>(queryOptions);
-
-  // return useQuery<GetMeetingListResponse>({
-  //   queryKey: ['meetings'],
-  //   queryFn: async () => {
-  //     const response = await mockMeetingService.getMeetingList(0);
-  //     return response.data
-  //   }
-  // });
 };
 
 export const useMeetingDetail = (id: number) => {
