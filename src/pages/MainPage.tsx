@@ -18,7 +18,6 @@ const MainPage: React.FC = () => {
 
   const searchTerm = useMapStore(state => state.searchTerm);
   const isSearching = useMapStore(state => state.isSearching);
-  const filters = useMapStore(state => state.filters);
   const setSearchTerm = useMapStore(state => state.setSearchTerm);
   const setDurations = useMapStore(state => state.setDurations);
   const setTechStacks = useMapStore(state => state.setTechStacks);
@@ -46,16 +45,7 @@ const MainPage: React.FC = () => {
       size: 4,
       body: Object.keys(body).length > 0 ? body : undefined
     };
-  }, [
-    getSearchParams, 
-    page, 
-    searchTerm,
-    filters.duration,
-    filters.techStacks,
-    filters.minParticipants,
-    filters.maxParticipants,
-    filters.location
-  ]);
+  }, [getSearchParams, page, searchTerm]);
 
   const { data, isLoading } = useMeetingList(searchParams);
 
