@@ -77,23 +77,29 @@ const MainPage: React.FC = () => {
     
     console.log("필터 변경:", filterType, value);
     
-    switch (filterType) {
-      case 'duration':
-        setDurations(value as DURATION | null);
-        break;
-      case 'techStacks':
-        setTechStacks(value as number[]);
-        break;
-      case 'participants':
-        if (Array.isArray(value) && value.length === 2) {
-          setParticipants(value[0], value[1]);
-        }
-        break;
-      case 'location':
-        setLocation(value as SelectedLocation);
-        break;
-      default:
-        console.warn(`알 수 없는 필터 타입: ${filterType}`);
+    try {
+      switch (filterType) {
+        case '기간':
+          setDurations(value as DURATION | null);
+          break;
+        case '스택':
+          setTechStacks(Array.isArray(value) ? value : []);
+          break;
+        case '인원':
+          if (value?.minParticipants !== undefined && value?.maxParticipants !== undefined) {
+            setParticipants(value.minParticipants, value.maxParticipants);
+          }
+          break;
+        case '지역':
+          if (value) {
+            setLocation(value as SelectedLocation);
+          }
+          break;
+        default:
+          console.warn(`알 수 없는 필터 타입: ${filterType}`);
+      }
+    } catch (error) {
+      console.error("필터 변경 중 오류 발생:", error);
     }
   };
   

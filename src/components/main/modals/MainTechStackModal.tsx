@@ -22,11 +22,14 @@ const MainTechStackModal: React.FC<MainTechStackModalProps> = ({
   anchorEl
 }) => {
   const { data: techStacksData, isLoading } = useGetTechStack();
-  const [selectedIds, setSelectedIds] = useState<number[]>(selectedTechStacks);
+  const [selectedIds, setSelectedIds] = useState<number[]>(selectedTechStacks || []);
 
   useEffect(() => {
-    setSelectedIds(selectedTechStacks);
-  }, [selectedTechStacks]);
+    // 무한 루프 방지를 위해 값이 실제로 변경된 경우에만 상태 업데이트
+    if (JSON.stringify(selectedIds) !== JSON.stringify(selectedTechStacks)) {
+      setSelectedIds(selectedTechStacks || []);
+    }
+  }, [selectedIds, selectedTechStacks]);
 
   if (!isOpen) return null;
 

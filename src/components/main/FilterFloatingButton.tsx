@@ -86,16 +86,22 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
 
   // 지역 버튼 라벨 생성('시도명' 형식으로 표기)
   const getLocationButtonLabel = () => {
-    if (filters.location.selectedSido && filters.location.selectedSigunguList.length > 0) {
+    if (filters?.location && 
+        filters.location.selectedSido && 
+        filters.location.selectedSigunguList && 
+        filters.location.selectedSigunguList.length > 0) {
       return `${filters.location.selectedSido} (${filters.location.selectedSigunguList.length})`;
     }
     return "지역";
   };
 
-  const isDurationActive = !!filters.duration;
-  const isTechStackActive = filters.techStacks.length > 0;
-  const isParticipantsActive = filters.minParticipants !== 1 || filters.maxParticipants !== 5;
-  const isLocationActive = !!filters.location.selectedSido && filters.location.selectedSigunguList.length > 0;
+  const isDurationActive = !!filters?.duration;
+  const isTechStackActive = filters?.techStacks && filters.techStacks.length > 0;
+  const isParticipantsActive = filters?.minParticipants !== 1 || filters?.maxParticipants !== 5;
+  const isLocationActive = filters?.location && 
+                          !!filters.location.selectedSido && 
+                          filters.location.selectedSigunguList && 
+                          filters.location.selectedSigunguList.length > 0;
 
   const TriangleIcon = () => (
     <svg
@@ -164,7 +170,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
           isOpen={true}
           onClose={handleCloseModal}
           onSelect={handleDurationSelect}
-          selectedDuration={filters.duration}
+          selectedDuration={filters?.duration || null}
           anchorEl={anchorEl}
         />
       )}
@@ -174,7 +180,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
           isOpen={true}
           onClose={handleCloseModal}
           onSelect={handleTechStackSelect}
-          selectedTechStacks={filters.techStacks}
+          selectedTechStacks={filters?.techStacks || []}
           anchorEl={anchorEl}
         />
       )}
@@ -185,8 +191,8 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
           onClose={handleCloseModal}
           onSelect={handleParticipantsSelect}
           selectedParticipants={{ 
-            min: filters.minParticipants, 
-            max: filters.maxParticipants 
+            min: filters?.minParticipants || 1, 
+            max: filters?.maxParticipants || 5 
           }}
           anchorEl={anchorEl}
         />
@@ -197,7 +203,7 @@ const FilterFloatingButton: React.FC<FilterFloatingButtonProps> = ({ onFilterCha
           isOpen={true}
           onClose={handleCloseModal}
           onSelect={handleLocationSelect}
-          selectedLocation={filters.location}
+          selectedLocation={filters?.location || { selectedSido: '', selectedSigunguList: [] }}
           anchorEl={anchorEl}
         />
       )}
