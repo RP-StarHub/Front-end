@@ -4,32 +4,24 @@ import {
   GetPopularStudiesResponse, 
   GetPopularExpiringResponse 
 } from "../../types/api/popular";
+import { RecruitmentType, DURATION } from "../../types/models/meeting";
 
 /**
  * 인기글 관련 API 서비스
  */
 export const popularService = {
-  /**
-   * 인기 프로젝트 목록을 조회합니다.
-   */
   getPopularProjects: () => {
     return axiosInstance.get<GetPopularProjectsResponse>(
       '/api/v1/meetings/popular/projects'
     );
   },
 
-  /**
-   * 인기 스터디 목록을 조회합니다.
-   */
   getPopularStudies: () => {
     return axiosInstance.get<GetPopularStudiesResponse>(
       '/api/v1/meetings/popular/studies'
     );
   },
 
-  /**
-   * 마감 임박 모임 목록을 조회합니다.
-   */
   getPopularExpiring: () => {
     return axiosInstance.get<GetPopularExpiringResponse>(
       '/api/v1/meetings/popular/expiring'
@@ -51,9 +43,9 @@ export const mockPopularService = {
           {
             id: 1,
             title: "[프로젝트] 리액트 개발자 모집합니다",
-            recruitmentType: "PROJECT",
+            recruitmentType: RecruitmentType.PROJECT,
             maxParticipants: 6,
-            duration: "MONTH_3",
+            duration: DURATION.THREE_MONTHS,
             endDate: "2025-12-22",
             techStacks: ["React.js", "SpringBoot"],
             location: "서울 강남구 삼성동 542",
@@ -67,9 +59,9 @@ export const mockPopularService = {
           {
             id: 2,
             title: "[프로젝트] Vue.js 프로젝트 팀원 구합니다",
-            recruitmentType: "PROJECT",
+            recruitmentType: RecruitmentType.PROJECT,
             maxParticipants: 4,
-            duration: "MONTH_3",
+            duration: DURATION.THREE_MONTHS,
             endDate: "2025-12-30",
             techStacks: ["Vue.js", "Node.js"],
             location: "서울 서초구 강남대로 373",
@@ -83,9 +75,9 @@ export const mockPopularService = {
           {
             id: 3,
             title: "[프로젝트] 앱 개발자 모집합니다",
-            recruitmentType: "PROJECT",
+            recruitmentType: RecruitmentType.PROJECT,
             maxParticipants: 5,
-            duration: "MONTH_6",
+            duration: DURATION.SIX_MONTHS,  // MONTH_6 -> SIX_MONTHS
             endDate: "2026-01-15",
             techStacks: ["Flutter", "Firebase"],
             location: "서울 강남구 테헤란로 152",
@@ -111,9 +103,9 @@ export const mockPopularService = {
           {
             id: 4,
             title: "[스터디] 알고리즘 스터디원 모집",
-            recruitmentType: "STUDY",
+            recruitmentType: RecruitmentType.STUDY,
             maxParticipants: 8,
-            duration: "MONTH_3",
+            duration: DURATION.THREE_MONTHS,
             endDate: "2025-12-25",
             techStacks: ["Java", "Python", "JavaScript"],
             location: "서울 강남구 역삼동 824-9",
@@ -127,9 +119,9 @@ export const mockPopularService = {
           {
             id: 5,
             title: "[스터디] React/NextJS 스터디",
-            recruitmentType: "STUDY",
+            recruitmentType: RecruitmentType.STUDY,
             maxParticipants: 6,
-            duration: "MONTH_3",
+            duration: DURATION.THREE_MONTHS,
             endDate: "2025-12-28",
             techStacks: ["React.js", "Next.js"],
             location: "서울 강남구 테헤란로 427",
@@ -143,9 +135,9 @@ export const mockPopularService = {
           {
             id: 6,
             title: "[스터디] 데이터 분석 스터디 모집",
-            recruitmentType: "STUDY",
+            recruitmentType: RecruitmentType.STUDY,
             maxParticipants: 5,
-            duration: "MONTH_2",
+            duration: DURATION.TWO_MONTHS,
             endDate: "2025-12-31",
             techStacks: ["Python", "R", "SQL"],
             location: "서울 서초구 서초동 1337-20",
@@ -171,9 +163,9 @@ export const mockPopularService = {
           {
             id: 7,
             title: "[프로젝트] 백엔드 개발자 급구",
-            recruitmentType: "PROJECT",
+            recruitmentType: RecruitmentType.PROJECT,
             maxParticipants: 3,
-            duration: "MONTH_6",
+            duration: DURATION.SIX_MONTHS,
             endDate: "2025-12-10",
             techStacks: ["Spring Boot", "JPA", "MySQL"],
             location: "서울 강남구 삼성동 159",
@@ -187,9 +179,9 @@ export const mockPopularService = {
           {
             id: 8,
             title: "[스터디] DevOps 스터디 모집",
-            recruitmentType: "STUDY",
+            recruitmentType: RecruitmentType.STUDY,
             maxParticipants: 4,
-            duration: "MONTH_3",
+            duration: DURATION.THREE_MONTHS,
             endDate: "2025-12-12",
             techStacks: ["Docker", "Kubernetes", "AWS"],
             location: "서울 강남구 역삼동 736-1",
@@ -203,9 +195,9 @@ export const mockPopularService = {
           {
             id: 9,
             title: "[프로젝트] 웹 디자이너 구합니다",
-            recruitmentType: "PROJECT",
+            recruitmentType: RecruitmentType.PROJECT,
             maxParticipants: 2,
-            duration: "MONTH_1",
+            duration: DURATION.ONE_MONTH,
             endDate: "2025-12-15",
             techStacks: ["Figma", "Adobe XD", "HTML/CSS"],
             location: "서울 서초구 서초중앙로 14",
