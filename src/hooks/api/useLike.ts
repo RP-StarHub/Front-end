@@ -29,6 +29,11 @@ export const useLike = (meetingId: number) => {
       queryClient.invalidateQueries({ queryKey: ['myRecentCreatedMeetings'] });
       queryClient.invalidateQueries({ queryKey: ['myCreatedMeetings'] });
       
+      // 인기글 관련 캐시
+      queryClient.invalidateQueries({ queryKey: ['popularProjects'] });
+      queryClient.invalidateQueries({ queryKey: ['popularStudies'] });
+      queryClient.invalidateQueries({ queryKey: ['popularExpiring'] });
+      
       toast.success(isLiked ? '관심 모임글이 취소되었습니다.' : '관심 모임글로 등록했습니다.');
     },
     onError: (error: any) => {
