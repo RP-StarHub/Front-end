@@ -46,6 +46,11 @@ const Navbar = () => {
               모집하기
             </span>
           </Link>
+          <Link to="/popular">
+            <span className='text-white font-scdream4 cursor-pointer mx-4 text-label'>
+              인기글
+            </span>
+          </Link>
         </div>
         <div className='flex items-center'>
           {user ? (
