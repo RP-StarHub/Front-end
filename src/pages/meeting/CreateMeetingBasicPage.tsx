@@ -3,7 +3,7 @@ import { Star, KeyboardArrowDown } from "@mui/icons-material";
 import { AddressSearch } from "../../components/meeting/form/AddressSearch";
 import Button from "../../components/common/ui/Button";
 import TextInput from "../../components/common/ui/TextInput";
-import LargeStepIndicator from "../../components/common/ui/LagreStepIndicator";
+import LargeStepIndicator from "../../components/common/ui/LargeStepIndicator";
 import { RecruitmentType } from "../../types/models/meeting";
 import { toKoreanDuration } from "../../util/transformKorean";
 import DurationModal from "../../components/meeting/modals/DurationModal";
@@ -25,11 +25,11 @@ const CreateMeetingBasicPage = () => {
   const navigation = useNavigate();
   const { location: userLocation, loaded } = useGeolocation();
   const { data: techStacksData } = useGetTechStack();
-  
+
   const mapRef = useRef<HTMLDivElement>(null);
   const [naverMap, setNaverMap] = useState<naver.maps.Map | null>(null);
   const [marker, setMarker] = useState<naver.maps.Marker | null>(null);
-  
+
   const durationInputRef = useRef<HTMLDivElement>(null);
   const participantsInputRef = useRef<HTMLDivElement>(null);
   const techStackInputRef = useRef<HTMLDivElement>(null);
@@ -97,7 +97,7 @@ const CreateMeetingBasicPage = () => {
   // 기술 스택 표시 텍스트 생성
   const getDisplayTechStacks = () => {
     if (!techStacksData?.data) return "";
-    
+
     const selectedNames = techStacksData.data
       .filter(stack => techStacks.selectedIds.includes(stack.id))
       .map(stack => stack.name);
@@ -152,21 +152,22 @@ const CreateMeetingBasicPage = () => {
   ];
 
   return (
-    <div className="flex flex-col w-full bg-background px-48 py-20">
-      <LargeStepIndicator currentStep={0} steps={steps} />
+    <div className="flex flex-col w-full bg-background px-48 py-20" data-testid="create-meeting-page">
+      <LargeStepIndicator currentStep={0} steps={steps} data-testid="step-indicator" />
 
-      <div className="flex items-center mt-20 mb-6">
+      <div className="flex items-center mt-20 mb-6" data-testid="page-title">
         <Star className="text-yellow" sx={{ fontSize: 40 }} />
         <p className="font-gmarket-bold text-page-title text-bold">기본 정보 입력</p>
       </div>
-      <p className="text-label text-bold">모집글에 쓰일 기본 정보들을 입력해주세요</p>
+      <p className="text-label text-bold" data-testid="page-subtitle">모집글에 쓰일 기본 정보들을 입력해주세요</p>
 
       <div className="col-span-2 h-px bg-sub my-8" />
 
       <div className="grid grid-cols-2 gap-x-8 gap-y-10">
-        <div ref={recruitmentDropdownRef} className="relative">
+        <div ref={recruitmentDropdownRef} className="relative" data-testid="recruitment-section">
           <p className="font-scdream6 text-label text-bold mb-4">모집 구분</p>
           <TextInput
+            data-testid="recruitment-type-input"
             value={recruitmentType === RecruitmentType.STUDY ? "스터디" : "프로젝트"}
             onClick={() => setIsRecruitmentDropdownOpen(!isRecruitmentDropdownOpen)}
             readOnly
@@ -176,9 +177,13 @@ const CreateMeetingBasicPage = () => {
             error={errors.recruitmentType}
           />
           {isRecruitmentDropdownOpen && (
-            <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+            <div
+              className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10"
+              data-testid="recruitment-dropdown"
+            >
               <div
                 className="p-3 hover:bg-gray-100 cursor-pointer"
+                data-testid="recruitment-option-study"
                 onClick={() => {
                   setBasicInfo({ recruitmentType: RecruitmentType.STUDY });
                   setIsRecruitmentDropdownOpen(false);
@@ -188,6 +193,7 @@ const CreateMeetingBasicPage = () => {
               </div>
               <div
                 className="p-3 hover:bg-gray-100 cursor-pointer"
+                data-testid="recruitment-option-project"
                 onClick={() => {
                   setBasicInfo({ recruitmentType: RecruitmentType.PROJECT });
                   setIsRecruitmentDropdownOpen(false);
@@ -199,9 +205,10 @@ const CreateMeetingBasicPage = () => {
           )}
         </div>
 
-        <div className="relative" ref={techStackInputRef}>
+        <div className="relative" ref={techStackInputRef} data-testid="tech-stack-section">
           <p className="font-scdream6 text-label text-bold mb-4">기술 스택</p>
           <TextInput
+            data-testid="tech-stack-input"
             value={
               techStacks.selectedIds.length > 0 || techStacks.customStacks.length > 0
                 ? getDisplayTechStacks()
@@ -216,9 +223,10 @@ const CreateMeetingBasicPage = () => {
           />
         </div>
 
-        <div className="relative" ref={participantsInputRef}>
+        <div className="relative" ref={participantsInputRef} data-testid="participants-section">
           <p className="font-scdream6 text-label text-bold mb-4">모집 인원</p>
           <TextInput
+            data-testid="participants-input"
             value={getDisplayParticipants()}
             onClick={() => setIsParticipantsModalOpen(true)}
             readOnly
@@ -229,9 +237,10 @@ const CreateMeetingBasicPage = () => {
           />
         </div>
 
-        <div ref={durationInputRef}>
+        <div ref={durationInputRef} data-testid="duration-section">
           <p className="font-scdream6 text-label text-bold mb-4">진행 기간</p>
           <TextInput
+            data-testid="duration-input"
             value={duration ? toKoreanDuration(duration) : "진행 기간을 선택해주세요"}
             onClick={() => setIsDurationModalOpen(true)}
             readOnly
@@ -242,9 +251,10 @@ const CreateMeetingBasicPage = () => {
           />
         </div>
 
-        <div>
+        <div data-testid="end-date-section">
           <p className="font-scdream6 text-label text-bold mb-4">모집 마감일</p>
           <TextInput
+            data-testid="end-date-input"
             type="date"
             name="endDate"
             value={endDate}
@@ -257,21 +267,26 @@ const CreateMeetingBasicPage = () => {
 
         <div className="col-span-2 h-px bg-sub my-4" />
 
-        <div className="col-span-2">
+        <div className="col-span-2" data-testid="location-section">
           <p className="font-scdream6 text-label text-bold mb-4">진행 장소</p>
           <AddressSearch
+            data-testid="address-search"
             addressValue={addressInfo.townAddress}
             setAddressInfo={setAddressInfo}
             setLocation={setLocation}
-            setFormData={() => {}}
-            handleInputChange={() => {}}
+            setFormData={() => { }}
+            handleInputChange={() => { }}
             error={errors.location}
           />
           {location.latitude && location.longitude && (
-            <div className="mt-10 h-[600px] rounded-lg overflow-hidden relative">
-              <div 
-                ref={mapRef} 
+            <div
+              className="mt-10 h-[600px] rounded-lg overflow-hidden relative"
+              data-testid="map-container"
+            >
+              <div
+                ref={mapRef}
                 style={{ width: "100%", height: "100%" }}
+                data-testid="map"
               />
             </div>
           )}
@@ -304,6 +319,7 @@ const CreateMeetingBasicPage = () => {
 
       <div className="flex justify-end mt-8">
         <Button
+          data-testid="next-button"
           variant="secondary"
           onClick={handleNext}
         >

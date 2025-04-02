@@ -4,6 +4,7 @@ import Footer from "./components/common/layout/Footer";
 import MainPage from "./pages/MainPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import PopularPage from "./pages/PopularPage";
 import ApplicantListPage from "./pages/ApplicantListPage";
 import MeetingDetailPage from "./pages/MeetingDetailPage";
 import MeetingEditPage from "./pages/MeetingEditPage";
@@ -17,6 +18,7 @@ import AppliedMeetingsPage from "./pages/mypage/AppliedMeetingsPage";
 import ProfileEditPage from "./pages/mypage/ProfileEditPage";
 import { Toaster } from "react-hot-toast";
 
+
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -26,6 +28,7 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/popular" element={<PopularPage />} />
           <Route path="/applicant/list/:meetingId" element={<ApplicantListPage />} />
 
           <Route path="/meeting/detail/:meetingId" element={<MeetingDetailPage />} />

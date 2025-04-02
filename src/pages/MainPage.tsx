@@ -229,8 +229,14 @@ const MainPage: React.FC = () => {
   if (isLoading) return <div>로딩 중...</div>;
 
   return (
-    <div className="w-full flex flex-col md:flex-row min-h-[90vh]">
-      <div className="w-full md:w-1/3 lg:w-1/4 overflow-y-auto">
+    <div
+      className="w-full flex flex-col md:flex-row min-h-[90vh]"
+      data-testid="main-container"
+    >
+      <div
+        className="w-full md:w-1/3 lg:w-1/4 overflow-y-auto"
+        data-testid="study-list-wrapper"
+      >
         <StudyList
           meetings={meetings}
           currentPage={page}
@@ -240,7 +246,10 @@ const MainPage: React.FC = () => {
         />
       </div>
       
-      <div className="w-full md:w-2/3 lg:w-3/4 relative h-[500px] md:h-[90vh]">
+      <div 
+        className="w-full md:w-2/3 lg:w-3/4 relative h-[500px] md:h-[90vh]"
+        data-testid="map-container"
+      >
         <FilterFloatingButton onFilterChange={handleFilterChange} />
         
         <MapSearchButton onClick={handleMapSearch} />
@@ -250,6 +259,7 @@ const MainPage: React.FC = () => {
           id="map" 
           className="w-full h-full bg-gray-100"
           style={{ position: 'relative' }}
+          data-testid="map-element"
         >
           {!mapReady && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">

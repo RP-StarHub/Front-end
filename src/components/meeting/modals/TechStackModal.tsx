@@ -112,9 +112,9 @@ const TechStackModal = ({
       onConfirm={handleConfirm}
       width={320}
     >
-      <div className="mb-8 space-y-6">
+      <div className="mb-8 space-y-6" data-testid="tech-stack-content">
         {Object.entries(groupedTechStacks).map(([category, stacks]) => (
-          <div key={category}>
+          <div key={category} data-testid={`${category}-section`}>
             <h4 className="font-scdream6 text-regular text-bold mb-3">
               {categoryMapping[category]}
             </h4>
@@ -124,12 +124,14 @@ const TechStackModal = ({
                   key={stack.id}
                   className="flex items-center space-x-2 cursor-pointer"
                   onClick={() => handleToggleStack(stack.id)}
+                  data-testid={`tech-stack-item-${stack.id}`}
                 >
                   <div
+                    data-testid={`tech-stack-checkbox-${stack.id}`}
                     className={`
-                        w-4 h-4 border border-sub
-                        ${selectedIds.includes(stack.id) ? 'bg-main' : 'bg-white'}
-                      `}
+                    w-4 h-4 border border-sub
+                    ${selectedIds.includes(stack.id) ? 'bg-main' : 'bg-white'}
+                  `}
                   />
                   <span className="font-scdream4 text-regular text-sub">
                     {stack.name}
@@ -140,7 +142,7 @@ const TechStackModal = ({
           </div>
         ))}
 
-        <div>
+        <div data-testid="custom-stack-section">
           <h4 className="font-scdream6 text-regular text-bold mb-3">기타</h4>
           <input
             type="text"
@@ -149,19 +151,22 @@ const TechStackModal = ({
             onKeyDown={handleKeyDown}
             placeholder="스페이스바 또는 엔터로 구분"
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-main text-regular mb-4"
+            data-testid="custom-stack-input"
           />
           {customStacks.length > 0 && (
-            <div className="mt-2">
+            <div className="mt-2" data-testid="custom-stacks-container">
               <div className="flex flex-wrap gap-2">
                 {customStacks.map(stack => (
                   <div
                     key={stack}
                     className="inline-flex items-center bg-gray-100 rounded-sm px-4 py-1"
+                    data-testid={`custom-stack-item-${stack}`}
                   >
                     <span className="text-regular text-bold">{stack}</span>
                     <button
                       onClick={() => handleRemoveCustomStack(stack)}
                       className="ml-2 text-regular text-gray-500 hover:text-gray-700"
+                      data-testid={`remove-custom-stack-${stack}`}
                     >
                       ×
                     </button>
