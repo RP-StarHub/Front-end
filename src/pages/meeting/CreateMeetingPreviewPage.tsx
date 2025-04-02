@@ -4,7 +4,7 @@ import { Star } from "@mui/icons-material";
 import MeetingHeader from '../../components/meeting/detail/MeetingHeader';
 import MeetingInfo from '../../components/meeting/detail/MeetingInfo';
 import MeetingContent from '../../components/meeting/detail/MeetingContent';
-import LargeStepIndicator from '../../components/common/ui/LagreStepIndicator';
+import LargeStepIndicator from '../../components/common/ui/LargeStepIndicator';
 import { useMeetingDetail } from '../../hooks/api/useMeeting';
 import Button from '../../components/common/ui/Button';
 
