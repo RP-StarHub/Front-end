@@ -13,7 +13,10 @@ const MapSearchButton: React.FC<MapSearchButtonProps> = ({ onClick }) => {
   const isSearching = useMapStore(state => state.isSearching);
   const setIsSearching = useMapStore(state => state.setIsSearching);
   
-  const handleSearch = () => {
+  const handleSearch = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (isSearching) return;
     
     setIsSearching(true);

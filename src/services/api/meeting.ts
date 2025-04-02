@@ -19,12 +19,76 @@ export const meetingService = {
       data
     );
   },
-
-  getMeetingList: (page: number) => {
-    return axiosInstance.get<GetMeetingListResponse>(
-      '/api/v1/meetings',
+  
+  // API 명세에 맞게 검색 API 구현
+  searchMeetings: (params: Record<string, any>, body: any) => {
+    // API 요구사항에 맞게 body와 params 구성
+    const queryParams: Record<string, any> = {};
+    
+    // 페이지네이션 파라미터
+    if (params.page !== undefined) {
+      queryParams.page = params.page;
+    }
+    
+    if (params.size !== undefined) {
+      queryParams.size = params.size;
+    } else {
+      queryParams.size = 4; // 기본값으로 4개 설정
+    }
+    
+    // 검색어
+    if (params.title) {
+      queryParams.title = params.title;
+    }
+    
+    // 좌표 검색 범위 - 필수 파라미터로 추가
+    if (params.c) {
+      queryParams.c = params.c;
+    }
+    
+    // body는 필터링 조건만 포함하도록 정리
+    // 사용자가 선택한 조건만 전송 (null, undefined, 빈 배열 제거)
+    const cleanBody: Record<string, any> = {};
+    
+    if (body.minParticipants) {
+      cleanBody.minParticipants = body.minParticipants;
+    }
+    
+    if (body.maxParticipants) {
+      cleanBody.maxParticipants = body.maxParticipants;
+    }
+    
+    if (body.techStacks && body.techStacks.length > 0) {
+      cleanBody.techStacks = body.techStacks;
+    }
+    
+    if (body.location) {
+      cleanBody.location = body.location;
+    }
+    
+    if (body.duration) {
+      cleanBody.duration = body.duration;
+    }
+    
+    return axiosInstance.post<GetMeetingListResponse>(
+      '/api/v1/meetings/search',
+      Object.keys(cleanBody).length > 0 ? cleanBody : {},
+      { params: queryParams }
+    );
+  },
+  
+  // 기본 목록 조회 메서드도 searchMeetings 활용
+  getMeetingList: (page: number, coordinates?: string) => {
+    return axiosInstance.post<GetMeetingListResponse>(
+      '/api/v1/meetings/search',
+      {}, // 빈 body
       {
-        params: { page }
+        params: { 
+          page: page,
+          size: 4, // 페이지당 4개 항목으로 변경
+          // 좌표 정보 필수 추가
+          c: coordinates || '37.5,37.7,126.9,127.1' // 서울 기본 좌표 범위 설정
+        }
       }
     );
   },
@@ -107,6 +171,12 @@ export const mockMeetingService = {
       data: mainData
     });
   },
+  
+  searchMeetings: (params: Record<string, any>, body: any) => {
+    return Promise.resolve({
+      data: mainData
+    });
+  },
 
   getMeetingDetail: (id: number) => {
     return Promise.resolve({
@@ -135,6 +205,28 @@ export const mockMeetingService = {
         code: "SUCCESS_DELETE_MEETING",
         message: "모임이 성공적으로 삭제되었습니다.",
         data: null
+      }
+    });
+  },
+  
+  patchMeetingMember: (id: number, data: PatchMemberRequest) => {
+    return Promise.resolve({
+      data: {
+        status: 200,
+        code: "SUCCESS_CONFIRM_MEMBERS",
+        message: "스터디원이 확정되었습니다.",
+        data: null
+      }
+    });
+  },
+  
+  getMeetingMember: (id: number) => {
+    return Promise.resolve({
+      data: {
+        status: 200,
+        code: "SUCCESS_GET_CONFIRMED_MEMBERS",
+        message: "확정된 스터디원 목록을 불러왔습니다.",
+        data: []
       }
     });
   }

@@ -23,14 +23,15 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
 }) => {
   const initialMin = Math.max(1, selectedParticipants.min);
   const [range, setRange] = useState<[number, number]>([initialMin, selectedParticipants.max]);
-  
+
+  // 모달이 열릴 때마다 외부 selectedParticipants 값으로 초기화
   useEffect(() => {
     const min = Math.max(1, selectedParticipants.min);
     setRange([min, selectedParticipants.max]);
-  }, [selectedParticipants]);
-  
+  }, [selectedParticipants, isOpen]);
+
   if (!isOpen) return null;
-  
+
   const handleSliderChange = (values: number | number[]) => {
     if (Array.isArray(values)) {
       const min = Math.max(1, values[0]);
@@ -46,17 +47,15 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
   const handleConfirm = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
     onSelect(range[0], range[1]);
-    onClose();
   };
 
   return (
     <>
       {isOpen && (
         <>
-          <div 
-            className="fixed inset-0 z-40" 
+          <div
+            className="fixed inset-0 z-40"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -64,8 +63,8 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
             }}
             style={{ pointerEvents: 'all' }}
           />
-          
-          <div 
+
+          <div
             className="absolute top-16 left-56 z-50 bg-white rounded shadow-md py-4 px-6 w-96"
             onClick={(e) => {
               e.preventDefault();
@@ -75,13 +74,13 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
           >
             <div className="mb-2">
               <h3 className="text-button font-gmarket-bold text-bold">인원</h3>
-              
+
               <div className="text-left mb-4">
                 <div className="font-medium mb-4 text-regular">
                   {getDisplayValue()}
                 </div>
-                
-                <div 
+
+                <div
                   className="px-1 py-2"
                   onClick={(e: React.MouseEvent) => e.stopPropagation()}
                 >
@@ -93,16 +92,16 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
                     onChange={handleSliderChange}
                     trackStyle={[{ backgroundColor: '#7C8BBE', height: 4 }]}
                     handleStyle={[
-                      { 
-                        borderColor: '#7C8BBE', 
+                      {
+                        borderColor: '#7C8BBE',
                         backgroundColor: 'white',
                         boxShadow: 'none',
                         width: 20,
                         height: 20,
                         marginTop: -8
                       },
-                      { 
-                        borderColor: '#7C8BBE', 
+                      {
+                        borderColor: '#7C8BBE',
                         backgroundColor: 'white',
                         boxShadow: 'none',
                         width: 20,
@@ -113,7 +112,7 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
                     railStyle={{ backgroundColor: '#E5E7EB', height: 4 }}
                   />
                 </div>
-                
+
                 <div className="flex justify-between items-center mt-4 text-regular text-gray-600">
                   <span className="font-scdream4">최소</span>
                   <span className="font-scdream4">5명</span>
@@ -121,7 +120,7 @@ const MainParticipantsModal: React.FC<MainParticipantsModalProps> = ({
                 </div>
               </div>
             </div>
-            
+
             <div className="flex justify-end">
               <button
                 className="bg-sub text-white py-1 px-4 rounded font-scdream4"

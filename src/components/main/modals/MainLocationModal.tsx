@@ -35,15 +35,17 @@ const MainLocationModal: React.FC<MainLocationModalProps> = ({
   const [locationData, setLocationData] = useState<SidoItem[]>(defaultLocationData);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // 위치 데이터 로딩
   useEffect(() => {
     const initializeData = async () => {
       try {
         await preloadLocationData();
         const data = getLocationDataSync();
         setLocationData(data);
+        setIsLoading(false);
       } catch (error) {
+        console.error("Failed to load location data:", error);
         setLocationData(defaultLocationData);
-      } finally {
         setIsLoading(false);
       }
     };
@@ -51,20 +53,18 @@ const MainLocationModal: React.FC<MainLocationModalProps> = ({
     initializeData();
   }, []);
 
+  // 모달이 열릴 때마다 외부 selectedLocation 값으로 초기화
   useEffect(() => {
     setSelectedSido(selectedLocation.selectedSido);
-    setSelectedSigunguList(selectedLocation.selectedSigunguList);
+    setSelectedSigunguList([...selectedLocation.selectedSigunguList]);
     setActiveSido(selectedLocation.selectedSido || null);
-  }, [selectedLocation]);
+  }, [selectedLocation, isOpen]);
 
   if (!isOpen) return null;
 
   const handleSidoSelect = (sido: string) => {
     setActiveSido(sido);
-
-    if (selectedSido !== sido) {
-      setSelectedSido(sido);
-    }
+    setSelectedSido(sido);
   };
 
   const getCurrentSidoItem = (): SidoItem | undefined => {
@@ -108,7 +108,6 @@ const MainLocationModal: React.FC<MainLocationModalProps> = ({
     };
 
     onSelect(result);
-    onClose();
   };
 
   // 시도별 선택된 시군구 그룹화

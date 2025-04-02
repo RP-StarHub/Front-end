@@ -84,16 +84,22 @@ const useMapStore = create<MapStoreState>((set, get) => ({
     }
   })),
   
-  setCoordinates: (coordinates) => set({ coordinates }),
+  setCoordinates: (coordinates) => {
+    set({ coordinates });
+  },
   
-  resetFilters: () => set({ filters: defaultFilters }),
+  resetFilters: () => set((state) => ({
+    filters: defaultFilters,
+    coordinates: null
+  })),
   
   setIsSearching: (isSearching) => set({ isSearching }),
   
   getCoordinatesString: () => {
     const coords = get().coordinates;
     if (!coords) return null;
-    return `${coords.minLat},${coords.maxLat},${coords.minLng},${coords.maxLng}`;
+    const coordString = `${coords.minLat},${coords.maxLat},${coords.minLng},${coords.maxLng}`;
+    return coordString;
   },
   
   // API 요청 시 사용할 파라미터 생성
@@ -103,6 +109,7 @@ const useMapStore = create<MapStoreState>((set, get) => ({
     
     const params: Record<string, any> = {};
     
+    // URL 쿼리 파라미터 설정
     if (searchTerm) {
       params.title = searchTerm;
     }
@@ -110,14 +117,18 @@ const useMapStore = create<MapStoreState>((set, get) => ({
     const coordsString = state.getCoordinatesString();
     if (coordsString) {
       params.c = coordsString;
+    } else {
+      // 좌표가 없을 경우 기본 좌표 제공 (서울 기준)
+      params.c = '37.5,37.7,126.9,127.1';
     }
     
+    // 페이지네이션 파라미터 (API는 0-based index 사용)
     params.page = 0;
-    params.size = 10;
+    params.size = 4; // 페이지 크기 4로 변경
     
     const body: Record<string, any> = {};
     
-    // 사용자가 선택한 필터 값만 포함
+    // 사용자가 선택한 필터 값만 포함 (API 요구사항)
     if (filters.duration) {
       body.duration = filters.duration;
     }
@@ -126,10 +137,12 @@ const useMapStore = create<MapStoreState>((set, get) => ({
       body.techStacks = filters.techStacks;
     }
     
-    if (filters.minParticipants !== 1) {
+    // 기본값과 다른 경우에만 필터 적용
+    if (filters.minParticipants !== defaultFilters.minParticipants) {
       body.minParticipants = filters.minParticipants;
     }
-    if (filters.maxParticipants !== 5) {
+    
+    if (filters.maxParticipants !== defaultFilters.maxParticipants) {
       body.maxParticipants = filters.maxParticipants;
     }
     

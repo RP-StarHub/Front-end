@@ -3,6 +3,24 @@ import { CreateMeetingRequest, GetMeetingListResponse, PatchMeetingRequest, Patc
 import { meetingService, mockMeetingService } from "../../services/api/meeting";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { DURATION } from "../../types/models/meeting";
+
+export interface SearchMeetingParams {
+  // URL 쿼리 파라미터
+  title?: string;
+  coordinates?: string;
+  page: number;
+  size?: number;
+  
+  // POST body 파라미터
+  body?: {
+    minParticipants?: number;
+    maxParticipants?: number;
+    techStacks?: number[];
+    location?: string;
+    duration?: DURATION;
+  };
+}
 
 export const useCreateMeeting = () => {
   const queryClient = useQueryClient();
@@ -22,39 +40,45 @@ export const useCreateMeeting = () => {
       }
     }
   });
-  return createMeeting
-
-  // 목업용
-  // return useMutation({
-  //   mutationFn: (data: CreateMeetingRequest) =>
-  //     mockMeetingService.createMeeting(data),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['meetings'] });
-  //   }
-  // });
+  return createMeeting;
 }
 
-export const useMeetingList = (page: number) => {
+export const useMeetingList = (params: SearchMeetingParams) => {
   const queryOptions: UseQueryOptions<GetMeetingListResponse> = {
-    queryKey: ['meetings', page],
+    queryKey: ['meetings', JSON.stringify(params)],
     queryFn: async () => {
-      const response = await meetingService.getMeetingList(page - 1);
-      return response.data
+      const queryParams: Record<string, any> = {
+        page: params.page - 1,
+        size: 4,
+      };
+      
+      if (params.title) {
+        queryParams.title = params.title;
+      }
+      
+      if (params.coordinates) {
+        queryParams.c = params.coordinates;
+      } else {
+        queryParams.c = '37.5,37.7,126.9,127.1';
+      }
+      
+      try {
+        const response = await meetingService.searchMeetings(
+          queryParams, 
+          params.body || {}
+        );
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
     },
-    // 데이터가 바로 만료되도록 설정 (새로고침 시 항상 새 데이터 fetch)
     staleTime: 0,
-    // 새 데이터 로딩 중에 이전 데이터 표시
+    refetchOnWindowFocus: false,
     placeholderData: (previousData) => previousData,
+    retry: 1,
   };
+  
   return useQuery<GetMeetingListResponse>(queryOptions);
-
-  // return useQuery<GetMeetingListResponse>({
-  //   queryKey: ['meetings'],
-  //   queryFn: async () => {
-  //     const response = await mockMeetingService.getMeetingList(0);
-  //     return response.data
-  //   }
-  // });
 };
 
 export const useMeetingDetail = (id: number) => {
@@ -67,15 +91,6 @@ export const useMeetingDetail = (id: number) => {
     staleTime: 0,
     placeholderData: (previousData) => previousData,
   });
-
-  // 목업용
-  // return useQuery({
-  //   queryKey: ['meeting', id],
-  //   queryFn: async () => {
-  //     const response = await mockMeetingService.getMeetingDetail(id);
-  //     return response.data
-  //   }
-  // })
 };
 
 export const useMeetingPatch = () => {
@@ -103,12 +118,6 @@ export const useMeetingPatch = () => {
       }
     }
   });
-
-  // 목업
-  // return useMutation({
-  //   mutationFn: ({ id, data }: { id: number, data: PatchMeetingRequest }) =>
-  //     mockMeetingService.patchMeeting(id, data),
-  // });
 };
 
 export const useMeetingDelete = () => {
@@ -136,11 +145,6 @@ export const useMeetingDelete = () => {
       }
     }
   });
-
-  // 목업
-  // return useMutation({
-  //   mutationFn: (id: number) => mockMeetingService.deleteMeeting(id),
-  // });
 };
 
 export const useConfirmMeetingMembers = (meetingId: number) => {
@@ -169,3 +173,6 @@ export const useGetMeetingMembers = (meetingId: number) => {
     enabled: !!meetingId
   });
 };
+
+// meetingService 재내보내기
+export { meetingService, mockMeetingService };
