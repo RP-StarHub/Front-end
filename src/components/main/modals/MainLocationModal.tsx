@@ -28,8 +28,8 @@ const MainLocationModal: React.FC<MainLocationModalProps> = ({
   anchorEl
 }) => {
   const [selectedSido, setSelectedSido] = useState<string>(selectedLocation.selectedSido);
-  const [selectedSigunguList, setSelectedSigunguList] 
-    = useState<SigunguItem[]>(selectedLocation.selectedSigunguList);
+  const [selectedSigunguList, setSelectedSigunguList] = 
+    useState<SigunguItem[]>(selectedLocation.selectedSigunguList);
   const [activeSido, setActiveSido] = useState<string | null>(selectedLocation.selectedSido || null);
   
   const [locationData, setLocationData] = useState<SidoItem[]>(defaultLocationData);
