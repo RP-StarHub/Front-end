@@ -45,6 +45,7 @@ describe("StudyList 컴포넌트", () => {
       currentPage: 1,
       totalPages: 3,
       onPageChange: jest.fn(),
+      onSearch: jest.fn()
     };
 
     const queryClient = new QueryClient({

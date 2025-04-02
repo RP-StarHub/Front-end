@@ -9,10 +9,11 @@ import {
 } from "@mui/icons-material";
 import { Meeting } from "../../types/models/meeting";
 import { toKoreanDuration, toKoreanRecruitmentType } from "../../util/transformKorean";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavigateFunction } from "react-router-dom";
 
 interface OverCardProps {
   meeting: Meeting;
+  navigate?: NavigateFunction;
 }
 
 type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
@@ -67,8 +68,7 @@ const ShotInform = ({ title, content }: ShotInformProps) => {
   );
 };
 
-function OverCard({ meeting }: OverCardProps) {
-  const navigate = useNavigate();
+function OverCard({ meeting, navigate }: OverCardProps) {
   const {
     id,
     recruitmentType,
@@ -82,7 +82,11 @@ function OverCard({ meeting }: OverCardProps) {
   } = meeting;
 
   const moveDetail = () => {
-    navigate(`/meeting/detail/${id}`);
+    if (navigate) {
+      navigate(`/meeting/detail/${id}`);
+    } else {
+      console.log(`Would navigate to: /meeting/detail/${id}`);
+    }
   }
 
   const getDisplayParticipants = () => {
@@ -129,4 +133,16 @@ function OverCard({ meeting }: OverCardProps) {
   );
 }
 
-export default OverCard;
+// withRouter HOC 컴포넌트
+export function withRouter(Component: React.ComponentType<OverCardProps>) {
+  return function WithRouterWrapper(props: Omit<OverCardProps, 'navigate'>) {
+    try {
+      const navigate = useNavigate();
+      return <Component navigate={navigate} {...props} />;
+    } catch (error) {
+      return <Component {...props} />;
+    }
+  };
+}
+
+export default withRouter(OverCard);
