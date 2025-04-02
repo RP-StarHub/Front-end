@@ -67,7 +67,7 @@ const MainPage: React.FC = () => {
         isNaverScriptLoading = true;
         
         const script = document.createElement('script');
-        script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=dlpsgnrwky`;
+        script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.REACT_APP_NAVER_CLIENT_ID}`;
         script.async = true;
         
         script.onload = () => {
