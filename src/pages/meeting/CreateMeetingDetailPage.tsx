@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/common/ui/Button";
 import TextInput from "../../components/common/ui/TextInput";
 import TextArea from "../../components/common/ui/TextArea";
-import LargeStepIndicator from "../../components/common/ui/LagreStepIndicator";
+import LargeStepIndicator from "../../components/common/ui/LargeStepIndicator";
 import { useMeetingFormStore } from '../../store/meetingForm';
 import { useCreateMeeting } from '../../hooks/api/useMeeting';
 import toast from 'react-hot-toast';
@@ -52,10 +52,10 @@ const CreateMeetingDetailPage = () => {
     try {
       const requestData = getCreateMeetingRequest();
       const response = await createMeeting.mutateAsync(requestData);
-      
+
       // 응답에서 생성된 모임의 ID를 추출
       const meetingId = response.data.data.id;
-      
+
       toast.success('모임이 성공적으로 생성되었습니다.');
       // ID를 포함하여 preview 페이지로 이동
       navigation(`/meeting/create/preview/${meetingId}`);
@@ -72,14 +72,14 @@ const CreateMeetingDetailPage = () => {
   ];
 
   return (
-    <div className="flex flex-col w-full bg-background px-48 py-20">
-      <LargeStepIndicator currentStep={1} steps={steps} />
+    <div className="flex flex-col w-full bg-background px-48 py-20" data-testid="create-meeting-detail-page">
+      <LargeStepIndicator currentStep={1} steps={steps} data-testid="step-indicator" />
 
-      <div className="flex items-center mt-20 mb-6">
+      <div className="flex items-center mt-20 mb-6" data-testid="page-title">
         <Star className="text-yellow" sx={{ fontSize: 40 }} />
         <p className="font-gmarket-bold text-page-title text-bold">모임 소개</p>
       </div>
-      <p className="text-label text-bold">모집글에 쓰일 제목과 내용을 작성해주세요.</p>
+      <p className="text-label text-bold" data-testid="page-subtitle">모집글에 쓰일 제목과 내용을 작성해주세요.</p>
 
       <div className="col-span-2 h-px bg-sub my-8" />
 
@@ -94,6 +94,7 @@ const CreateMeetingDetailPage = () => {
           fullWidth
           className="h-12"
           error={errors.title}
+          data-testid="title-input"
         />
 
         {/* 스터디/프로젝트 소개 */}
@@ -106,6 +107,7 @@ const CreateMeetingDetailPage = () => {
           fullWidth
           className="h-40"
           error={errors.description}
+          data-testid="description-textarea"
         />
 
         {/* 목표 */}
@@ -118,6 +120,7 @@ const CreateMeetingDetailPage = () => {
           fullWidth
           className="h-40"
           error={errors.goal}
+          data-testid="goal-textarea"
         />
 
         {/* 기타 정보 */}
@@ -129,6 +132,7 @@ const CreateMeetingDetailPage = () => {
           onChange={handleInputChange}
           fullWidth
           className="h-40"
+          data-testid="other-info-textarea"
         />
       </div>
 
@@ -136,12 +140,14 @@ const CreateMeetingDetailPage = () => {
         <Button
           variant="secondary"
           onClick={handlePrevious}
+          data-testid="previous-button"
         >
           이전
         </Button>
         <Button
           variant="secondary"
           onClick={handleSubmit}
+          data-testid="submit-button"
         >
           글 등록
         </Button>

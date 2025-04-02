@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { useApplicationList } from '../../../hooks/api/useApplication'
-import toast from 'react-hot-toast';
-import Button from '../../common/ui/Button';
-import { useConfirmMeetingMembers } from '../../../hooks/api/useMeeting';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react"
+import { useApplicationList } from "../../../hooks/api/useApplication"
+import toast from "react-hot-toast";
+import Button from "../../common/ui/Button";
+import { useConfirmMeetingMembers } from "../../../hooks/api/useMeeting";
+import { useNavigate } from "react-router-dom";
 
 interface ApplicationListProps {
   meetingId: number
@@ -29,7 +29,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
 
   const handleConfirm = () => {
     if (selectedApplication.length === 0) {
-      toast.error('확정할 지원자를 선택해주세요');
+      toast.error("확정할 지원자를 선택해주세요");
       return;
     }
 
@@ -37,13 +37,13 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
       { applicationIds: selectedApplication },
       {
         onSuccess: () => {
-          toast.success('스터디원이 확정되었습니다');
+          toast.success("스터디원이 확정되었습니다");
           setSelectedApplication([]);
           navigate(`/applicant/list/${meetingId}`);
         },
         onError: (error) => {
-          toast.error('스터디원 확정에 실패했습니다');
-          console.error('Error confirming members:', error);
+          toast.error("스터디원 확정에 실패했습니다");
+          console.error("Error confirming members:", error);
         }
       }
     );
@@ -51,46 +51,56 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ meetingId }) => {
 
   if (applications.length === 0) {
     return (
-      <div className='flex flex-col items-center justify-center w-full py-20'>
-        <p className='font-scdream6 text-sub text-lg mb-2'>아직 지원서가 없습니다.</p>
-        <p className='font-scdream4 text-sub'>모임에 대한 자세한 소개를 적고 홍보하세요!</p>
+      <div className="flex flex-col items-center justify-center w-full py-20">
+        <p className="font-scdream6 text-sub text-lg mb-2">아직 지원서가 없습니다.</p>
+        <p className="font-scdream4 text-sub">모임에 대한 자세한 소개를 적고 홍보하세요!</p>
       </div>
     );
   }
 
   return (
-    <div className='w-full mt-8'>
+    <div className="w-full mt-8" data-testid="application-list">
       {applications.map((application) => (
         <div
           key={application.id}
+          data-testid={`application-item-${application.id}`}
           className={`
-            px-10 py-6 my-8
-            border-4 border-sub rounded-2xl 
-            font-scdream4 text-regular text-bold cursor-pointer
-            ${selectedApplication.includes(application.id)
-              ? 'bg-sub text-white'
-              : 'bg-none'
+          px-10 py-6 my-8
+          border-4 border-sub rounded-2xl 
+          font-scdream4 text-regular text-bold cursor-pointer
+          ${selectedApplication.includes(application.id)
+              ? "bg-sub text-white"
+              : "bg-none"
             }
-          transition-colors duration-200
-          `}
+        transition-colors duration-200
+        `}
           onClick={() => handleApplicationClick(application.id)}
         >
-          <div className='flex items-center mb-6'>
+          <div className="flex items-center mb-6">
             <img
               src={application.applicant.profileImage}
               alt="Profile"
               className="w-8 h-8 rounded-full object-cover mr-2"
+              data-testid={`applicant-image-${application.id}`}
             />
-            <p className='font-scdream6'>{application.applicant.nickname}</p>
+            <p
+              className="font-scdream6"
+              data-testid={`applicant-name-${application.id}`}
+            >
+              {application.applicant.nickname}
+            </p>
           </div>
-          <p>{application.content}</p>
+          <p data-testid={`application-content-${application.id}`}>
+            {application.content}
+          </p>
         </div>
       ))}
       <div className="flex justify-end">
         <Button
-          variant='secondary'
-          size='small'
+          variant="secondary"
+          size="small"
           onClick={handleConfirm}
+          data-testid="confirm-button"
         >
           스터디원 확정
         </Button>

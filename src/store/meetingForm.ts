@@ -21,7 +21,7 @@ interface MeetingFormErrors {
   techStacks?: string;
 }
 
-interface MeetingFormState {
+export interface MeetingFormState {
   recruitmentType: RecruitmentType;
   maxParticipants: number;
   duration: DURATION | undefined;

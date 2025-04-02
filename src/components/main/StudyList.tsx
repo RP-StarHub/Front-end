@@ -15,17 +15,24 @@ interface StudyListProps {
 const StudyList = React.memo<StudyListProps>(
   ({ meetings, currentPage, totalPages, onPageChange, onSearch }) => {
     return (
-      <div className="flex flex-col bg-background w-full h-full">
+      <div 
+        className="flex flex-col bg-background w-full h-full"
+        data-testid="study-list-container"
+      >
         <div className="px-4 pt-4 pb-2">
           <SearchBar onSearch={onSearch} />
         </div>
         
         <div className="px-4 py-4">
-          <div className="grid grid-rows-4 gap-8 flex-1 w-full items-center">
+          <div 
+            className="grid grid-rows-4 gap-8 flex-1 w-full items-center"
+            data-testid="study-grid"
+           >
             {meetings.map((meeting) => (
               <div
                 key={meeting.id}
                 className="w-full min-h-0 justify-center flex"
+                data-testid="card-container"
               >
                 <InformCard meeting={meeting} />
               </div>
