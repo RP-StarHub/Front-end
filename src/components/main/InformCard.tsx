@@ -13,7 +13,7 @@ import {
 import { toKoreanDuration, toKoreanRecruitmentType } from "../../util/transformKorean";
 import { useLike } from "../../hooks/api/useLike";
 
-type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
+export type IconTitleType = '관심' | '스택' | '마감' | '장소' | '인원' | '기간';
 
 const IconComponent = ({ title }: { title: IconTitleType }) => {
   const iconStyle = { fontSize: 18, color: "#7C8BBE" };
@@ -66,9 +66,17 @@ const ShotInform = ({ title, content }: ShotInformProps) => {
   }
 
   return (
-    <div className="flex flex-row items-center mb-2">
+    <div
+      className="flex flex-row items-center mb-2"
+      data-testid={`inform-${title}`}
+    >
       <IconComponent title={title} />
-      <p className="text-center text-regular text-sub font-scdream4 mx-2 flex-shrink-0">{title}</p>
+      <p
+        className="text-center text-regular text-sub font-scdream4 mx-2 flex-shrink-0"
+        data-testid={`inform-${title}-label`}
+      >
+        {title}
+      </p>
       <div className={contentClassName} title={displayContent}>
         {displayContent}
       </div>
@@ -117,6 +125,7 @@ const InformCard: React.FC<Props> = ({ meeting, fullWidth }) => {
     <div
       className={`bg-white rounded-lg shadow-md px-5 py-4 cursor-pointer ${widthClass}`}
       onClick={moveDetail}
+      data-testid="inform-card"
     >
       <div className="w-full">
         <div className="flex justify-between items-start mb-3">
@@ -124,9 +133,15 @@ const InformCard: React.FC<Props> = ({ meeting, fullWidth }) => {
             [{toKoreanRecruitmentType(recruitmentType)}] {title}
           </p>
           <div onClick={handleLikeClick} className="flex-shrink-0 ml-2">
-            { isLiked ?
-              <Favorite sx={{ fontSize: 28, color: "#7C8BBE" }} /> :
-              <FavoriteBorder sx={{ fontSize: 28, color: "#7C8BBE" }} />
+            {isLiked ?
+              <Favorite
+                sx={{ fontSize: 28, color: "#7C8BBE" }}
+                data-testid="like-filled-button"
+              /> :
+              <FavoriteBorder
+                sx={{ fontSize: 28, color: "#7C8BBE" }}
+                data-testid="like-border-button"
+              />
             }
           </div>
         </div>
