@@ -123,7 +123,7 @@ const InformCard: React.FC<Props> = ({ meeting, fullWidth }) => {
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-md px-5 py-4 cursor-pointer ${widthClass}`}
+      className={`bg-white rounded-lg shadow-md px-5 py-3 cursor-pointer ${widthClass}`}
       onClick={moveDetail}
       data-testid="inform-card"
     >

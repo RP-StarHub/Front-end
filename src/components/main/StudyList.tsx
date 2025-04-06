@@ -16,14 +16,14 @@ interface StudyListProps {
 const StudyList = React.memo<StudyListProps>(
   ({ meetings, currentPage, totalPages, onPageChange, onSearch, isLoading = false }) => {
     return (
-      <div 
+      <div
         className="flex flex-col bg-background w-full h-full"
         data-testid="study-list-container"
       >
         <div className="px-4 pt-4 pb-2">
           <SearchBar onSearch={onSearch} />
         </div>
-        
+
         {isLoading ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
@@ -33,10 +33,10 @@ const StudyList = React.memo<StudyListProps>(
           </div>
         ) : (
           <div className="px-4 py-4">
-            <div 
-              className="grid grid-rows-4 gap-8 flex-1 w-full items-center"
+            <div
+              className="grid grid-rows-4 gap-4 flex-1 w-full items-center"
               data-testid="study-grid"
-             >
+            >
               {meetings.length > 0 ? (
                 meetings.map((meeting) => (
                   <div
